@@ -1,0 +1,14 @@
+#minimap {
+    background-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    z-index: 10000;
+  }
+  
+  #minimap > * {
+    transform: scale(0.1);
+    transform-origin: top left;
+    width: 1000%;
+    height: 1000%;
+  }
+  

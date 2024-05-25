@@ -1,0 +1,17 @@
+{
+    "manifest_version": 3,
+    "name": "Scroll Minimap",
+    "version": "1.0",
+    "description": "A minimap for scrolling through web pages similar to the one in VS Code.",
+    "permissions": ["activeTab", "storage", "scripting"],
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "content_scripts": [
+      {
+        "matches": ["<all_urls>"],
+        "css": ["styles.css"]
+      }
+    ]
+  }
+  
