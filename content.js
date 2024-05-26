@@ -42,14 +42,14 @@ function getScrollBox() {
 }
 
 function updateScrollDiv() {
-    getScrollBox();
     if (scrollBox) {
         scrollPos = (scrollBox.scrollTop / scrollBox.scrollHeight) * 0.1 * viewBox.scrollHeight;
-        console.log(scrollPos);
         scrollDiv.style.top = `${scrollPos}px`;
+        
+        let mapContainerScroll = scrollPos - (scrollPos * (minimap.offsetHeight - 50) /(0.1 * viewBox.scrollHeight));
+        minimap.scrollTo(0, mapContainerScroll);
     }
 }
-
 
 function showMinimap() {
     minimap.style.display = 'none'
@@ -63,4 +63,8 @@ function refreshMinimap() {
     getViewBox()
     mapContainer.innerHTML = viewBox.outerHTML;
     updateScrollDiv();
+    getScrollBox();
+    if (scrollBox) {
+        scrollBox.addEventListener('scroll', updateScrollDiv);
+    }
 };
