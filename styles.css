@@ -1,11 +1,22 @@
 #minimap {
-    background-color: rgba(255, 255, 255, 0.8);
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    background-color: #ffffffcc;
+    box-shadow: 0 0 5px #00000033;
     overflow: hidden;
     z-index: 10000;
+    position: fixed;
+    top: 20px;
+    right: 10px;
+    width: 100px;
+    height: 80vh;
+    border: 1px solid #000;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
   }
   
   #minimap > * {
+  
     transform: scale(0.1);
     transform-origin: top left;
     width: 1000%;

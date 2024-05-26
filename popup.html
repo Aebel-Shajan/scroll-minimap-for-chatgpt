@@ -9,14 +9,20 @@
       font-family: Arial, sans-serif;
       padding: 10px;
     }
-    #activate {
-      margin-top: 10px;
+    #options {
+      display: flex;
+      flex-direction: column;
+      gap:1rem;
     }
   </style>
 </head>
 <body>
   <h2>Scroll Minimap</h2>
-  <button id="activate">Activate Minimap</button>
+  <div id="options">
+    <button id="activate">Activate</button>
+    <button id="refresh">Refresh</button>
+    <button id="close">Close</button>  
+  </div>
   <script src="popup.js"></script>
 </body>
 </html>
