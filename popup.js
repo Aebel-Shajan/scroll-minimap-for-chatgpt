@@ -6,11 +6,11 @@ async function sendMessage(message) {
 
 // document refers to popup.html
 document
-  .querySelector('#activate')
-  .addEventListener('click', () => sendMessage('activate'));
+  .querySelector('#show')
+  .addEventListener('click', () => sendMessage('show'));
 document
   .querySelector('#refresh')
   .addEventListener('click', () => sendMessage('refresh'))
 document
-  .querySelector('#close')
-  .addEventListener('click', () => sendMessage('close'))
+  .querySelector('#hide')
+  .addEventListener('click', () => sendMessage('hide'))

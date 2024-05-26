@@ -1,20 +1,28 @@
 #minimap {
-    background-color: #ffffffcc;
-    box-shadow: 0 0 5px #00000033;
-    position: fixed;
-    top: 50px;
-    right: 10px;
-    width: 100px;
-    height: 80vh;
-    border: 1px solid #000;
-    overflow-y: scroll;
-    overflow-x: hidden;
-  }
-  
-  #minimap > * {
-    transform: scale(0.1);
-    transform-origin: top left;
-    width: 1000%;
-    height: 100%
-  }
-  
+  background-color: #ffffffcc;
+  box-shadow: 0 0 5px #00000033;
+  position: fixed;
+  top: 50px;
+  right: 10px;
+  width: 100px;
+  height: 80vh;
+  border: 1px solid #000;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+#minimap > *{
+  transform: scale(0.1);
+  transform-origin: top left;
+  width: 1000%;
+  height: 100%
+}
+
+#scroll-div {
+  position: absolute;
+  width: 100vw;
+  height: 100vh;
+  top: 0px;
+  left: 0px;
+  background-color: rgba(203, 248, 248, 0.516);
+}
