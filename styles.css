@@ -7,7 +7,6 @@
   right: 10px;
   width: 100px;
   height: 80vh;
-  border: 1px solid #000;
   overflow-y: scroll;
   overflow-x: hidden;
 }
@@ -19,7 +18,7 @@
   height: 100%
 }
 
-#scroll-div {
+#scroll-bar {
   position: absolute;
   width: 100vw;
   height: 100vh;
