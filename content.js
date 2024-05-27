@@ -20,39 +20,39 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 
 // Create elements
-let viewBox, scrollBox;
+let sourceElements, sourceScrollContainer;
 let minimap = document.createElement('div');
 minimap.id = 'minimap'
-let mapContainer = document.createElement('div')
-mapContainer.id = 'map-container'
-mapContainer.inert = true;
-let scrollDiv = document.createElement('div');
-scrollDiv.id = 'scroll-div';
+let targetElements = document.createElement('div')
+targetElements.id = 'map-container'
+targetElements.inert = true;
+let scrollBar = document.createElement('div');
+scrollBar.id = 'scroll-div';
 
-minimap.appendChild(mapContainer);
-minimap.appendChild(scrollDiv);
+minimap.appendChild(targetElements);
+minimap.appendChild(scrollBar);
 document.body.appendChild(minimap);
 
 
 // Functions
-function getViewBox() {
+function getSourceElements() {
     // cant directly target due to uniquely identified class names
     // so gotta hack it
-    viewBox = document.querySelector('[data-testid^="conversation-turn-"]').parentNode
+    sourceElements = document.querySelector('[data-testid^="conversation-turn-"]').parentNode
 }
 
-function getScrollBox() {
+function getSourceScrollContainer() {
     // Used to retrieve information about scroll position
-    scrollBox = viewBox.parentNode.parentNode;
+    sourceScrollContainer = sourceElements.parentNode.parentNode;
 }
 
-function updateScrollDiv() {
-    if (scrollBox) {
-        scrollPos = (scrollBox.scrollTop / scrollBox.scrollHeight) * 0.1 * viewBox.scrollHeight;
-        scrollDiv.style.top = `${scrollPos}px`;
+function updateScrollBar() {
+    if (sourceScrollContainer) {
+        scrollPos = (sourceScrollContainer.scrollTop / sourceScrollContainer.scrollHeight) * 0.1 * sourceElements.scrollHeight;
+        scrollBar.style.top = `${scrollPos}px`;
 
-        let mapContainerScroll = scrollPos - (scrollPos * (minimap.offsetHeight - 50) / (0.1 * viewBox.scrollHeight));
-        minimap.scrollTo(0, mapContainerScroll);
+        let targetElementsScroll = scrollPos - (scrollPos * (minimap.offsetHeight - 50) / (0.1 * sourceElements.scrollHeight));
+        minimap.scrollTo(0, targetElementsScroll);
     }
 }
 
@@ -65,12 +65,12 @@ function hideMinimap() {
 }
 
 function refreshMinimap() {
-    getViewBox()
-    getScrollBox();
-    mapContainer.innerHTML = viewBox.outerHTML;
-    updateScrollDiv();
-    if (scrollBox) {
-        scrollBox.addEventListener('scroll', updateScrollDiv);
+    getSourceElements()
+    getSourceScrollContainer();
+    targetElements.innerHTML = sourceElements.outerHTML;
+    updateScrollBar();
+    if (sourceScrollContainer) {
+        sourceScrollContainer.addEventListener('scroll', updateScrollBar);
     }
 };
 
@@ -78,21 +78,21 @@ function refreshMinimap() {
 // Scroll Div logic 
 let mousedown = false;
 window.addEventListener('mouseup', () => mousedown = false)
-scrollDiv.addEventListener('mousedown', (e) => {
+scrollBar.addEventListener('mousedown', (e) => {
     mousedown = true
-    handleScrollDivMove(e.clientY)
+    handleScrollBarMove(e.clientY)
 })
 minimap.addEventListener('mousemove', (e) => {
     if (mousedown) {
-        handleScrollDivMove(e.clientY)
+        handleScrollBarMove(e.clientY)
     }
 })
-minimap.addEventListener('click', (e) => handleScrollDivMove(e.clientY))
+minimap.addEventListener('click', (e) => handleScrollBarMove(e.clientY))
 
-function handleScrollDivMove(mousePos) {
+function handleScrollBarMove(mousePos) {
     const y = mousePos - minimap.getBoundingClientRect().top + minimap.scrollTop - 50;
-    if (scrollBox) {
-        const scrollPos = scrollBox.scrollHeight * y / minimap.scrollHeight
-        scrollBox.scrollTo(0, scrollPos)
+    if (sourceScrollContainer) {
+        const scrollPos = sourceScrollContainer.scrollHeight * y / minimap.scrollHeight
+        sourceScrollContainer.scrollTo(0, scrollPos)
     }
 }
