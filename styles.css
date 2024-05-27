@@ -11,6 +11,8 @@
   transform-origin: bottom right;
   width: fit-content;
   height: fit-content;
+  display: flex;
+  gap:1rem;
 }
 
 #option-container > button {

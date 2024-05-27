@@ -27,17 +27,24 @@ optionContainer.id = 'option-container';
 let toggleButton = document.createElement('button');
 toggleButton.id = 'toggle-minimap-button';
 toggleButton.innerText = 'Toggle Minimap'
+let refreshButton = document.createElement('button');
+refreshButton.id = 'refresh-minimap-button';
+refreshButton.innerText = 'Refresh Minimap';
+hideElement(refreshButton);
+optionContainer.appendChild(refreshButton);
 optionContainer.appendChild(toggleButton);
 extensionContainer.appendChild(optionContainer);
 
 let sourceElements, sourceScrollContainer;
 let minimap = document.createElement('div');
 minimap.id = 'minimap'
+hideElement(minimap);
 let targetElements = document.createElement('div')
 targetElements.id = 'target-elements'
 targetElements.inert = true;
 let scrollBar = document.createElement('div');
 scrollBar.id = 'scroll-bar';
+
 minimap.appendChild(targetElements);
 minimap.appendChild(scrollBar);
 
@@ -103,8 +110,10 @@ function refreshMinimap() {
 toggleButton.addEventListener('click', () => {
     if (minimap.style.display === 'none') {
         showElement(minimap);
+        showElement(refreshButton);
     } else {
         hideElement(minimap);
+        hideElement(refreshButton);
     }
     refreshMinimap();
 })
