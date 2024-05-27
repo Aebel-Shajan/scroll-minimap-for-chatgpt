@@ -105,9 +105,10 @@ minimap.addEventListener('mousemove', (e) => {
 minimap.addEventListener('click', (e) => handleScrollBarMove(e.clientY))
 
 function handleScrollBarMove(mousePos) {
-    const y = mousePos - minimap.getBoundingClientRect().top + minimap.scrollTop - 50;
     if (sourceScrollContainer) {
-        const scrollPos = sourceScrollContainer.scrollHeight * y / minimap.scrollHeight
-        sourceScrollContainer.scrollTo(0, scrollPos)
+        const scale = sourceScrollContainer.scrollHeight / minimap.scrollHeight;
+        const offset = scrollBar.offsetHeight * 0.5 * 0.1;
+        const sourceScrollAmount = (mousePos - minimap.getBoundingClientRect().top + minimap.scrollTop - offset)*scale;
+        sourceScrollContainer.scrollTo(0, sourceScrollAmount)
     }
 }
