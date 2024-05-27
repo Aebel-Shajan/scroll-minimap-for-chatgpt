@@ -24,10 +24,10 @@ let sourceElements, sourceScrollContainer;
 let minimap = document.createElement('div');
 minimap.id = 'minimap'
 let targetElements = document.createElement('div')
-targetElements.id = 'map-container'
+targetElements.id = 'target-elements'
 targetElements.inert = true;
 let scrollBar = document.createElement('div');
-scrollBar.id = 'scroll-div';
+scrollBar.id = 'scroll-bar';
 
 minimap.appendChild(targetElements);
 minimap.appendChild(scrollBar);
