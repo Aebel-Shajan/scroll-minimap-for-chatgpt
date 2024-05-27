@@ -48,12 +48,27 @@ function getSourceScrollContainer() {
 
 function updateScrollBar() {
     if (sourceScrollContainer) {
-        scrollPos = (sourceScrollContainer.scrollTop / sourceScrollContainer.scrollHeight) * 0.1 * sourceElements.scrollHeight;
-        scrollBar.style.top = `${scrollPos}px`;
-
-        let targetElementsScroll = scrollPos - (scrollPos * (minimap.offsetHeight - 50) / (0.1 * sourceElements.scrollHeight));
-        minimap.scrollTo(0, targetElementsScroll);
+        const scrollBarTop = (sourceScrollContainer.scrollTop / sourceScrollContainer.scrollHeight) * minimap.scrollHeight;
+        scrollBar.style.top = `${scrollBarTop}px`;
     }
+}
+
+function updateMinimapScroll() {
+    if (sourceScrollContainer) {
+        const scrollBarTop = (sourceScrollContainer.scrollTop / sourceScrollContainer.scrollHeight) * minimap.scrollHeight;
+        const u = sourceScrollContainer.scrollTop + (0.5*sourceScrollContainer.offsetHeight)
+        const v = sourceScrollContainer.scrollHeight
+        const a = scrollBarTop + (0.05 * scrollBar.offsetHeight)
+        const y = minimap.offsetHeight
+
+        let minimapScrollTop = a - (y * u/v)
+        minimap.scrollTo(0, minimapScrollTop);
+    }
+}
+
+function updateMinimap() {
+    updateMinimapScroll()
+    updateScrollBar()
 }
 
 function showMinimap() {
@@ -68,9 +83,9 @@ function refreshMinimap() {
     getSourceElements()
     getSourceScrollContainer();
     targetElements.innerHTML = sourceElements.outerHTML;
-    updateScrollBar();
+    updateMinimap();
     if (sourceScrollContainer) {
-        sourceScrollContainer.addEventListener('scroll', updateScrollBar);
+        sourceScrollContainer.addEventListener('scroll', updateMinimap);
     }
 };
 
