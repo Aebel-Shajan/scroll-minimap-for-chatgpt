@@ -3,7 +3,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const message = request.message;
     switch (message) {
         case 'show':
-            showElement(minimap)
+            showMinimap()
             break;
 
         case 'refresh':
@@ -11,8 +11,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             break;
 
         case 'hide':
-            hideElement(minimap)
-            break;
+            showMinimap()
+        break;
         default:
             break;
     }
@@ -99,6 +99,16 @@ function showElement(element) {
     element.style.display = 'initial';
 }
 
+function showMinimap() {
+    showElement(minimap);
+    showElement(refreshButton);
+}
+
+function hideMinimap() {
+    hideElement(minimap);
+    hideElement(refreshButton);
+}
+
 function refreshMinimap() {
     getSourceElements()
     getSourceScrollContainer();
@@ -111,11 +121,9 @@ function refreshMinimap() {
 
 toggleButton.addEventListener('click', () => {
     if (minimap.style.display === 'none') {
-        showElement(minimap);
-        showElement(refreshButton);
+        showMinimap()
     } else {
-        hideElement(minimap);
-        hideElement(refreshButton);
+        hideMinimap()
     }
     refreshMinimap();
 })
