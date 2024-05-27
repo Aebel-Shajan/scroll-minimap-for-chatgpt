@@ -1,7 +1,14 @@
 async function sendMessage(message) {
   const [tab] = await chrome.tabs.query({active: true, lastFocusedWindow: true});
-  return await chrome.tabs.sendMessage(tab.id, {message: message});
+  try {
+    let response = await chrome.tabs.sendMessage(tab.id, {message: message});
+    return response
+  }
+   catch (e) {
+    alert("An error occured. Restart chrome for scroll minimap for chatgpt to work.")
+  }
 }
+ 
 
 
 // document refers to popup.html
