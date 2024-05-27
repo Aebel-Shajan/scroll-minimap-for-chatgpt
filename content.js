@@ -3,7 +3,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const message = request.message;
     switch (message) {
         case 'show':
-            showMinimap()
+            showElement(minimap)
             break;
 
         case 'refresh':
@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             break;
 
         case 'hide':
-            hideMinimap()
+            hideElement(minimap)
             break;
         default:
             break;
@@ -82,12 +82,12 @@ function updateMinimap() {
     updateScrollBar()
 }
 
-function showMinimap() {
-    minimap.style.display = 'initial'
+function hideElement(element) {
+    element.style.display = 'none';
 }
 
-function hideMinimap() {
-    minimap.style.display = 'none'
+function showElement(element) {
+    element.style.display = 'initial';
 }
 
 function refreshMinimap() {
@@ -101,12 +101,12 @@ function refreshMinimap() {
 };
 
 toggleButton.addEventListener('click', () => {
-    refreshMinimap();
     if (minimap.style.display === 'none') {
-        showMinimap();
+        showElement(minimap);
     } else {
-        hideMinimap();
+        hideElement(minimap);
     }
+    refreshMinimap();
 })
 
 // Scroll Div logic 
