@@ -24,7 +24,7 @@ let extensionContainer = document.createElement('div');
 extensionContainer.id = 'extension-container';
 let optionContainer = document.createElement('div');
 optionContainer.id = 'option-container';
-let toggleShowButton = document.createElement('button');
+let toggleButton = document.createElement('button');
 toggleButton.id = 'toggle-minimap-button';
 toggleButton.innerText = 'Toggle Minimap'
 optionContainer.appendChild(toggleButton);
