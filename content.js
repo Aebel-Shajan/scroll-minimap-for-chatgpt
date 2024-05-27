@@ -54,14 +54,28 @@ document.body.appendChild(extensionContainer);
 
 // Functions
 function getSourceElements() {
+    try {
     // cant directly target due to uniquely identified class names
     // so gotta hack it
     sourceElements = document.querySelector('[data-testid^="conversation-turn-"]').parentNode
+    } catch {
+        sourceElements = document.body.cloneNode(true)
+        if (sourceElements.contains(extensionContainer)) {
+            sourceElements.removeChild(extensionContainer)
+        }
+    }
 }
 
 function getSourceScrollContainer() {
-    // Used to retrieve information about scroll position
-    sourceScrollContainer = sourceElements.parentNode.parentNode;
+    try {
+        // Used to retrieve information about scroll position
+        sourceScrollContainer = sourceElements.parentNode.parentNode;
+    } catch {
+        sourceScrollContainer = document.body.cloneNode(true)
+        if (sourceElements.contains(extensionContainer)) {
+            sourceElements.removeChild(extensionContainer)
+        }
+    }
 }
 
 function updateScrollBar() {
