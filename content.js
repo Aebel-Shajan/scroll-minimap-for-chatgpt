@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
         case 'hide':
             showMinimap()
-        break;
+            break;
         default:
             break;
     }
@@ -66,20 +66,20 @@ function getSourceScrollContainer() {
 
 function updateScrollBar() {
     if (sourceScrollContainer) {
-        const scrollBarTop = (sourceScrollContainer.scrollTop / sourceScrollContainer.scrollHeight) * (sourceElements.offsetHeight *  0.1);
+        const scrollBarTop = (sourceScrollContainer.scrollTop / sourceScrollContainer.scrollHeight) * (sourceElements.offsetHeight * 0.1);
         scrollBar.style.top = `${scrollBarTop}px`;
     }
 }
 
 function updateMinimapScroll() {
     if (sourceScrollContainer) {
-        const scrollBarTop = (sourceScrollContainer.scrollTop / sourceScrollContainer.scrollHeight) * (sourceElements.offsetHeight *  0.1);
-        const u = sourceScrollContainer.scrollTop + (0.5*sourceScrollContainer.offsetHeight)
+        const scrollBarTop = (sourceScrollContainer.scrollTop / sourceScrollContainer.scrollHeight) * (sourceElements.offsetHeight * 0.1);
+        const u = sourceScrollContainer.scrollTop + (0.5 * sourceScrollContainer.offsetHeight)
         const v = sourceScrollContainer.scrollHeight
         const a = scrollBarTop + (0.05 * scrollBar.offsetHeight)
         const y = minimap.offsetHeight
 
-        let minimapScrollTop = a - (y * u/v)
+        let minimapScrollTop = a - (y * u / v)
         minimap.scrollTo(0, minimapScrollTop);
     }
 }
@@ -145,9 +145,9 @@ minimap.addEventListener('click', (e) => handleScrollBarMove(e.clientY))
 
 function handleScrollBarMove(mousePos) {
     if (sourceScrollContainer) {
-        const scale = sourceScrollContainer.scrollHeight / (sourceElements.offsetHeight *  0.1);
+        const scale = sourceScrollContainer.scrollHeight / (sourceElements.offsetHeight * 0.1);
         const offset = scrollBar.offsetHeight * 0.5 * 0.1;
-        const sourceScrollAmount = (mousePos - minimap.getBoundingClientRect().top + minimap.scrollTop - offset)*scale;
+        const sourceScrollAmount = (mousePos - minimap.getBoundingClientRect().top + minimap.scrollTop - offset) * scale;
         sourceScrollContainer.scrollTo(0, sourceScrollAmount)
     }
 }
