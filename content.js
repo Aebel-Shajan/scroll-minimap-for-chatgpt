@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             break;
 
         case 'hide':
-            showMinimap()
+            hideMinimap()
             break;
         default:
             break;
