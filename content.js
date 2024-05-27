@@ -85,6 +85,8 @@ function updateMinimapScroll() {
 }
 
 function updateMinimap() {
+    getSourceElements()
+    getSourceScrollContainer();
     updateMinimapScroll()
     updateScrollBar()
 }
@@ -117,6 +119,7 @@ toggleButton.addEventListener('click', () => {
     }
     refreshMinimap();
 })
+refreshButton.addEventListener('click', refreshMinimap)
 
 // Scroll Div logic 
 let mousedown = false;
