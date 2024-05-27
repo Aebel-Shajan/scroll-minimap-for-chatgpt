@@ -20,6 +20,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 
 // Create elements
+let extensionContainer = document.createElement('div');
+extensionContainer.id = 'extension-container';
+let optionContainer = document.createElement('div');
+optionContainer.id = 'option-container';
+let toggleShowButton = document.createElement('button');
+toggleButton.id = 'toggle-minimap-button';
+toggleButton.innerText = 'Toggle Minimap'
+optionContainer.appendChild(toggleButton);
+extensionContainer.appendChild(optionContainer);
+
 let sourceElements, sourceScrollContainer;
 let minimap = document.createElement('div');
 minimap.id = 'minimap'
@@ -28,10 +38,11 @@ targetElements.id = 'target-elements'
 targetElements.inert = true;
 let scrollBar = document.createElement('div');
 scrollBar.id = 'scroll-bar';
-
 minimap.appendChild(targetElements);
 minimap.appendChild(scrollBar);
-document.body.appendChild(minimap);
+
+extensionContainer.appendChild(minimap)
+document.body.appendChild(extensionContainer);
 
 
 // Functions
