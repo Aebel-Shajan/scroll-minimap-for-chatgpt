@@ -5,7 +5,7 @@ async function sendMessage(message) {
     return response
   }
    catch (e) {
-    alert("An error occured. Restart chrome for scroll minimap for chatgpt to work.")
+    alert("An error occured. \nRestart chrome for scroll minimap for chatgpt to work. \n This extension only works on chatgpt.com")
   }
 }
  
