@@ -52,11 +52,11 @@ function updateScrollDiv() {
 }
 
 function showMinimap() {
-    minimap.style.display = 'none'
+    minimap.style.display = 'initial'
 }
 
 function hideMinimap() {
-    minimap.style.display = 'initial'
+    minimap.style.display = 'none'
 }
 
 function refreshMinimap() {
