@@ -87,6 +87,7 @@ function updateMinimapScroll() {
 function updateMinimap() {
     getSourceElements()
     getSourceScrollContainer();
+    targetElements.innerHTML = sourceElements.outerHTML;
     updateMinimapScroll()
     updateScrollBar()
 }
@@ -102,6 +103,7 @@ function showElement(element) {
 function showMinimap() {
     showElement(minimap);
     showElement(refreshButton);
+    refreshMinimap();
 }
 
 function hideMinimap() {
@@ -110,12 +112,11 @@ function hideMinimap() {
 }
 
 function refreshMinimap() {
-    getSourceElements()
-    getSourceScrollContainer();
-    targetElements.innerHTML = sourceElements.outerHTML;
     updateMinimap();
     if (sourceScrollContainer) {
-        sourceScrollContainer.addEventListener('scroll', updateMinimap);
+        if (sourceScrollContainer.getAttribute('listener') !== 'true') {
+            sourceScrollContainer.addEventListener('scroll', updateMinimap);
+        }
     }
 };
 
@@ -125,7 +126,6 @@ toggleButton.addEventListener('click', () => {
     } else {
         hideMinimap()
     }
-    refreshMinimap();
 })
 refreshButton.addEventListener('click', refreshMinimap)
 
