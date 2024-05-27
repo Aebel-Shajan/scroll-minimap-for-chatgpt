@@ -61,9 +61,9 @@ function hideMinimap() {
 
 function refreshMinimap() {
     getViewBox()
-    mapContainer.innerHTML = viewBox.outerHTML;
-    updateScrollDiv();
     getScrollBox();
+    mapContainer.innerHTML = viewBox.outerHTML;
+    updateScrollDiv();    
     if (scrollBox) {
         scrollBox.addEventListener('scroll', updateScrollDiv);
     }
