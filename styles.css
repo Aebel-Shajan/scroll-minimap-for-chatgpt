@@ -1,6 +1,7 @@
 #minimap {
   background-color: #ffffffcc;
   box-shadow: 0 0 5px #00000033;
+  z-index: 1000;
   position: fixed;
   top: 50px;
   right: 10px;
