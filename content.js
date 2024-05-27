@@ -100,6 +100,14 @@ function refreshMinimap() {
     }
 };
 
+toggleButton.addEventListener('click', () => {
+    refreshMinimap();
+    if (minimap.style.display === 'none') {
+        showMinimap();
+    } else {
+        hideMinimap();
+    }
+})
 
 // Scroll Div logic 
 let mousedown = false;
