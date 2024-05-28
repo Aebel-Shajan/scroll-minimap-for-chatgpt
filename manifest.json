@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Scroll Minimap",
+  "name": "Scroll Minimap for Chatgpt",
   "version": "1.0",
-  "description": "A minimap for scrolling through web pages similar to the one in VS Code.",
+  "description": "A minimap for scrolling through chatgpt messages, similar to the one in VS Code.",
   "permissions": [
     "tabs"
   ],
