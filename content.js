@@ -80,20 +80,17 @@ function getSourceScrollContainer() {
 
 function updateScrollBar() {
     if (sourceScrollContainer) {
-        const scrollBarTop = (sourceScrollContainer.scrollTop / sourceScrollContainer.scrollHeight) * (sourceElements.offsetHeight * 0.1);
+        const scrollBarTop = sourceScrollContainer.scrollTop * 0.1;
         scrollBar.style.top = `${scrollBarTop}px`;
     }
 }
 
 function updateMinimapScroll() {
     if (sourceScrollContainer) {
-        const scrollBarTop = (sourceScrollContainer.scrollTop / sourceScrollContainer.scrollHeight) * (sourceElements.offsetHeight * 0.1);
-        const u = sourceScrollContainer.scrollTop + (0.5 * sourceScrollContainer.offsetHeight)
+        const u = sourceScrollContainer.scrollTop
         const v = sourceScrollContainer.scrollHeight
-        const a = scrollBarTop + (0.05 * scrollBar.offsetHeight)
-        const y = minimap.offsetHeight
-
-        let minimapScrollTop = a - (y * u / v)
+        const m_size = minimap.offsetHeight - (0.0499*sourceScrollContainer.offsetHeight) // this last bit at the end idk why i have to take away
+        let minimapScrollTop = u * (0.1 - (m_size/v))
         minimap.scrollTo(0, minimapScrollTop);
     }
 }
