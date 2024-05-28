@@ -98,16 +98,20 @@ function updateMinimapScroll() {
     }
 }
 
-function updateMinimap() {
-    getSourceElements()
-    getSourceScrollContainer();
-    targetElements.innerHTML = sourceElements.outerHTML;
+// color :rolls eyes:
+function colorUserChat() {
     userChatElements = targetElements.querySelectorAll('[data-testid^="conversation-turn-"]').forEach((element, index) => {
         // odd indices are user chat messages. omg i am mega brain for figuring this out
         if (index % 2 == 0) {
             element.style.backgroundColor = '#439399';
         }
     })
+}
+
+function updateMinimap() {
+    getSourceElements()
+    getSourceScrollContainer();
+    targetElements.innerHTML = sourceElements.outerHTML;
     updateMinimapScroll()
     updateScrollBar()
 }
