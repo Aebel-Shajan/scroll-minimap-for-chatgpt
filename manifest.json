@@ -3,9 +3,6 @@
   "name": "Scroll Minimap for Chatgpt",
   "version": "1.0",
   "description": "A minimap for scrolling through chatgpt messages, similar to the one in VS Code.",
-  "permissions": [
-    "tabs"
-  ],
   "action": {
     "default_popup": "popup.html"
   },

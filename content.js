@@ -1,24 +1,3 @@
-// Handling messages from popup.js
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    const message = request.message;
-    switch (message) {
-        case 'show':
-            showMinimap()
-            break;
-
-        case 'refresh':
-            refreshMinimap()
-            break;
-
-        case 'hide':
-            hideMinimap()
-            break;
-        default:
-            break;
-    }
-});
-
-
 // Create elements
 let extensionContainer = document.createElement('div');
 extensionContainer.id = 'extension-container';
