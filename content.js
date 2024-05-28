@@ -112,6 +112,7 @@ function updateMinimap() {
     getSourceElements()
     getSourceScrollContainer();
     targetElements.innerHTML = sourceElements.outerHTML;
+    colorUserChat();
     updateMinimapScroll()
     updateScrollBar()
 }
