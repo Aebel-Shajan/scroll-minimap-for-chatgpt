@@ -100,7 +100,7 @@ function colorUserChat() {
     userChatElements = targetElements.querySelectorAll('[data-testid^="conversation-turn-"]').forEach((element, index) => {
         // odd indices are user chat messages. omg i am mega brain for figuring this out
         if (index % 2 == 0) {
-            element.style.backgroundColor = '#439399';
+            element.style.backgroundColor = '#00DFFF';
         }
     })
 }
