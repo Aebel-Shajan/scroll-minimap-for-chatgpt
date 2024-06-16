@@ -48,7 +48,7 @@ function getSourceElements() {
 function getSourceScrollContainer() {
     try {
         // Used to retrieve information about scroll position
-        sourceScrollContainer = sourceElements.parentNode.parentNode;
+        sourceScrollContainer = sourceElements.parentNode;
     } catch {
         sourceScrollContainer = document.body.cloneNode(true)
         if (sourceElements.contains(extensionContainer)) {
