@@ -11,8 +11,6 @@
   transform-origin: bottom right;
   width: fit-content;
   height: fit-content;
-  display: flex;
-  gap:1rem;
 }
 
 #option-container > button {
@@ -28,25 +26,49 @@
   top: 0;
   background-color: #ffffffcc;
   box-shadow: 0 0 5px #00000033;
+  border-radius: 15px;
   z-index: 1000;
-  width: 100px;
+  width: 25vw;
   height: 80vh;
   overflow-y: scroll;
   overflow-x: hidden;
 }
-
-#minimap > *{
-  transform: scale(0.1);
-  transform-origin: top left;
-  width: 1000%;
-  height: 100%
+.minimap-user-turn {
+  padding: 5px;
+  margin-bottom: 5px;
+  border-radius: 4px;
+  background-color: #e6f7ff; 
+  font-weight: bold;
 }
 
-#scroll-bar {
+.minimap-ai-turn {
+  max-height: 100px; 
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 5px;
+  padding: 5px;
+  border-radius: 4px;
+  color: gray;
+}
+
+.minimap-ai-turn::after {
+  content: '...';
   position: absolute;
-  width: 100vw;
-  height: 100vh;
-  top: 0px;
-  left: 0px;
-  background-color: rgba(203, 248, 248, 0.516);
+  bottom: 0;
+  right: 0;
+  padding: 0 5px;
+  background-color: inherit;
+}
+
+#target-elements [class^="minimap-user-turn"]:hover {
+  background-color: #7FA1C3;
+  cursor: pointer;
+}
+
+#target-elements {
+  position: relative;
+  z-index: 1001; 
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
 }
