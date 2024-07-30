@@ -62,6 +62,7 @@
 
 #target-elements [class^="minimap-user-turn"]:hover {
   background-color: #7FA1C3;
+  cursor: pointer;
 }
 
 #target-elements {
