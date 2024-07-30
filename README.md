@@ -13,6 +13,6 @@ I made this extension because I kept getting lost during my conversations with c
 
 2. Restart chrome
 
-3. Go to chatgpt, you should see a toggle button for the minimap in the top right corner. Open the minimap by pressing this button.
+3. Go to chatgpt, you should see a toggle button for the minimap in the top right corner. When your mouse move in the minimap should show up.
 
-4. Ask chatgpt a message and hit refresh minimap. A condensed view of the conversation should be shown in the minimap.
+4. Whenever you want to navigator,just click and scroll to your target.
