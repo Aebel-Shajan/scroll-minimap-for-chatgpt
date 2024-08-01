@@ -212,12 +212,12 @@ function minimapClickHandler(event) {
   // console.log('Current target:', event.currentTarget);
 
   // Find the closest element with a data-testid attribute
-  const clickedElement = event.target.closest("[data-testid]");
-  console.log("Closest element with data-testid:", clickedElement);
+  const clickedElement = event.target.closest("[data-testid-extension]");
+  //console.log("Closest element with data-testid:", clickedElement);
 
   if (clickedElement) {
-    const testId = clickedElement.getAttribute("data-testid");
-    console.log("TestId:", testId);
+    const testId = clickedElement.getAttribute("data-testid-extension");
+    //console.log("TestId:", testId);
 
     // Check if the clicked element is a conversation turn
     if (testId.includes("conversation-turn-")) {
@@ -238,23 +238,21 @@ function minimapClickHandler(event) {
   }
 }
 function refreshMinimap() {
+  
   updateMinimap();
   setupMinimapClickHandler(); // Add click handler to the minimap
-//   if (sourceScrollContainer) {
-//     if (sourceScrollContainer.getAttribute("listener") !== "true") {
-//       sourceScrollContainer.addEventListener("scroll", updateMinimap);
-//     }
-//   }
+  // scrollMinimapToBottom();
+  updateMinimapScroll();
 }
 const observer = new MutationObserver((mutationsList, observer) => {
     for (const mutation of mutationsList) {
         if (mutation.type === 'childList') {
             const conversationTurns = document.querySelectorAll('[data-testid^="conversation-turn-"]');
             if (conversationTurns.length > 0) {
-                observer.disconnect(); // 临时断开观察器
+                observer.disconnect(); //disconnect the observer
                 updateMinimap();
-                console.log(targetElements)
-                observer.observe(document.body, { childList: true, subtree: true }); // 重新连接观察器
+                //console.log(targetElements)
+                observer.observe(document.body, { childList: true, subtree: true }); // reconnect the observer
                 
                 // getSourceElements();
                 // console.log(sourceElements);
@@ -267,3 +265,38 @@ const observer = new MutationObserver((mutationsList, observer) => {
 
 observer.observe(document.body, { childList: true, subtree: true });
 
+//scroll bottom
+// function scrollMinimapToBottom() {
+//   const minimapElement = document.getElementById('minimap');
+//   if (minimapElement) {
+//       minimapElement.scrollTop = minimapElement.scrollHeight;
+//   }
+// }
+function updateMinimapScroll() {
+  getSourceScrollContainer();
+
+  if (!sourceScrollContainer || !minimap) return;
+
+  // 找到当前在视口中的对话回合
+  const turns = sourceScrollContainer.querySelectorAll('[data-testid^="conversation-turn-"]');
+  let visibleTurn = null;
+
+  for (const turn of turns) {
+      const rect = turn.getBoundingClientRect();
+      if (rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2) {
+          visibleTurn = turn;
+          break;
+      }
+  }
+
+  if (visibleTurn) {
+      const turnId = visibleTurn.getAttribute('data-testid');
+      const minimapTurn = minimap.querySelector(`[data-testid-extension="${turnId}"]`);
+
+      if (minimapTurn) {
+          // 滚动 minimap 使对应元素居中
+          const minimapCenter = minimap.offsetHeight / 2;
+          minimap.scrollTop = minimapTurn.offsetTop - minimapCenter + minimapTurn.offsetHeight / 2;
+      }
+  }
+}
