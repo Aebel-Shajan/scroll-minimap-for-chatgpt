@@ -7,6 +7,11 @@ let toggleButton = document.createElement("button");
 toggleButton.id = "toggle-minimap-button";
 toggleButton.innerText = "Minimap for GPT";
 optionContainer.appendChild(toggleButton);
+//sidebar
+// let sidebar = document.createElement("div");
+// sidebar.id = "sidebar";
+// optionContainer.appendChild(sidebar);
+
 extensionContainer.appendChild(optionContainer);
 
 let sourceElements, sourceScrollContainer;
@@ -15,15 +20,19 @@ minimap.id = "minimap";
 hideElement(minimap);
 let targetElements = document.createElement("div");
 targetElements.id = "target-elements";
-targetElements.inert = true;
-let scrollBar = document.createElement("div");
-scrollBar.id = "scroll-bar";
-
 minimap.appendChild(targetElements);
-minimap.appendChild(scrollBar);
 
 extensionContainer.appendChild(minimap);
 document.body.appendChild(extensionContainer);
+
+toggleButton.addEventListener("mouseenter", () => {
+    hideElement(optionContainer);
+    showMinimap();
+  });
+  extensionContainer.addEventListener("mouseleave", () => {
+    showElement(optionContainer);
+    hideMinimap();
+  });
 
 //Functions
 
@@ -36,7 +45,7 @@ function getSourceElements() {
 
     conversationTurns.forEach((turn) => {
       const newTurn = document.createElement("div");
-      newTurn.setAttribute("data-testid", turn.getAttribute("data-testid"));
+      newTurn.setAttribute("data-testid-extension", turn.getAttribute("data-testid"));
 
       const authorRoleElement = turn.querySelector(
         "[data-message-author-role]"
@@ -99,7 +108,7 @@ function getSourceElements() {
     sourceElements = document.createElement("div");
   }
 }
-
+// ChatGPT website's source container
 function getSourceScrollContainer() {
   try {
     // Since I changed the structure of the page, I need to find the new scroll container
@@ -117,11 +126,12 @@ function getSourceScrollContainer() {
 
 function updateMinimap() {
   getSourceElements(); //use new function to get and rearrange source elements
+  console.log(sourceElements);
   targetElements.innerHTML = ""; //clear the target elements to make sure it's empty
   Array.from(sourceElements.children).forEach((child) => {
     targetElements.appendChild(child.cloneNode(true));
   }); //copy the source elements to target elements(avoid append child directly)
-  targetElements.removeAttribute("inert"); //must remove inert attribute to make it clickable
+
 }
 
 function hideElement(element) {
@@ -173,7 +183,7 @@ function scrollToElement(element) {
   // Subtract the header height to get the correct scroll position
   const scrollToPosition = offsetTop - headerHeight;
 
-  console.log("Calculated scroll position:", scrollToPosition);
+  //console.log("Calculated scroll position:", scrollToPosition);
   getSourceScrollContainer();
   // Scroll to the calculated position
   sourceScrollContainer.scrollTo({
@@ -202,12 +212,12 @@ function minimapClickHandler(event) {
   // console.log('Current target:', event.currentTarget);
 
   // Find the closest element with a data-testid attribute
-  const clickedElement = event.target.closest("[data-testid]");
-  console.log("Closest element with data-testid:", clickedElement);
+  const clickedElement = event.target.closest("[data-testid-extension]");
+  //console.log("Closest element with data-testid:", clickedElement);
 
   if (clickedElement) {
-    const testId = clickedElement.getAttribute("data-testid");
-    console.log("TestId:", testId);
+    const testId = clickedElement.getAttribute("data-testid-extension");
+    //console.log("TestId:", testId);
 
     // Check if the clicked element is a conversation turn
     if (testId.includes("conversation-turn-")) {
@@ -228,20 +238,65 @@ function minimapClickHandler(event) {
   }
 }
 function refreshMinimap() {
+  
   updateMinimap();
   setupMinimapClickHandler(); // Add click handler to the minimap
-  if (sourceScrollContainer) {
-    if (sourceScrollContainer.getAttribute("listener") !== "true") {
-      sourceScrollContainer.addEventListener("scroll", updateMinimap);
+  // scrollMinimapToBottom();
+  updateMinimapScroll();
+}
+const observer = new MutationObserver((mutationsList, observer) => {
+    for (const mutation of mutationsList) {
+        if (mutation.type === 'childList') {
+            const conversationTurns = document.querySelectorAll('[data-testid^="conversation-turn-"]');
+            if (conversationTurns.length > 0) {
+                observer.disconnect(); //disconnect the observer
+                updateMinimap();
+                //console.log(targetElements)
+                observer.observe(document.body, { childList: true, subtree: true }); // reconnect the observer
+                
+                // getSourceElements();
+                // console.log(sourceElements);
+                break; 
+            }
+        }
     }
+});
+
+
+observer.observe(document.body, { childList: true, subtree: true });
+
+//scroll bottom
+// function scrollMinimapToBottom() {
+//   const minimapElement = document.getElementById('minimap');
+//   if (minimapElement) {
+//       minimapElement.scrollTop = minimapElement.scrollHeight;
+//   }
+// }
+function updateMinimapScroll() {
+  getSourceScrollContainer();
+
+  if (!sourceScrollContainer || !minimap) return;
+
+  // 找到当前在视口中的对话回合
+  const turns = sourceScrollContainer.querySelectorAll('[data-testid^="conversation-turn-"]');
+  let visibleTurn = null;
+
+  for (const turn of turns) {
+      const rect = turn.getBoundingClientRect();
+      if (rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2) {
+          visibleTurn = turn;
+          break;
+      }
+  }
+
+  if (visibleTurn) {
+      const turnId = visibleTurn.getAttribute('data-testid');
+      const minimapTurn = minimap.querySelector(`[data-testid-extension="${turnId}"]`);
+
+      if (minimapTurn) {
+          // 滚动 minimap 使对应元素居中
+          const minimapCenter = minimap.offsetHeight / 2;
+          minimap.scrollTop = minimapTurn.offsetTop - minimapCenter + minimapTurn.offsetHeight / 2;
+      }
   }
 }
-
-toggleButton.addEventListener("mouseenter", () => {
-  hideElement(optionContainer);
-  showMinimap();
-});
-extensionContainer.addEventListener("mouseleave", () => {
-  showElement(optionContainer);
-  hideMinimap();
-});

@@ -16,10 +16,14 @@
       ],
       "matches": [
         "https://chatgpt.com/*"
-      ]
+      ],
+      "runAt": "document_idle"
     }
   ],
   "icons": {
     "128": "logo.png"
-  }
+  },
+  "permissions": [
+    "activeTab"
+  ]
 }
