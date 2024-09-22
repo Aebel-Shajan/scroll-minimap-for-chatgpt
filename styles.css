@@ -4,6 +4,7 @@
   right: 20px;
   display: flex;
   width:auto;
+  user-select: none;
 }
 
 #option-container {
@@ -17,6 +18,7 @@
 
 #option-container > button {
   background-color: rgb(200, 200, 200);
+  color: black;
   border-top-right-radius: 1rem;
   border-top-left-radius: 1rem;
   padding: 0 0.5rem;

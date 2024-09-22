@@ -29,7 +29,7 @@ minimap.appendChild(scrollBar);
 
 extensionContainer.appendChild(minimap)
 document.body.appendChild(extensionContainer);
-
+setBackgroundColor();
 
 // Functions
 function getSourceElements() {
@@ -74,7 +74,6 @@ function updateMinimapScroll() {
     }
 }
 
-// color :rolls eyes:
 function colorUserChat() {
     userChatElements = targetElements.querySelectorAll('[data-testid^="conversation-turn-"]').forEach((element, index) => {
         // odd indices are user chat messages. omg i am mega brain for figuring this out
@@ -84,11 +83,23 @@ function colorUserChat() {
     })
 }
 
+function setBackgroundColor() {
+    // Get the body element
+    const body = document.body;
+    // Get the computed style of the body
+    const computedStyle = getComputedStyle(body);
+    // Retrieve the background color
+    const backgroundColor = computedStyle.backgroundColor;
+    const textColor = computedStyle.color;
+    minimap.style.backgroundColor = backgroundColor;
+}
+
 function updateMinimap() {
     getSourceElements()
     getSourceScrollContainer();
     targetElements.innerHTML = sourceElements.outerHTML;
     colorUserChat();
+    setBackgroundColor();
     updateMinimapScroll()
     updateScrollBar()
 }
