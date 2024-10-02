@@ -6,17 +6,25 @@
   "action": {
     "default_popup": "popup.html"
   },
+  "permissions": [
+    "<all_urls>"
+  ],
   "content_scripts": [
     {
       "js": [
-        "content.js"
-      ],
-      "css": [
-        "styles.css"
+        "/assets/initializeUI.js"
       ],
       "matches": [
-        "https://chatgpt.com/*"
-      ]
+        "<all_urls>"
+      ],
+      "run_at": "document_end",
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["/react/index.js", "/react/index.css", "vite.svg", "react.svg"],
+      "matches": ["<all_urls>"]
     }
   ],
   "icons": {
