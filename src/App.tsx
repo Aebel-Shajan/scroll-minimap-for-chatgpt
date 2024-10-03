@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import './App.css'
+import OptionsContainer from './components/OptionsContainer'
+import Minimap from './components/Minimap'
 
 const reactLogo = chrome.runtime.getURL("/react.svg")
 const viteLogo = chrome.runtime.getURL("/vite.svg");

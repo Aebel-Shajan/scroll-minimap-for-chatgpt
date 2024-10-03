@@ -1,17 +1,12 @@
 #content-root {
+    all: unset;
     position: fixed;
     top: 50px;
     right: 20px;
-    width: 30vw;
     height: 90vh;
+    width: auto;
     overflow: hidden;
-}
-
-#content-root > iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-
-    /* For debugging */
-    background-color: rgba(255, 255, 255, 0.215);
+    z-index: 99999;
+    pointer-events: none;
+    user-select: none;
 }
