@@ -14,6 +14,9 @@
       "js": [
         "/assets/initializeUI.js"
       ],
+      "css": [
+        "/assets/initializeCSS.css"
+      ],
       "matches": [
         "<all_urls>"
       ],
