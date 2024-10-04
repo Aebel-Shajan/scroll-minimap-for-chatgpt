@@ -1,14 +1,21 @@
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import OptionsContainer from "./components/OptionsContainer";
 import Minimap from "./components/Minimap";
-import { rerenderMinimap } from "./utils/renderLogic";
+import { queryChatContainer } from "./utils/renderLogic";
 
 export default function App() {
   const [showMinimap, setShowMinimap] = useState<boolean>(false);
-  const minimapRef = useRef(null);
+  const [chatContainer, setChatContainer] = useState<HTMLElement|null>(null);
+
+  useEffect(() => {
+    console.log("show minimap state changed")
+    setChatContainer(queryChatContainer())
+  }, [showMinimap])
 
   const onToggleMinimap = () => setShowMinimap(!showMinimap);
-  const onRefreshMinimap = () => rerenderMinimap(minimapRef);
+  const onRefreshMinimap = () => {
+    setChatContainer(queryChatContainer())
+  }
 
   return (
     <div className="app-container" style={appContainerStyle}>
@@ -17,7 +24,7 @@ export default function App() {
         onRefreshMinimap={onRefreshMinimap}
         showMinimap={showMinimap}
       />
-      {showMinimap ? <Minimap ref={minimapRef} /> : null}
+      {showMinimap ? <Minimap chatContainer={chatContainer}/> : null}
     </div>
   );
 }
