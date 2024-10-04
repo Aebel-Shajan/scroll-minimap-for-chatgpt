@@ -1,6 +1,14 @@
 import { useEffect, useRef } from "react";
 import html2canvas from "html2canvas";
 
+
+/**
+ * 
+ * @remarks
+ * The minimap should rerender
+ * 
+ * @returns Minimapp elment
+ */
 const Minimap = () => {
   const minimapRef = useRef<HTMLDivElement>(null);
 
@@ -33,7 +41,6 @@ const Minimap = () => {
       });
       observer.observe(scrollHandlerContainer, {
         childList: true,
-        subtree: true,
       });
     }
   }
@@ -76,7 +83,10 @@ async function addImageToMinimap(
         j.style.marginLeft = "0px"
         j.style.marginRight = "0px"
       })
-
+      e.querySelectorAll('[data-message-author-role="user"]').forEach(k => {
+        const j = k as HTMLElement
+        j.style.backgroundColor = "white"
+      })
       // e.style.position = "absolute"
       // e.style.top = "0px";
       // e.style.right = "0px";
@@ -88,9 +98,9 @@ async function addImageToMinimap(
     // x: -0.32 * elementWidth,
     scrollX: 0,
     scrollY: 0,
-    scale: 0.2,
+    scale: 0.5,
     // foreignObjectRendering: true,
-    backgroundColor: "#000",
+    backgroundColor: "#212121",
   });
 
   minimapRef.current.innerHTML = "";
@@ -113,6 +123,8 @@ async function addImageToMinimap(
 //   canvas.width  = canvas.offsetWidth;
 //   canvas.height = canvas.offsetHeight;
 // }
+
+
 
 
 export default Minimap;
