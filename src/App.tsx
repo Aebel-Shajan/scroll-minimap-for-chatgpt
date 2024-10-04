@@ -28,4 +28,6 @@ const appContainerStyle: React.CSSProperties = {
   width: "100%",
   overflow: "hidden",
   justifyContent: "right",
+  pointerEvents: "none",
+  userSelect: "none"
 };

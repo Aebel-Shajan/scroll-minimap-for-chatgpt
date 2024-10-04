@@ -35,4 +35,6 @@ const buttonStyle: React.CSSProperties = {
   borderTopLeftRadius: "1rem",
   borderTopRightRadius: "1rem",
   pointerEvents: "auto",
+  border: "solid black 1px",
+  fontFamily: "Verdana"
 };
