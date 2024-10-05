@@ -1,4 +1,3 @@
-/* eslint-disable prefer-rest-params */
 import { useEffect, useState } from "react";
 import OptionsContainer from "./components/OptionsContainer";
 import Minimap from "./components/Minimap";
@@ -7,12 +6,11 @@ import { queryChatContainer } from "./utils/renderLogic";
 export default function App() {
   const [showMinimap, setShowMinimap] = useState<boolean>(false);
   const [chatContainer, setChatContainer] = useState<HTMLElement | null>(null);
+  const [, manualRefresh] = useState<boolean>(false); 
 
   const updateChatContainer = () => {
     setTimeout(() => {
       const newChatContainer = queryChatContainer()
-      console.log("null chat container: ", newChatContainer === null);
-      // console.log("chat container changed: ", newChatContainer === chatContainer)
       setChatContainer(newChatContainer);
     }, 1000);
   };
@@ -45,6 +43,7 @@ export default function App() {
     setShowMinimap(!showMinimap);
   };
   const onRefreshMinimap = () => {
+    manualRefresh((temp) => !temp)
     updateChatContainer();
   };
 
