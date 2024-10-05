@@ -8,7 +8,27 @@ interface MinimapProps {
 const Minimap = ({chatContainer}: MinimapProps) => {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const scale = useRef<number>(0);
+  const minimapContainerRef = useRef<HTMLDivElement>(null);
   
+  useEffect(()=> {
+    if (!chatContainer) return;
+    const scrollContainer = chatContainer.parentElement;
+    if (!scrollContainer) return;
+
+    function onScroll() {
+      if (!chatContainer) return;
+      const scrollContainer = chatContainer.parentElement;
+      const minimapContainer = minimapContainerRef.current
+      if (!scrollContainer) return;
+      if (!minimapContainer) return
+      const ratio = (scrollContainer.scrollTop / (scrollContainer.scrollHeight + scrollContainer.offsetHeight))
+      console.log("ratio: ", ratio)
+      
+      minimapContainer.scrollTop = (scale.current * scrollContainer.scrollTop ) - (ratio * minimapContainer.offsetHeight) 
+    }
+    scrollContainer.addEventListener("scroll", () => onScroll())
+  })
+
   useEffect(() => {
     console.log("minimap rerendered");
     (async () => {
@@ -26,7 +46,7 @@ const Minimap = ({chatContainer}: MinimapProps) => {
   
 
   return (
-    <div className="minimap-container" style={minimapContainerStyle}>
+    <div className="minimap-container" style={minimapContainerStyle} ref={minimapContainerRef}>
       <div
         className="canvas-container"
         style={canvasContainerStyle}
@@ -45,6 +65,8 @@ const minimapContainerStyle: React.CSSProperties = {
   backgroundColor: "green",
   pointerEvents: "all",
   boxShadow: "0 0 20px rgba(0, 0, 0, 1)",
+  overflowY: "scroll",
+  scrollbarWidth: "none"
 };
 
 const canvasContainerStyle: React.CSSProperties = {
