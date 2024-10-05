@@ -13,7 +13,22 @@ const Minimap = ({chatContainer}: MinimapProps) => {
   useEffect(()=> {
     if (!chatContainer) return;
     const scrollContainer = chatContainer.parentElement;
+    const minimapContainer = minimapContainerRef.current
     if (!scrollContainer) return;
+    if (!minimapContainer) return
+    function onDrag(mousePos: number) {
+      if (!chatContainer) return;
+      const scrollContainer = chatContainer.parentElement;
+      const minimapContainer = minimapContainerRef.current
+      if (!scrollContainer) return;
+      if (!minimapContainer) return
+      
+      const relativeMousePos = mousePos - minimapContainer.getBoundingClientRect().top;
+      const newScrollPos = (relativeMousePos + minimapContainer.scrollTop) / scale.current 
+      scrollContainer.scrollTo(0, newScrollPos)
+    }
+
+    minimapContainer.addEventListener("click", (e)=>onDrag(e.clientY))
 
     function onScroll() {
       if (!chatContainer) return;
@@ -22,12 +37,12 @@ const Minimap = ({chatContainer}: MinimapProps) => {
       if (!scrollContainer) return;
       if (!minimapContainer) return
       const ratio = (scrollContainer.scrollTop / (scrollContainer.scrollHeight + scrollContainer.offsetHeight))
-      console.log("ratio: ", ratio)
       
       minimapContainer.scrollTop = (scale.current * scrollContainer.scrollTop ) - (ratio * minimapContainer.offsetHeight) 
     }
     scrollContainer.addEventListener("scroll", () => onScroll())
-  })
+    
+  }, [chatContainer])
 
   useEffect(() => {
     console.log("minimap rerendered");
