@@ -11,20 +11,22 @@ export default function ViewOverlay({
 }: ViewOverLayProps) {
   const [scrollTop, setScrollTop] = useState(0);
   const [height, setHeight] = useState(0);
+
+  function onScroll(scrollContainer: HTMLElement, scale: number) {
+    setScrollTop(scrollContainer.scrollTop * scale);
+    setHeight(scrollContainer.offsetHeight * scale);
+  }
+
   useEffect(() => {
     if (!chatContainer) return;
     const scrollContainer = chatContainer.parentElement;
-    if (!scrollContainer) return;
-    
-    function onScroll() {
-      if (!chatContainer) return;
-      const scrollContainer = chatContainer.parentElement;
-      if (!scrollContainer || !scale.current) return;
-      setScrollTop(scrollContainer.scrollTop * scale.current);
-      setHeight(scrollContainer.offsetHeight * scale.current);
-    }
-    onScroll()
-    scrollContainer.addEventListener("scroll", () => onScroll());
+    if (!scrollContainer || !scale.current) return; 
+    onScroll(scrollContainer, scale.current)
+    scrollContainer.addEventListener("scroll", (event) => {
+      if (!(event.target instanceof HTMLElement)) return
+      if (!scale.current) return 
+      onScroll(event.target, scale.current)
+  });
   }, [chatContainer, scale]);
 
   const currentViewStyle: React.CSSProperties = {
@@ -38,3 +40,5 @@ export default function ViewOverlay({
   };
   return <div className="current-view" style={currentViewStyle}></div>;
 }
+
+
