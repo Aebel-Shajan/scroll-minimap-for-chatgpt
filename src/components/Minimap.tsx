@@ -1,12 +1,13 @@
 import { useEffect, useRef } from "react";
 import { generateMinimapCanvas } from "../utils/renderLogic";
+import ViewOverlay from "./MinimapContainer/ViewOverlay/ViewOverlay";
 
 interface MinimapProps {
   chatContainer: HTMLElement | null
 }
 const Minimap = ({chatContainer}: MinimapProps) => {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
-  const currentViewRef = useRef<HTMLDivElement>(null)
+  const scale = useRef<number>(0);
   
   useEffect(() => {
     console.log("minimap rerendered");
@@ -16,15 +17,13 @@ const Minimap = ({chatContainer}: MinimapProps) => {
       const canvas = await generateMinimapCanvas(chatContainer)
       canvasContainer.innerHTML = ""
       canvasContainer.appendChild(canvas);
-      
-      const scale = canvasContainer.offsetWidth / canvas.offsetWidth;
+    
+      scale.current = canvasContainer.offsetWidth / canvas.offsetWidth;
       canvas.style.width = `${canvasContainer.offsetWidth}px`;
-      canvas.style.height = `${scale * canvas.offsetHeight}px`;
+      canvas.style.height = `${scale.current * canvas.offsetHeight}px`;
     })()
   })
   
-
-
 
   return (
     <div className="minimap-container" style={minimapContainerStyle}>
@@ -33,16 +32,14 @@ const Minimap = ({chatContainer}: MinimapProps) => {
         style={canvasContainerStyle}
         ref={canvasContainerRef}
       >
-
       </div>
-      <div className="current-view" style={currentViewStyle} ref={currentViewRef}>
-
-      </div>
+      <ViewOverlay chatContainer={chatContainer} scale={scale} />
     </div>
   );
 };
 
 const minimapContainerStyle: React.CSSProperties = {
+  position: "relative",
   width: "5rem",
   height: "90vh",
   backgroundColor: "green",
@@ -54,11 +51,5 @@ const canvasContainerStyle: React.CSSProperties = {
   width: "100%",
 }
 
-const currentViewStyle: React.CSSProperties = {
-  position: "absolute",
-  top: "0",
-  left: "0",
-  
-}
 
 export default Minimap;
