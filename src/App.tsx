@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import OptionsContainer from "./components/OptionsContainer";
 import Minimap from "./components/Minimap";
-import { queryChatContainer } from "./utils/renderLogic";
+import { queryAllChatElements, queryChatContainer, queryChatScrollContainer, queryNavElement } from "./utils/renderLogic";
 
 export default function App() {
   const [showMinimap, setShowMinimap] = useState<boolean>(false);
@@ -46,12 +46,41 @@ export default function App() {
     manualRefresh((temp) => !temp)
     updateChatContainer();
   };
+  const onNextChat = () => {
+    const scrollContainer = queryChatScrollContainer()
+    const navElement = queryNavElement()
+    if (!scrollContainer || !navElement) return 
+    const navHeight = navElement.offsetHeight;
+    const chatElements = queryAllChatElements()
+     const nextChats = chatElements.filter((element) => {
+      return (element.getBoundingClientRect().top > 1.1 * navHeight)
+    })
+    if (nextChats.length === 0) return
+    const firstNextChat = nextChats[0];
+    scrollContainer.scrollTo(0, scrollContainer.scrollTop + firstNextChat.getBoundingClientRect().top - navHeight)
+  }
+  const onPreviousChat = () => {
+    const scrollContainer = queryChatScrollContainer()
+    const navElement = queryNavElement()
+    if (!scrollContainer || !navElement) return 
+    const navHeight = navElement.offsetHeight;
+    const chatElements = queryAllChatElements()
+     const nextChats = chatElements.filter((element) => {
+      return (element.getBoundingClientRect().top < navHeight)
+    })
+    if (nextChats.length === 0) return
+    const firstNextChat = nextChats[nextChats.length - 1];
+    scrollContainer.scrollTo(0, scrollContainer.scrollTop + firstNextChat.getBoundingClientRect().top - navHeight)
+  }
+
 
   return (
     <div className="app-container" style={appContainerStyle}>
       <OptionsContainer
         onToggleMinimap={onToggleMinimap}
         onRefreshMinimap={onRefreshMinimap}
+        onNextChat={onNextChat}
+        onPreviousChat={onPreviousChat}
         showMinimap={showMinimap}
       />
       {showMinimap ? <Minimap chatContainer={chatContainer} /> : null}

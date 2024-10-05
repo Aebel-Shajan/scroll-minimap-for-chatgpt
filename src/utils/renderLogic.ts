@@ -15,16 +15,16 @@ export async function generateMinimapCanvas(
   const renderOptions: Partial<Options> = {
     onclone: (_, element) => {
       // Remove all horizontal margins
-      let chatWidth = 0
+      let chatWidth = 0;
       element.querySelectorAll(".mx-auto").forEach((k) => {
         const j = k as HTMLElement;
         j.style.marginLeft = "0px";
         j.style.marginRight = "0px";
-        chatWidth = j.offsetWidth
+        chatWidth = j.offsetWidth;
       });
       element.style.width = `${chatWidth}px`;
       if (chatWidth === 0) {
-        element.style.width = "fit-content"
+        element.style.width = "fit-content";
       }
       // Color user chat white
       element
@@ -61,11 +61,21 @@ export function queryChatContainer(): HTMLElement | null {
 }
 
 export function queryChatScrollContainer(): HTMLElement | null {
-  let chatMessageContainer: HTMLElement | null = null
-  let chatScrollContainer: HTMLElement | null = null
-  chatMessageContainer = queryChatContainer()
+  let chatMessageContainer: HTMLElement | null = null;
+  let chatScrollContainer: HTMLElement | null = null;
+  chatMessageContainer = queryChatContainer();
   if (chatMessageContainer) {
-    chatScrollContainer = chatMessageContainer.parentElement
+    chatScrollContainer = chatMessageContainer.parentElement;
   }
-  return chatScrollContainer
+  return chatScrollContainer;
+}
+
+export function queryAllChatElements(): HTMLElement[] {
+  return [...document.querySelectorAll('[data-testid^="conversation-turn-"]')] as HTMLElement[];
+}
+
+export function queryNavElement(): HTMLElement| null {
+  const chatContainer = queryChatContainer();
+  if (!chatContainer|| chatContainer.childNodes.length === 0) return null
+  return chatContainer.childNodes[0] as HTMLElement;
 }
