@@ -1,3 +1,4 @@
+/* eslint-disable prefer-rest-params */
 import { useEffect, useState } from "react";
 import OptionsContainer from "./components/OptionsContainer";
 import Minimap from "./components/Minimap";
@@ -5,17 +6,47 @@ import { queryChatContainer } from "./utils/renderLogic";
 
 export default function App() {
   const [showMinimap, setShowMinimap] = useState<boolean>(false);
-  const [chatContainer, setChatContainer] = useState<HTMLElement|null>(null);
+  const [chatContainer, setChatContainer] = useState<HTMLElement | null>(null);
 
+  const updateChatContainer = () => {
+    setTimeout(() => {
+      const newChatContainer = queryChatContainer()
+      console.log("null chat container: ", newChatContainer === null);
+      // console.log("chat container changed: ", newChatContainer === chatContainer)
+      setChatContainer(newChatContainer);
+    }, 1000);
+  };
+
+  // Run when mounted
   useEffect(() => {
-    console.log("show minimap state changed")
-    setChatContainer(queryChatContainer())
-  }, [showMinimap])
+    console.log("app mounted____________________________________")
+    addLocationObserver(updateChatContainer);
+  }, []);
 
-  const onToggleMinimap = () => setShowMinimap(!showMinimap);
+  // Run when app rerenders 
+  useEffect(() => {
+    console.log("app rerendered____________________________________") 
+  }) 
+
+  // Run when chatContainer state changed
+  useEffect(() => {
+    console.log("chat container state changed")
+  })
+
+  // Run when showminimap state changed
+  useEffect(() => {
+    console.log("show minimap state changed");
+  }, [showMinimap]);
+
+  const onToggleMinimap = () => {
+    if (!showMinimap) {
+      updateChatContainer();
+    }
+    setShowMinimap(!showMinimap);
+  };
   const onRefreshMinimap = () => {
-    setChatContainer(queryChatContainer())
-  }
+    updateChatContainer();
+  };
 
   return (
     <div className="app-container" style={appContainerStyle}>
@@ -24,7 +55,7 @@ export default function App() {
         onRefreshMinimap={onRefreshMinimap}
         showMinimap={showMinimap}
       />
-      {showMinimap ? <Minimap chatContainer={chatContainer}/> : null}
+      {showMinimap ? <Minimap chatContainer={chatContainer} /> : null}
     </div>
   );
 }
@@ -36,5 +67,15 @@ const appContainerStyle: React.CSSProperties = {
   overflow: "hidden",
   justifyContent: "right",
   pointerEvents: "none",
-  userSelect: "none"
+  userSelect: "none",
 };
+function addLocationObserver(callback: MutationCallback) {
+  // Options for the observer (which mutations to observe)
+  const config = { attributes: false, childList: true, subtree: false };
+
+  // Create an observer instance linked to the callback function
+  const observer = new MutationObserver(callback);
+
+  // Start observing the target node for configured mutations
+  observer.observe(document.body, config);
+}
