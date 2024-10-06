@@ -1,4 +1,6 @@
-import { BiDownArrow, BiRefresh, BiSolidLeftArrowSquare, BiSolidRightArrowSquare, BiUpArrow } from "react-icons/bi";
+import { BiDownArrow, BiRefresh, BiUpArrow } from "react-icons/bi";
+import { CgClose } from "react-icons/cg";
+import { HiMiniMap } from "react-icons/hi2";
 
 interface OptionsContainerProps {
   onToggleMinimap: CallableFunction;
@@ -17,40 +19,42 @@ export default function OptionsContainer({
 }: OptionsContainerProps) {
   return (
     <div className="options-container" style={OptionsContainerStyle}>
+      <button onClick={() => onToggleMinimap()} style={buttonStyle}>
+        {showMinimap ? <CgClose /> : <HiMiniMap />}
+      </button>
       {showMinimap ? (
         <>
-      <button onClick={() => onNextChat()} style={buttonStyle}> 
-        <BiSolidLeftArrowSquare />
-      </button>
-        <button onClick={() => onPreviousChat()} style={buttonStyle}> 
-        <BiSolidRightArrowSquare />
-      </button>
-        <button onClick={() => onRefreshMinimap()} style={buttonStyle}>
-          <BiRefresh />
-        </button>
-      </>
+          <button onClick={() => onRefreshMinimap()} style={buttonStyle}>
+            <BiRefresh />
+          </button>
+          <button onClick={() => onPreviousChat()} style={buttonStyle}>
+            <BiUpArrow />
+          </button>
+          <button onClick={() => onNextChat()} style={buttonStyle}>
+            <BiDownArrow />
+          </button>
+        </>
       ) : null}
-      <button onClick={() => onToggleMinimap()} style={buttonStyle}>
-        {showMinimap ? <BiDownArrow /> : <BiUpArrow /> }
-      </button>
-      
     </div>
   );
 }
 
 const OptionsContainerStyle: React.CSSProperties = {
+  fontSize: "16px",
   height: "fit-content",
-  transform: "rotate(270deg)",
-  transformOrigin: "bottom right",
+  display: "flex",
+  flexDirection: "column",
+  gap: "0.3em",
+  paddingTop: "1em"
 };
 const buttonStyle: React.CSSProperties = {
-  padding: "0.2rem 2rem",
+  padding: " 0 0.2em",
   backgroundColor: "white",
   color: "black",
-  borderTopLeftRadius: "1rem",
-  borderTopRightRadius: "1rem",
+  borderTopLeftRadius: "1em",
+  borderBottomLeftRadius: "1em",
   pointerEvents: "auto",
   border: "solid black 1px",
   fontFamily: "Verdana",
-  height: "1rem"
+  height: "4em",
 };
