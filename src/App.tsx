@@ -100,7 +100,10 @@ const onNextChat = (scrollContainer: HTMLElement|null) => {
   })
   if (nextChats.length === 0) return
   const firstNextChat = nextChats[0];
-  scrollContainer.scrollTo(0, scrollContainer.scrollTop + firstNextChat.getBoundingClientRect().top - navHeight)
+  scrollContainer.scrollTo({
+    top: scrollContainer.scrollTop + firstNextChat.getBoundingClientRect().top - navHeight,
+    behavior: "smooth"
+})
 }
 const onPreviousChat = (scrollContainer: HTMLElement|null) => {
   const navElement = queryNavElement()
@@ -112,5 +115,8 @@ const onPreviousChat = (scrollContainer: HTMLElement|null) => {
   })
   if (nextChats.length === 0) return
   const firstNextChat = nextChats[nextChats.length - 1];
-  scrollContainer.scrollTo(0, scrollContainer.scrollTop + firstNextChat.getBoundingClientRect().top - navHeight)
+  scrollContainer.scrollTo({
+    top: scrollContainer.scrollTop + firstNextChat.getBoundingClientRect().top - navHeight,
+    behavior: "smooth"
+  })
 }
