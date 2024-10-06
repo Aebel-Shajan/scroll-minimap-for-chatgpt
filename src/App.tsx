@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import OptionsContainer from "./components/OptionsContainer";
 import Minimap from "./components/MinimapContainer/MinimapContainer";
-import { queryAllChatElements, queryChatContainer, queryChatScrollContainer, queryNavElement } from "./utils/renderLogic";
+import { queryAllChatElements, queryChatContainer, queryNavElement } from "./utils/renderLogic";
 
 export default function App() {
   const [showMinimap, setShowMinimap] = useState<boolean>(false);
   const [manualRefresh, setManualRefresh] = useState<boolean>(false); 
   const chatContainer = useRef<HTMLElement|null>(null);
+  const scrollContainer = useRef<HTMLElement|null>(null);
 
   function triggerCanvasRefresh() {
     setManualRefresh(temp => !temp)
@@ -24,6 +25,9 @@ export default function App() {
           triggerCanvasRefresh()
         }
         chatContainer.current = newChat
+        if (newChat) {
+          scrollContainer.current = newChat.parentElement
+        }
       }, 500)
     });
   }, []);
@@ -56,11 +60,11 @@ export default function App() {
       <OptionsContainer
         onToggleMinimap={onToggleMinimap}
         onRefreshMinimap={onRefreshMinimap}
-        onNextChat={onNextChat}
-        onPreviousChat={onPreviousChat}
+        onNextChat={() => onNextChat(scrollContainer.current)}
+        onPreviousChat={() => onPreviousChat(scrollContainer.current)}
         showMinimap={showMinimap}
       />
-      {showMinimap ? <Minimap refreshMinimap={manualRefresh} /> : null}
+      {showMinimap ? <Minimap refreshMinimap={manualRefresh} chatContainer={chatContainer.current} scrollContainer={scrollContainer.current} /> : null}
     </div>
   );
 }
@@ -86,8 +90,7 @@ function addLocationObserver(callback: MutationCallback) {
 }
 
 
-const onNextChat = () => {
-  const scrollContainer = queryChatScrollContainer()
+const onNextChat = (scrollContainer: HTMLElement|null) => {
   const navElement = queryNavElement()
   if (!scrollContainer || !navElement) return 
   const navHeight = navElement.offsetHeight;
@@ -99,8 +102,7 @@ const onNextChat = () => {
   const firstNextChat = nextChats[0];
   scrollContainer.scrollTo(0, scrollContainer.scrollTop + firstNextChat.getBoundingClientRect().top - navHeight)
 }
-const onPreviousChat = () => {
-  const scrollContainer = queryChatScrollContainer()
+const onPreviousChat = (scrollContainer: HTMLElement|null) => {
   const navElement = queryNavElement()
   if (!scrollContainer || !navElement) return 
   const navHeight = navElement.offsetHeight;
