@@ -37,7 +37,7 @@ export async function generateMinimapCanvas(
     ignoreElements: (element) => element.classList.contains("top-0"), // ignores nav bar
     scrollX: 0,
     scrollY: 0,
-    scale: 0.5, // makes it less/more blurry
+    scale: 0.2, // makes it less/more blurry
     // foreignObjectRendering: true, // very glitchy, try in future when they fix
     backgroundColor: "#212121", // depends on dark/light mode
   };
