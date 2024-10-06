@@ -4,14 +4,17 @@ import { generateMinimapCanvas } from "../../../utils/renderLogic";
 interface CanvasContainerProps {
   refreshCanvas: boolean;
   setScale: CallableFunction;
-  chatContainer: HTMLElement|null;
+  chatContainer: HTMLElement | null;
 }
 
-const CanvasContainer = ({ refreshCanvas, setScale, chatContainer }: CanvasContainerProps) => {
+const CanvasContainer = ({
+  refreshCanvas,
+  setScale,
+  chatContainer,
+}: CanvasContainerProps) => {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log("canvase rerendered");
     (async () => {
       const canvasContainer = canvasContainerRef.current;
       if (!chatContainer || !canvasContainer) return;
@@ -20,9 +23,9 @@ const CanvasContainer = ({ refreshCanvas, setScale, chatContainer }: CanvasConta
       canvasContainer.appendChild(canvas);
 
       const scale = canvasContainer.offsetWidth / canvas.offsetWidth;
-      setScale(scale);
       canvas.style.width = `${canvasContainer.offsetWidth}px`;
       canvas.style.height = `${scale * canvas.offsetHeight}px`;
+      setScale(scale);
     })();
   }, [refreshCanvas, setScale, chatContainer]);
 
