@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 interface ViewOverLayProps {
   refreshCanvas: boolean;
   scale: number;
-  scrollContainer: HTMLElement|null;
+  scrollContainer: HTMLElement | null;
 }
 
-export default function ViewOverlay({
+const ViewOverlay = ({
   refreshCanvas,
   scale,
-  scrollContainer
-}: ViewOverLayProps) {
+  scrollContainer,
+}: ViewOverLayProps) => {
   const [scrollTop, setScrollTop] = useState(0);
   const [height, setHeight] = useState(0);
 
@@ -20,24 +20,23 @@ export default function ViewOverlay({
   }
 
   useEffect(() => {
-    if (!scrollContainer) return; 
-    onScroll(scrollContainer, scale)
+    if (!scrollContainer) return;
+    onScroll(scrollContainer, scale);
     scrollContainer.addEventListener("scroll", (event) => {
-      if (!(event.target instanceof HTMLElement)) return
-      onScroll(event.target, scale)
-  });
-  },[scale, refreshCanvas, scrollContainer]);
+      if (!(event.target instanceof HTMLElement)) return;
+      onScroll(event.target, scale);
+    });
+  }, [scale, refreshCanvas, scrollContainer]);
 
   const currentViewStyle: React.CSSProperties = {
     position: "absolute",
-    // top: `${scale * scrollContainer.scrollTop}px`,
     top: `${scrollTop}px`,
     left: "0",
     width: "100%",
     height: `${height}px`,
-    backgroundColor: `#00aadd99`
+    backgroundColor: `#fff4`,
   };
   return <div className="current-view" style={currentViewStyle}></div>;
-}
+};
 
-
+export default ViewOverlay;
