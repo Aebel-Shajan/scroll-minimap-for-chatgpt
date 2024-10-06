@@ -1,14 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  queryChatScrollContainer,
-} from "../../utils/renderLogic";
 import ViewOverlay from "./ViewOverlay/ViewOverlay";
 import CanvasContainer from "./CanvasContainer/CanvasContainer";
 
 interface MinimapProps {
-  refreshMinimap: boolean
+  refreshMinimap: boolean;
+  chatContainer: HTMLElement|null;
+  scrollContainer: HTMLElement|null;
 }
-const Minimap = ({ refreshMinimap }: MinimapProps) => {
+const MinimapContainer = ({ refreshMinimap, chatContainer, scrollContainer }: MinimapProps) => {
   const [scale, setScale] = useState<number>(0);
   const minimapContainerRef = useRef<HTMLDivElement>(null);
 
@@ -17,12 +16,10 @@ const Minimap = ({ refreshMinimap }: MinimapProps) => {
   }, [scale])
 
   useEffect(() => {
-    const scrollContainer = queryChatScrollContainer();
     const minimapContainer = minimapContainerRef.current;
     if (!scrollContainer) return;
     if (!minimapContainer) return;
     function onDrag(mousePos: number) {
-      const scrollContainer = queryChatScrollContainer();
       const minimapContainer = minimapContainerRef.current;
       if (!scrollContainer) return;
       if (!minimapContainer) return;
@@ -38,7 +35,6 @@ const Minimap = ({ refreshMinimap }: MinimapProps) => {
 
     function onScroll() {
       console.log("scrolling")
-      const scrollContainer = queryChatScrollContainer();
       const minimapContainer = minimapContainerRef.current;
       if (!scrollContainer) return;
       if (!minimapContainer) return;
@@ -51,7 +47,7 @@ const Minimap = ({ refreshMinimap }: MinimapProps) => {
         ratio * minimapContainer.offsetHeight;
     }
     scrollContainer.addEventListener("scroll", () => onScroll());
-  }, [refreshMinimap, scale]);
+  }, [refreshMinimap, scale, scrollContainer]);
 
   return (
     <div
@@ -59,8 +55,8 @@ const Minimap = ({ refreshMinimap }: MinimapProps) => {
       style={minimapContainerStyle}
       ref={minimapContainerRef}
     >
-      <CanvasContainer refreshCanvas={refreshMinimap} setScale={setScale} />
-      <ViewOverlay refreshCanvas={refreshMinimap} scale={scale} />
+      <CanvasContainer refreshCanvas={refreshMinimap} chatContainer={chatContainer} setScale={setScale} />
+      <ViewOverlay refreshCanvas={refreshMinimap} scrollContainer={scrollContainer} scale={scale} />
     </div>
   );
 };
@@ -77,5 +73,5 @@ const minimapContainerStyle: React.CSSProperties = {
 };
 
 
-export default Minimap;
+export default MinimapContainer;
 

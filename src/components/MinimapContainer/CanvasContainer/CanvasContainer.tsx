@@ -1,18 +1,18 @@
 import { memo, useEffect, useRef } from "react";
-import { generateMinimapCanvas, queryChatContainer } from "../../../utils/renderLogic";
+import { generateMinimapCanvas } from "../../../utils/renderLogic";
 
 interface CanvasContainerProps {
   refreshCanvas: boolean;
   setScale: CallableFunction;
+  chatContainer: HTMLElement|null;
 }
 
-const CanvasContainer = ({ refreshCanvas, setScale }: CanvasContainerProps) => {
+const CanvasContainer = ({ refreshCanvas, setScale, chatContainer }: CanvasContainerProps) => {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     console.log("canvase rerendered");
     (async () => {
-      const chatContainer = queryChatContainer();
       const canvasContainer = canvasContainerRef.current;
       if (!chatContainer || !canvasContainer) return;
       const canvas = await generateMinimapCanvas(chatContainer);
@@ -24,7 +24,7 @@ const CanvasContainer = ({ refreshCanvas, setScale }: CanvasContainerProps) => {
       canvas.style.width = `${canvasContainer.offsetWidth}px`;
       canvas.style.height = `${scale * canvas.offsetHeight}px`;
     })();
-  }, [refreshCanvas, setScale]);
+  }, [refreshCanvas, setScale, chatContainer]);
 
   return (
     <div

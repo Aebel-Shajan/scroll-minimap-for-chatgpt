@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
-import { queryChatScrollContainer } from "../../../utils/renderLogic";
 
 interface ViewOverLayProps {
   refreshCanvas: boolean;
   scale: number;
+  scrollContainer: HTMLElement|null;
 }
 
 export default function ViewOverlay({
   refreshCanvas,
   scale,
+  scrollContainer
 }: ViewOverLayProps) {
   const [scrollTop, setScrollTop] = useState(0);
   const [height, setHeight] = useState(0);
@@ -19,14 +20,13 @@ export default function ViewOverlay({
   }
 
   useEffect(() => {
-    const scrollContainer = queryChatScrollContainer();
     if (!scrollContainer) return; 
     onScroll(scrollContainer, scale)
     scrollContainer.addEventListener("scroll", (event) => {
       if (!(event.target instanceof HTMLElement)) return
       onScroll(event.target, scale)
   });
-  },[scale, refreshCanvas]);
+  },[scale, refreshCanvas, scrollContainer]);
 
   const currentViewStyle: React.CSSProperties = {
     position: "absolute",
