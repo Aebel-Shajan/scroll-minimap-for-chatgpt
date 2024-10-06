@@ -13,15 +13,38 @@ const MinimapContainer = ({
   scrollContainer,
 }: MinimapProps) => {
   const [scale, setScale] = useState<number>(0);
+  const mouseDown = useRef<boolean>(false);
+  const [dragPos, setDragPos] = useState<number>(0);
   const minimapContainerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const minimapContainer = minimapContainerRef.current;
+    if (!minimapContainer) return;
+    console.log("event listeners added.");
+    window.addEventListener("mouseup", () => {
+      mouseDown.current = false;
+    });
+    minimapContainer.addEventListener("mousedown", () => {
+      mouseDown.current = true;
+    });
+    minimapContainer.addEventListener("mousemove", (e) => {
+      if (mouseDown.current) {
+        setDragPos(e.clientY);
+      }
+    });
+  }, [setDragPos]);
+
+  useEffect(() => {
+    const minimapContainer = minimapContainerRef.current;
+    if (!minimapContainer) return;
+    if (!scrollContainer) return;
+    onDrag(minimapContainer, scrollContainer, scale, dragPos);
+  }, [dragPos, scrollContainer, scale]);
 
   useEffect(() => {
     const minimapContainer = minimapContainerRef.current;
     if (!scrollContainer) return;
     if (!minimapContainer) return;
-    minimapContainer.addEventListener("click", (e) =>
-      onDrag(minimapContainer, scrollContainer, scale, e.clientY)
-    );
     scrollContainer.addEventListener("scroll", () =>
       onScroll(minimapContainer, scrollContainer, scale)
     );
@@ -68,7 +91,10 @@ function onDrag(
 ) {
   const relativeMousePos =
     mousePos - minimapContainer.getBoundingClientRect().top;
-  const newScrollPos = (relativeMousePos + minimapContainer.scrollTop) / scale;
+  const newScrollPos =
+    (relativeMousePos + minimapContainer.scrollTop) / scale -
+    0.5 * scrollContainer.offsetHeight;
+
   scrollContainer.scrollTo(0, newScrollPos);
 }
 
