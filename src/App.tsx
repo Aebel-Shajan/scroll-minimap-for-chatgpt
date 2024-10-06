@@ -1,58 +1,47 @@
 import { useEffect, useRef, useState } from "react";
 import OptionsContainer from "./components/OptionsContainer";
 import Minimap from "./components/MinimapContainer/MinimapContainer";
-import { queryAllChatElements, queryChatContainer, queryNavElement } from "./utils/renderLogic";
+import {
+  queryAllChatElements,
+  queryChatContainer,
+  queryNavElement,
+} from "./utils/renderLogic";
 
 export default function App() {
   const [showMinimap, setShowMinimap] = useState<boolean>(false);
-  const [manualRefresh, setManualRefresh] = useState<boolean>(false); 
-  const chatContainer = useRef<HTMLElement|null>(null);
-  const scrollContainer = useRef<HTMLElement|null>(null);
+  const [manualRefresh, setManualRefresh] = useState<boolean>(false);
+  const chatContainer = useRef<HTMLElement | null>(null);
+  const scrollContainer = useRef<HTMLElement | null>(null);
 
   function triggerCanvasRefresh() {
-    setManualRefresh(temp => !temp)
+    // changing state always triggers a refresh of parent and child states (excluding memo compnents)
+    setManualRefresh((temp) => !temp);
   }
 
   // Run when mounted
   useEffect(() => {
-    console.log("app mounted____________________________________")
     addLocationObserver(() => {
-      console.log("document body changed")
+      console.log("document body changed");
       setTimeout(() => {
-        const newChat = queryChatContainer()
+        const newChat = queryChatContainer();
         if (chatContainer.current !== newChat) {
-          console.log("chat container changed")
-          triggerCanvasRefresh()
+          console.log("chat container changed");
+          triggerCanvasRefresh();
         }
-        chatContainer.current = newChat
+        chatContainer.current = newChat;
         if (newChat) {
-          scrollContainer.current = newChat.parentElement
+          scrollContainer.current = newChat.parentElement;
         }
-      }, 500)
+      }, 500); // delayed because it takes some time for chats  to load
     });
   }, []);
 
-  // Run when app rerenders 
-  useEffect(() => {
-    console.log("app rerendered____________________________________") 
-  }) 
-
-  // Run when chatContainer state changed
-  useEffect(() => {
-    console.log("manual refresh state changed")
-  }, [manualRefresh])
-
-  // Run when showminimap state changed
-  useEffect(() => {
-    console.log("show minimap state changed");
-  }, [showMinimap]);
-
   const onToggleMinimap = () => {
     setShowMinimap(!showMinimap);
-    triggerCanvasRefresh()
+    triggerCanvasRefresh();
   };
   const onRefreshMinimap = () => {
-    triggerCanvasRefresh()
+    triggerCanvasRefresh();
   };
 
   return (
@@ -64,7 +53,13 @@ export default function App() {
         onPreviousChat={() => onPreviousChat(scrollContainer.current)}
         showMinimap={showMinimap}
       />
-      {showMinimap ? <Minimap refreshMinimap={manualRefresh} chatContainer={chatContainer.current} scrollContainer={scrollContainer.current} /> : null}
+      {showMinimap ? (
+        <Minimap
+          refreshMinimap={manualRefresh}
+          chatContainer={chatContainer.current}
+          scrollContainer={scrollContainer.current}
+        />
+      ) : null}
     </div>
   );
 }
@@ -89,34 +84,39 @@ function addLocationObserver(callback: MutationCallback) {
   observer.observe(document.body, config);
 }
 
-
-const onNextChat = (scrollContainer: HTMLElement|null) => {
-  const navElement = queryNavElement()
-  if (!scrollContainer || !navElement) return 
+const onNextChat = (scrollContainer: HTMLElement | null) => {
+  const navElement = queryNavElement();
+  if (!scrollContainer || !navElement) return;
   const navHeight = navElement.offsetHeight;
-  const chatElements = queryAllChatElements()
-   const nextChats = chatElements.filter((element) => {
-    return (element.getBoundingClientRect().top > 1.1 * navHeight)
-  })
-  if (nextChats.length === 0) return
+  const chatElements = queryAllChatElements();
+  const nextChats = chatElements.filter((element) => {
+    return element.getBoundingClientRect().top > 1.1 * navHeight;
+  });
+  if (nextChats.length === 0) return;
   const firstNextChat = nextChats[0];
   scrollContainer.scrollTo({
-    top: scrollContainer.scrollTop + firstNextChat.getBoundingClientRect().top - navHeight,
-    behavior: "smooth"
-})
-}
-const onPreviousChat = (scrollContainer: HTMLElement|null) => {
-  const navElement = queryNavElement()
-  if (!scrollContainer || !navElement) return 
+    top:
+      scrollContainer.scrollTop +
+      firstNextChat.getBoundingClientRect().top -
+      navHeight,
+    behavior: "smooth",
+  });
+};
+const onPreviousChat = (scrollContainer: HTMLElement | null) => {
+  const navElement = queryNavElement();
+  if (!scrollContainer || !navElement) return;
   const navHeight = navElement.offsetHeight;
-  const chatElements = queryAllChatElements()
-   const nextChats = chatElements.filter((element) => {
-    return (element.getBoundingClientRect().top < navHeight)
-  })
-  if (nextChats.length === 0) return
+  const chatElements = queryAllChatElements();
+  const nextChats = chatElements.filter((element) => {
+    return element.getBoundingClientRect().top < navHeight;
+  });
+  if (nextChats.length === 0) return;
   const firstNextChat = nextChats[nextChats.length - 1];
   scrollContainer.scrollTo({
-    top: scrollContainer.scrollTop + firstNextChat.getBoundingClientRect().top - navHeight,
-    behavior: "smooth"
-  })
-}
+    top:
+      scrollContainer.scrollTop +
+      firstNextChat.getBoundingClientRect().top -
+      navHeight,
+    behavior: "smooth",
+  });
+};
