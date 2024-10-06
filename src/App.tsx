@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import OptionsContainer from "./components/OptionsContainer";
-import Minimap from "./components/Minimap";
+import Minimap from "./components/MinimapContainer/MinimapContainer";
 import { queryAllChatElements, queryChatContainer, queryChatScrollContainer, queryNavElement } from "./utils/renderLogic";
 
 export default function App() {

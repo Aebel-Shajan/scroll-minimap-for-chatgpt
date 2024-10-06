@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
-  generateMinimapCanvas,
-  queryChatContainer,
   queryChatScrollContainer,
-} from "../utils/renderLogic";
-import ViewOverlay from "./MinimapContainer/ViewOverlay/ViewOverlay";
+} from "../../utils/renderLogic";
+import ViewOverlay from "./ViewOverlay/ViewOverlay";
+import CanvasContainer from "./CanvasContainer/CanvasContainer";
 
 interface MinimapProps {
   refreshMinimap: boolean
@@ -77,44 +76,6 @@ const minimapContainerStyle: React.CSSProperties = {
   scrollbarWidth: "none",
 };
 
-const canvasContainerStyle: React.CSSProperties = {
-  width: "100%",
-};
 
 export default Minimap;
 
-interface CanvasContainerProps {
-  refreshCanvas: boolean;
-  setScale: CallableFunction;
-}
-
-const CanvasContainer = React.memo(
-  ({ refreshCanvas, setScale }: CanvasContainerProps) => {
-    const canvasContainerRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-      console.log("canvase rerendered");
-      (async () => {
-        const chatContainer = queryChatContainer();
-        const canvasContainer = canvasContainerRef.current;
-        if (!chatContainer || !canvasContainer) return;
-        const canvas = await generateMinimapCanvas(chatContainer);
-        canvasContainer.innerHTML = "";
-        canvasContainer.appendChild(canvas);
-
-        const scale = canvasContainer.offsetWidth / canvas.offsetWidth;
-        setScale(scale);
-        canvas.style.width = `${canvasContainer.offsetWidth}px`;
-        canvas.style.height = `${scale * canvas.offsetHeight}px`;
-      })();
-    }, [refreshCanvas, setScale]);
-
-    return (
-      <div
-        className="canvas-container"
-        style={canvasContainerStyle}
-        ref={canvasContainerRef}
-      ></div>
-    );
-  }
-);
