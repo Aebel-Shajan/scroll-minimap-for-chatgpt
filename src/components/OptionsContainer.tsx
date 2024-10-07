@@ -1,7 +1,9 @@
 import { BiDownArrow, BiRefresh, BiUpArrow } from "react-icons/bi";
 import { CgClose } from "react-icons/cg";
-import { HiMiniMap } from "react-icons/hi2";
+// import { HiMiniMap } from "react-icons/hi2";
 
+
+const logo = chrome.runtime.getURL("logo.png");
 interface OptionsContainerProps {
   onToggleMinimap: CallableFunction;
   onRefreshMinimap: CallableFunction;
@@ -20,7 +22,7 @@ export default function OptionsContainer({
   return (
     <div className="options-container" style={OptionsContainerStyle}>
       <button onClick={() => onToggleMinimap()} style={buttonStyle}>
-        {showMinimap ? <CgClose /> : <HiMiniMap />}
+        {showMinimap ? <CgClose /> : <img src={logo} style={imageStyle}/>}
       </button>
       {showMinimap ? (
         <>
@@ -57,4 +59,12 @@ const buttonStyle: React.CSSProperties = {
   border: "solid black 1px",
   fontFamily: "Verdana",
   height: "4em",
+  width: "1.2em",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center"
+  
 };
+const imageStyle: React.CSSProperties = {
+  objectFit: "contain"
+}
