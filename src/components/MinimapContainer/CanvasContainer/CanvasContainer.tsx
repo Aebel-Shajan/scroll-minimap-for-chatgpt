@@ -13,12 +13,24 @@ const CanvasContainer = ({
   chatContainer,
 }: CanvasContainerProps) => {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
+  const isLoading = useRef<boolean>(false)
+
+  // useEffect(()=> console.log("canvas container rerendered", isLoading.current, chatContainer===null))
 
   useEffect(() => {
+    if (isLoading.current===true) return 
     (async () => {
       const canvasContainer = canvasContainerRef.current;
-      if (!chatContainer || !canvasContainer) return;
+      if (!canvasContainer) return;
+      if (!chatContainer) {
+        canvasContainer.innerHTML = "No chat detected, try refreshing the minimap"
+        return
+      }
+      isLoading.current = true
+      // console.log("generating minmiap canvas...")
+      canvasContainer.innerHTML = "loading.."
       const canvas = await generateMinimapCanvas(chatContainer);
+      isLoading.current = false
       canvasContainer.innerHTML = "";
       canvasContainer.appendChild(canvas);
 
@@ -28,6 +40,7 @@ const CanvasContainer = ({
       setScale(scale);
     })();
   }, [refreshCanvas, setScale, chatContainer]);
+
 
   return (
     <div

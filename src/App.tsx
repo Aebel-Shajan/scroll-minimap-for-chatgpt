@@ -15,17 +15,22 @@ export default function App() {
 
   function triggerCanvasRefresh() {
     // changing state always triggers a refresh of parent and child states (excluding memo compnents)
+    // console.log("manual refresh triggered")
     setManualRefresh((temp) => !temp);
+    chatContainer.current = queryChatContainer()
+    if (chatContainer.current) {
+      scrollContainer.current = chatContainer.current.parentElement;
+    }
   }
 
   // Run when mounted
   useEffect(() => {
     addLocationObserver(() => {
-      console.log("document body changed");
+      // console.log("document body changed");
       setTimeout(() => {
         const newChat = queryChatContainer();
         if (chatContainer.current !== newChat) {
-          console.log("chat container changed");
+          // console.log("chat container changed");
           triggerCanvasRefresh();
         }
         chatContainer.current = newChat;

@@ -20,7 +20,7 @@ const MinimapContainer = ({
   useEffect(() => {
     const minimapContainer = minimapContainerRef.current;
     if (!minimapContainer) return;
-    console.log("event listeners added.");
+    // console.log("event listeners added.");
     window.addEventListener("mouseup", () => {
       mouseDown.current = false;
     });
