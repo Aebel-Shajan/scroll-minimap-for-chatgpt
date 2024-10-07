@@ -11,6 +11,8 @@ import html2canvas, { Options } from "html2canvas";
 export async function generateMinimapCanvas(
   elementToRender: HTMLElement
 ): Promise<HTMLCanvasElement> {
+  const backgroundColor = getComputedStyle(document.body).backgroundColor;
+
   // Create canvas containing chat elements using html2canvas
   const renderOptions: Partial<Options> = {
     onclone: (_, element) => {
@@ -31,7 +33,7 @@ export async function generateMinimapCanvas(
         .querySelectorAll('[data-message-author-role="user"]')
         .forEach((k) => {
           const j = k as HTMLElement;
-          j.style.backgroundColor = "white";
+          j.style.backgroundColor = "yellow";
         });
     },
     ignoreElements: (element) => element.classList.contains("top-0"), // ignores nav bar
@@ -39,7 +41,7 @@ export async function generateMinimapCanvas(
     scrollY: 0,
     scale: 0.2, // makes it less/more blurry
     // foreignObjectRendering: true, // very glitchy, try in future when they fix
-    backgroundColor: "#212121", // depends on dark/light mode
+    backgroundColor: backgroundColor ? backgroundColor : "grey", // depends on dark/light mode
   };
   return html2canvas(elementToRender, renderOptions);
 }

@@ -22,6 +22,9 @@ const CanvasContainer = ({
     (async () => {
       const canvasContainer = canvasContainerRef.current;
       if (!canvasContainer) return;
+      if (canvasContainer.parentElement){ // scroll to top to display message
+        canvasContainer.parentElement.scrollTo(0, 0)
+      }
       if (!chatContainer) {
         canvasContainer.innerHTML = "No chat detected, try refreshing the minimap"
         return
@@ -53,6 +56,8 @@ const CanvasContainer = ({
 
 const canvasContainerStyle: React.CSSProperties = {
   width: "100%",
+  color: "white",
+  fontWeight: "bold"
 };
 
 export default memo(CanvasContainer);
