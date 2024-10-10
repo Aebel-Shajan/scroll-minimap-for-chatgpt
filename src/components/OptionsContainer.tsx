@@ -51,12 +51,12 @@ const OptionsContainerStyle: React.CSSProperties = {
 };
 const buttonStyle: React.CSSProperties = {
   padding: " 0 0.2em",
-  backgroundColor: "white",
-  color: "black",
+  backgroundColor: "#2F2F2F",
+  color: "white",
   borderTopLeftRadius: "1em",
   borderBottomLeftRadius: "1em",
   pointerEvents: "auto",
-  border: "solid black 1px",
+  border: "solid #676767 1px",
   fontFamily: "Verdana",
   height: "4em",
   width: "1.2em",

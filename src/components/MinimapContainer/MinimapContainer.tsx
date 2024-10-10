@@ -74,7 +74,7 @@ const minimapContainerStyle: React.CSSProperties = {
   position: "relative",
   width: "80px",
   height: "90vh",
-  backgroundColor: "green",
+  backgroundColor: "#343442",
   pointerEvents: "all",
   boxShadow: "0 0 20px rgba(0, 0, 0, 1)",
   overflowY: "scroll",
