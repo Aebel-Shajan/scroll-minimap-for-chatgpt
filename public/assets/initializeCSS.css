@@ -1,0 +1,14 @@
+#content-root {
+  position: fixed;
+  top: 50px;
+  right: 20px;
+  height: 90vh;
+  width: auto;
+  overflow: hidden;
+  z-index: 99999;
+  pointer-events: none;
+}
+
+#content-root button {
+    all: initial;
+}
