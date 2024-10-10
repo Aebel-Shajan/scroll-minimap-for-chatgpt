@@ -1,12 +1,13 @@
-# Scroll Minimap for ChatGPT
 
-[![unnamed](./thumbnail.png)](https://chromewebstore.google.com/detail/scroll-minimap-for-chatgp/apekbedjllgmacohbcckgipfhjddehkf)
+<p align="center"><a target="_blank" href="https://chromewebstore.google.com/detail/scroll-minimap-for-chatgp/apekbedjllgmacohbcckgipfhjddehkf)"><img src="./public/logo.png" height=100 ></a></p>
+<h1 align="center"> ChatGPT Scroll Map </h1>
+<p align="center"><a target="_blank" href="https://chromewebstore.google.com/detail/scroll-minimap-for-chatgp/apekbedjllgmacohbcckgipfhjddehkf)"><img src="https://img.shields.io/badge/Chrome%20Web%20Store-4285F4?logo=chromewebstore&logoColor=fff&style=for-the-badge" /></a></p>
+<p align="center">Chrome extension which gives you a birds eye view of your chats.</p>
 
+[![unnamed](./thumbnail.png)](https://chromewebstore.google.com/detail/scroll-minimap-for-chatgp/apekbedjllgmacohbcckgipfhjddehkf) | <video src="https://github.com/user-attachments/assets/94334603-5427-4b6b-ac43-bcaf29288da3.mp4" />
+-|-
 
 I made this extension because I kept getting lost during my conversations with chatgpt. Sometimes chatgpt be giving you alot of useless info you didnt ask for. Navigating through what it says and finding the useful bits can be pretty tedious. This extension aims to solve that.
-
-[Documentation/notes](https://aebel-shajan.github.io/notes/projects/scroll-minimap-for-chatgpt/)
-
 
 ## Usage
 1. Download the extension from [Chrome web store](https://chromewebstore.google.com/detail/scroll-minimap-for-chatgp/apekbedjllgmacohbcckgipfhjddehkf)
@@ -18,7 +19,17 @@ I made this extension because I kept getting lost during my conversations with c
 4. Ask chatgpt a message and hit refresh minimap. A condensed view of the conversation should be shown in the minimap.
 
 
-## React learning notes
+## Performace improvement
+I rewrote the extension in vite, typescript and react, using html2canvas to capture the minimap. Heres how performance improved:
+Before | After
+-|-
+<video src="https://github.com/user-attachments/assets/64cdde2a-daa2-4a67-88da-a4d24e76beb2.mp4"> |  <video src="https://github.com/user-attachments/assets/b6f49f82-7ea3-4e80-8644-9dae603fbf91.mp4">
+
+
+<details>
+ 
+<summary> <h2>React learning notes</h2></summary>
+
 This project really tested my understanding of what react does under the hood.
 ## Hooks
 react hook | Use
@@ -60,4 +71,9 @@ useMemo | This is only to be used with calculations that can impact performance.
   * Dont listen to people online who are like `"React triggers re-rendering when there’s a change in state or props.🤓"` dumb. There are sooo many sites which parrot this line, its annoying 😭😭
   * Good explanation here https://www.joshwcomeau.com/react/why-react-re-renders/#its-not-about-the-props-2
   * In summary **props have nothing to do with re-renders**
+ 
+</details>
+
+# Contributors
+
 
