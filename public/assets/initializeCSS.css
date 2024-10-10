@@ -12,3 +12,9 @@
 #content-root button {
     all: initial;
 }
+
+#content-root button:hover {
+  color: #2F2F2F;
+  background-color: #676767;
+  cursor: pointer;
+}

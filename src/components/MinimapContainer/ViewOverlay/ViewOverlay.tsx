@@ -34,7 +34,8 @@ const ViewOverlay = ({
     left: "0",
     width: "100%",
     height: `${height}px`,
-    backgroundColor: `#fff4`,
+    backgroundColor: `#00FFD744`,
+    cursor: "grab",
   };
   return <div className="current-view" style={currentViewStyle}></div>;
 };
