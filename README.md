@@ -21,7 +21,7 @@ I made this extension because I kept getting lost during my conversations with c
 
 ## Performace improvement
 I rewrote the extension in vite, typescript and react, using html2canvas to capture the minimap. Heres how performance improved:
-Before | After
+Before (1.2) | After (1.3)
 -|-
 <video src="https://github.com/user-attachments/assets/64cdde2a-daa2-4a67-88da-a4d24e76beb2.mp4"> |  <video src="https://github.com/user-attachments/assets/b6f49f82-7ea3-4e80-8644-9dae603fbf91.mp4">
 
