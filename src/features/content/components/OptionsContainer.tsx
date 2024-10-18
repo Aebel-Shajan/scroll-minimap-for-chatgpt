@@ -3,7 +3,7 @@ import { CgClose } from "react-icons/cg";
 // import { HiMiniMap } from "react-icons/hi2";
 
 
-const logo = chrome.runtime.getURL("logo.png");
+const logo = chrome.runtime.getURL("assets/logo.png");
 interface OptionsContainerProps {
   onToggleMinimap: CallableFunction;
   onRefreshMinimap: CallableFunction;
