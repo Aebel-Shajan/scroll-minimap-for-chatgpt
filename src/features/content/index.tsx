@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import App from './App.tsx'
+import ContentContainer from './ContentContainer.tsx'
 import './index.css'
 
 const contentRoot = document.createElement('div')
@@ -9,6 +9,6 @@ document.body.appendChild(contentRoot)
 
 createRoot(contentRoot).render(
   <StrictMode>
-    <App />
+    <ContentContainer />
   </StrictMode>,
 )

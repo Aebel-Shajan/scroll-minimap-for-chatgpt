@@ -7,7 +7,7 @@ import {
   queryNavElement,
 } from "./utils/renderLogic";
 
-export default function App() {
+export default function ContentContainer() {
   const [showMinimap, setShowMinimap] = useState<boolean>(false);
   const [manualRefresh, setManualRefresh] = useState<boolean>(false);
   const chatContainer = useRef<HTMLElement | null>(null);
