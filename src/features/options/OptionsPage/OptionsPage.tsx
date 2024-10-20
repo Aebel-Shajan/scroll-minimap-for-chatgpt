@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styles from './OptionsPage.module.css'
 import logoImage from '../../../assets/logo.png'
-import { AppShell, Checkbox, Group, Slider, Stack, Text, Title } from '@mantine/core';
+import { AppShell, Button, Checkbox, Group, Slider, Stack, Text, Title } from '@mantine/core';
 
 interface ExtensionOptions {
   keepOpen: boolean,
@@ -17,21 +17,50 @@ let defaultOptions: ExtensionOptions ={
   refreshPeriod: 10
 }
 
-function OptionsPage() {
-  const [options, setOptions] = useState<ExtensionOptions>(defaultOptions)
+const OptionsPage = () => {
+  // states
   const [keepOpen, setKeepOpen] = useState<boolean>(defaultOptions["keepOpen"])
   const [smoothScrolling, setSmoothScrolling] = useState<boolean>(defaultOptions["smoothScrolling"])
   const [autoRefresh, setAutoRefresh] = useState<boolean>(defaultOptions["autoRefresh"])
   const [refreshPeriod, setRefreshPeriod] = useState<number>(defaultOptions["refreshPeriod"])
   
-  
+  // helper functions
   function handleChangeCheckbox(setter: CallableFunction) {
     return (event: React.ChangeEvent<HTMLInputElement>) => setter(event.currentTarget.checked)
   }
-
   function handleChangeSlider(setter: CallableFunction) {
     return (sliderValue: number) => setter(sliderValue)
   }
+  function handleResetToDefault() {
+    setKeepOpen(defaultOptions.keepOpen)
+    setSmoothScrolling(defaultOptions.smoothScrolling)
+    setAutoRefresh(defaultOptions.autoRefresh)
+    setRefreshPeriod(defaultOptions.refreshPeriod)
+  }
+
+  // On initial render
+  useEffect(() => {
+    chrome.storage.sync.get(['settings'], function(data) {
+      const settings = {...data.settings}
+      setKeepOpen(settings.keepOpen)
+      setSmoothScrolling(settings.smoothScrolling)
+      setAutoRefresh(settings.autoRefresh)
+      setRefreshPeriod(settings.refreshPeriod)
+  });
+  }, [])
+
+  // On options change
+  useEffect(() => {
+    const settings: ExtensionOptions = {
+      keepOpen: keepOpen,
+      smoothScrolling: smoothScrolling,
+      autoRefresh: autoRefresh,
+      refreshPeriod: refreshPeriod
+    }
+    chrome.storage.sync.set({
+      settings: settings
+    })
+  }, [keepOpen, smoothScrolling, autoRefresh, refreshPeriod])
 
   return (
     <AppShell
@@ -70,7 +99,13 @@ function OptionsPage() {
               onChange={handleChangeSlider(setRefreshPeriod)}
             />
             </div>
+            <Button
+              onClick={handleResetToDefault}
+            >
+            Reset to default
+            </Button>
           </Stack>
+          
           </div>
       </AppShell.Main>
     </AppShell>

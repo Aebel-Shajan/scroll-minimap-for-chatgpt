@@ -6,6 +6,9 @@
     "icons": {
         "128": "assets/logo.png"
     },
+    "permissions": [
+        "storage"
+    ],
     "options_page": "options/options.html",
     "action": {
         "default_popup": "popup/popup.html"

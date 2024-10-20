@@ -33,7 +33,10 @@
             gap: 2rem;
             border-left: solid 1px var(--mantine-color-dark-outline);
             border-right: solid 1px var(--mantine-color-dark-outline);
-
+            
+            & > button {
+                width: fit-content;
+            }
         }
     }
 }
