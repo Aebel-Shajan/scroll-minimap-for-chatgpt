@@ -39,6 +39,11 @@ export default function ContentContainer() {
         }
       }, 500); // delayed because it takes some time for chats  to load
     });
+
+    chrome.storage.sync.get(['settings'], function(data) {
+      const settings = {...data.settings}
+      setShowMinimap(settings.keepOpen)
+    })
   }, []);
 
   const onToggleMinimap = () => {
