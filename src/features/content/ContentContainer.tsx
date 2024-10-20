@@ -11,7 +11,7 @@ import { DEFAULT_OPTIONS } from "../../constants";
 
 export default function ContentContainer() {
   // States
-  const [, setOptions] = useState<ExtensionOptions>(DEFAULT_OPTIONS)
+  const [options, setOptions] = useState<ExtensionOptions>(DEFAULT_OPTIONS)
   const [showMinimap, setShowMinimap] = useState<boolean>(DEFAULT_OPTIONS.keepOpen);
   const [manualRefresh, setManualRefresh] = useState<boolean>(false);
   const chatContainer = useRef<HTMLElement | null>(null);
@@ -69,8 +69,8 @@ export default function ContentContainer() {
       <OptionsContainer
         onToggleMinimap={onToggleMinimap}
         onRefreshMinimap={onRefreshMinimap}
-        onNextChat={() => onNextChat(scrollContainer.current)}
-        onPreviousChat={() => onPreviousChat(scrollContainer.current)}
+        onNextChat={() => onNextChat(scrollContainer.current, options.smoothScrolling)}
+        onPreviousChat={() => onPreviousChat(scrollContainer.current, options.smoothScrolling)}
         showMinimap={showMinimap}
       />
       {showMinimap ? (
@@ -104,7 +104,8 @@ function addLocationObserver(callback: MutationCallback) {
   observer.observe(document.body, config);
 }
 
-const onNextChat = (scrollContainer: HTMLElement | null) => {
+const onNextChat = (scrollContainer: HTMLElement | null, smoothScroll: boolean) => {
+  // Calculate scroll pos of closest next chat
   const navElement = queryNavElement();
   if (!scrollContainer || !navElement) return;
   const navHeight = navElement.offsetHeight;
@@ -113,16 +114,25 @@ const onNextChat = (scrollContainer: HTMLElement | null) => {
     return element.getBoundingClientRect().top > 1.1 * navHeight;
   });
   if (nextChats.length === 0) return;
-  const firstNextChat = nextChats[0];
-  scrollContainer.scrollTo({
-    top:
-      scrollContainer.scrollTop +
-      firstNextChat.getBoundingClientRect().top -
-      navHeight,
-    behavior: "smooth",
-  });
+  const closestNextChat = nextChats[0];
+  const scrollPos = scrollContainer.scrollTop +
+  closestNextChat.getBoundingClientRect().top -
+  navHeight
+
+  // Configure scroll options
+  const scrollOptions: ScrollToOptions= {
+    top: scrollPos,
+    behavior: "instant"
+  }
+  if (smoothScroll) {
+    scrollOptions["behavior"] = "smooth"
+  }
+
+  // Scroll scrollContainer
+  scrollContainer.scrollTo(scrollOptions);
 };
-const onPreviousChat = (scrollContainer: HTMLElement | null) => {
+const onPreviousChat = (scrollContainer: HTMLElement | null, smoothScroll: boolean) => {
+  // Calculate scroll pos of closest previous chat
   const navElement = queryNavElement();
   if (!scrollContainer || !navElement) return;
   const navHeight = navElement.offsetHeight;
@@ -132,11 +142,19 @@ const onPreviousChat = (scrollContainer: HTMLElement | null) => {
   });
   if (nextChats.length === 0) return;
   const firstNextChat = nextChats[nextChats.length - 1];
-  scrollContainer.scrollTo({
-    top:
-      scrollContainer.scrollTop +
-      firstNextChat.getBoundingClientRect().top -
-      navHeight,
-    behavior: "smooth",
-  });
+  const scrollPos = scrollContainer.scrollTop +
+  firstNextChat.getBoundingClientRect().top -
+  navHeight
+
+  // Configure scroll options
+  const scrollOptions: ScrollToOptions = {
+    top: scrollPos,
+    behavior: "instant"
+  }
+  if (smoothScroll) {
+    scrollOptions["behavior"] = "smooth"
+  }
+
+  // Scroll container
+  scrollContainer.scrollTo(scrollOptions);
 };
