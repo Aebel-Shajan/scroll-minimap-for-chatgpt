@@ -2,27 +2,15 @@ import { useEffect, useState } from 'react'
 import styles from './OptionsPage.module.css'
 import logoImage from '../../../assets/logo.png'
 import { AppShell, Button, Checkbox, Group, Slider, Stack, Text, Title } from '@mantine/core';
-
-interface ExtensionOptions {
-  keepOpen: boolean,
-  smoothScrolling: boolean,
-  autoRefresh: boolean,
-  refreshPeriod: number
-}
-
-let defaultOptions: ExtensionOptions ={
-  keepOpen: false,
-  smoothScrolling: true,
-  autoRefresh: false,
-  refreshPeriod: 10
-}
+import { ExtensionOptions } from '../../../types/options';
+import { DEFAULT_OPTIONS } from '../../../constants';
 
 const OptionsPage = () => {
   // states
-  const [keepOpen, setKeepOpen] = useState<boolean>(defaultOptions["keepOpen"])
-  const [smoothScrolling, setSmoothScrolling] = useState<boolean>(defaultOptions["smoothScrolling"])
-  const [autoRefresh, setAutoRefresh] = useState<boolean>(defaultOptions["autoRefresh"])
-  const [refreshPeriod, setRefreshPeriod] = useState<number>(defaultOptions["refreshPeriod"])
+  const [keepOpen, setKeepOpen] = useState<boolean>(DEFAULT_OPTIONS["keepOpen"])
+  const [smoothScrolling, setSmoothScrolling] = useState<boolean>(DEFAULT_OPTIONS["smoothScrolling"])
+  const [autoRefresh, setAutoRefresh] = useState<boolean>(DEFAULT_OPTIONS["autoRefresh"])
+  const [refreshPeriod, setRefreshPeriod] = useState<number>(DEFAULT_OPTIONS["refreshPeriod"])
   
   // helper functions
   function handleChangeCheckbox(setter: CallableFunction) {
@@ -32,33 +20,33 @@ const OptionsPage = () => {
     return (sliderValue: number) => setter(sliderValue)
   }
   function handleResetToDefault() {
-    setKeepOpen(defaultOptions.keepOpen)
-    setSmoothScrolling(defaultOptions.smoothScrolling)
-    setAutoRefresh(defaultOptions.autoRefresh)
-    setRefreshPeriod(defaultOptions.refreshPeriod)
+    setKeepOpen(DEFAULT_OPTIONS.keepOpen)
+    setSmoothScrolling(DEFAULT_OPTIONS.smoothScrolling)
+    setAutoRefresh(DEFAULT_OPTIONS.autoRefresh)
+    setRefreshPeriod(DEFAULT_OPTIONS.refreshPeriod)
   }
 
   // On initial render
   useEffect(() => {
-    chrome.storage.sync.get(['settings'], function(data) {
-      const settings = {...data.settings}
-      setKeepOpen(settings.keepOpen)
-      setSmoothScrolling(settings.smoothScrolling)
-      setAutoRefresh(settings.autoRefresh)
-      setRefreshPeriod(settings.refreshPeriod)
+    chrome.storage.sync.get(['options'], function(data) {
+      const options = {...data.options}
+      setKeepOpen(options.keepOpen)
+      setSmoothScrolling(options.smoothScrolling)
+      setAutoRefresh(options.autoRefresh)
+      setRefreshPeriod(options.refreshPeriod)
   });
   }, [])
 
   // On options change
   useEffect(() => {
-    const settings: ExtensionOptions = {
+    const options: ExtensionOptions = {
       keepOpen: keepOpen,
       smoothScrolling: smoothScrolling,
       autoRefresh: autoRefresh,
       refreshPeriod: refreshPeriod
     }
     chrome.storage.sync.set({
-      settings: settings
+      options: options
     })
   }, [keepOpen, smoothScrolling, autoRefresh, refreshPeriod])
 

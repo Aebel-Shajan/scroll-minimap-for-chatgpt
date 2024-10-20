@@ -6,9 +6,13 @@ import {
   queryChatContainer,
   queryNavElement,
 } from "./utils/renderLogic";
+import { ExtensionOptions } from "../../types/options";
+import { DEFAULT_OPTIONS } from "../../constants";
 
 export default function ContentContainer() {
-  const [showMinimap, setShowMinimap] = useState<boolean>(false);
+  // States
+  const [, setOptions] = useState<ExtensionOptions>(DEFAULT_OPTIONS)
+  const [showMinimap, setShowMinimap] = useState<boolean>(DEFAULT_OPTIONS.keepOpen);
   const [manualRefresh, setManualRefresh] = useState<boolean>(false);
   const chatContainer = useRef<HTMLElement | null>(null);
   const scrollContainer = useRef<HTMLElement | null>(null);
@@ -23,7 +27,7 @@ export default function ContentContainer() {
     }
   }
 
-  // Run when mounted
+  // On initial render
   useEffect(() => {
     addLocationObserver(() => {
       // console.log("document body changed");
@@ -40,12 +44,18 @@ export default function ContentContainer() {
       }, 500); // delayed because it takes some time for chats  to load
     });
 
-    chrome.storage.sync.get(['settings'], function(data) {
-      const settings = {...data.settings}
-      setShowMinimap(settings.keepOpen)
+    chrome.storage.sync.get(['options'], function(data) {
+      if (data.options) {
+        const options: ExtensionOptions = {...data.options}
+        setOptions(options)
+        setShowMinimap(options.keepOpen)
+        console.log(options)
+      }
+
     })
   }, []);
 
+  // Helper functions
   const onToggleMinimap = () => {
     setShowMinimap(!showMinimap);
     triggerCanvasRefresh();
