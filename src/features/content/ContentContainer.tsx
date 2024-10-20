@@ -4,6 +4,7 @@ import Minimap from "./components/MinimapContainer/MinimapContainer";
 import {
   queryAllChatElements,
   queryChatContainer,
+  queryChatScrollContainer,
   queryNavElement,
 } from "./utils/renderLogic";
 import { ExtensionOptions } from "../../types/options";
@@ -69,8 +70,8 @@ export default function ContentContainer() {
       <OptionsContainer
         onToggleMinimap={onToggleMinimap}
         onRefreshMinimap={onRefreshMinimap}
-        onNextChat={() => onNextChat(scrollContainer.current, options.smoothScrolling)}
-        onPreviousChat={() => onPreviousChat(scrollContainer.current, options.smoothScrolling)}
+        onNextChat={() => onNextChat( options.smoothScrolling)}
+        onPreviousChat={() => onPreviousChat(options.smoothScrolling)}
         showMinimap={showMinimap}
       />
       {showMinimap ? (
@@ -104,8 +105,9 @@ function addLocationObserver(callback: MutationCallback) {
   observer.observe(document.body, config);
 }
 
-const onNextChat = (scrollContainer: HTMLElement | null, smoothScroll: boolean) => {
+const onNextChat = (smoothScroll: boolean) => {
   // Calculate scroll pos of closest next chat
+  const scrollContainer = queryChatScrollContainer();
   const navElement = queryNavElement();
   if (!scrollContainer || !navElement) return;
   const navHeight = navElement.offsetHeight;
@@ -131,8 +133,9 @@ const onNextChat = (scrollContainer: HTMLElement | null, smoothScroll: boolean) 
   // Scroll scrollContainer
   scrollContainer.scrollTo(scrollOptions);
 };
-const onPreviousChat = (scrollContainer: HTMLElement | null, smoothScroll: boolean) => {
+const onPreviousChat = (smoothScroll: boolean) => {
   // Calculate scroll pos of closest previous chat
+  const scrollContainer = queryChatScrollContainer();
   const navElement = queryNavElement();
   if (!scrollContainer || !navElement) return;
   const navHeight = navElement.offsetHeight;
