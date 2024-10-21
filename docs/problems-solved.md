@@ -90,3 +90,29 @@ Attempt 1 : Call the function again 500ms later if the chat container has not be
 Results: 
 * Works for the most part, if the chat container is not found it calls the functions again later.
 * I have seen instances where it fails to find the chat container, however the error message does not get displayed. Instead the minimap just keeps the same image.
+
+## Problem : When the chat updates, the minimap doesn't update
+
+Attempt 1 : Add an `autoRefresh` option. This results in a funtion we call every `refreshPeriod` seconds.
+
+```javascript
+ function refreshOnChatChange() {
+    const chatContainer = queryChatContainer()
+    if (!chatContainer) return 
+    const currentChatText = chatContainer.innerText
+    if (currentChatText !== lastChatText) {
+      lastChatText = currentChatText
+      triggerCanvasRefresh();
+    }
+  }
+
+  if (options.autoRefresh) {
+    intervalId = setInterval(refreshOnChatChange, options.refreshPeriod * 1000)
+  }
+```
+
+Results:
+* Works as intended no side effects :)
+
+
+## Problem : After the minimap refreshes the scroll does not get synced.

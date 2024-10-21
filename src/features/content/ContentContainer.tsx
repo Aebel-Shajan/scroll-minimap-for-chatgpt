@@ -10,7 +10,7 @@ import {
 import { ExtensionOptions } from "../../types/options";
 import { DEFAULT_OPTIONS } from "../../constants";
 
-// let lastChatText: string = ""
+let lastChatText: string = ""
 let lastUrl: string = ""
 let refreshRetryCount: number = 0
 
@@ -42,15 +42,15 @@ export default function ContentContainer() {
     }
   }
 
-  // function refreshOnChatChange() {
-  //   const chatContainer = queryChatContainer()
-  //   if (!chatContainer) return 
-  //   const currentChatText = chatContainer.innerText
-  //   if (currentChatText !== lastChatText) {
-  //     lastChatText = currentChatText
-  //     triggerCanvasRefresh();
-  //   }
-  // }
+  function refreshOnChatChange() {
+    const chatContainer = queryChatContainer()
+    if (!chatContainer) return 
+    const currentChatText = chatContainer.innerText
+    if (currentChatText !== lastChatText) {
+      lastChatText = currentChatText
+      triggerCanvasRefresh();
+    }
+  }
 
   function refreshOnAddressChange() {
     const currentUrl = location.href;
@@ -65,14 +65,19 @@ export default function ContentContainer() {
     // Detect all changes in dom -> is it a url change? -> if so refresh the minimap
     executeOnElementChange(refreshOnAddressChange, document)
     
+    let intervalId: number;
     chrome.storage.sync.get(['options'], function(data) {
       if (data.options) {
         const options: ExtensionOptions = {...data.options}
         setOptions(options)
         setShowMinimap(options.keepOpen)
+        if (options.autoRefresh) {
+          intervalId = setInterval(refreshOnChatChange, options.refreshPeriod * 1000)
+        }
       }
-
     })
+
+    return () => clearInterval(intervalId)
   }, []);
 
   // Helper functions
