@@ -10,6 +10,9 @@ import {
 import { ExtensionOptions } from "../../types/options";
 import { DEFAULT_OPTIONS } from "../../constants";
 
+// let lastChatText: string = ""
+let lastUrl: string = ""
+
 export default function ContentContainer() {
   // States
   const [options, setOptions] = useState<ExtensionOptions>(DEFAULT_OPTIONS)
@@ -28,29 +31,35 @@ export default function ContentContainer() {
     }
   }
 
+  // function refreshOnChatChange() {
+  //   const chatContainer = queryChatContainer()
+  //   if (!chatContainer) return 
+  //   const currentChatText = chatContainer.innerText
+  //   if (currentChatText !== lastChatText) {
+  //     lastChatText = currentChatText
+  //     triggerCanvasRefresh();
+  //   }
+  // }
+
+  function refreshOnAddressChange() {
+    const currentUrl = location.href;
+    console.log("document changed")
+    if (currentUrl !== lastUrl) {
+        lastUrl = currentUrl
+        triggerCanvasRefresh()
+      }
+    }
+
   // On initial render
   useEffect(() => {
-    addLocationObserver(() => {
-      // console.log("document body changed");
-      setTimeout(() => {
-        const newChat = queryChatContainer();
-        if (chatContainer.current !== newChat) {
-          // console.log("chat container changed");
-          triggerCanvasRefresh();
-        }
-        chatContainer.current = newChat;
-        if (newChat) {
-          scrollContainer.current = newChat.parentElement;
-        }
-      }, 500); // delayed because it takes some time for chats  to load
-    });
-
+    // Detect all changes in dom -> is it a url change? -> if so refresh the minimap
+    executeOnElementChange(refreshOnAddressChange, document)
+    
     chrome.storage.sync.get(['options'], function(data) {
       if (data.options) {
         const options: ExtensionOptions = {...data.options}
         setOptions(options)
         setShowMinimap(options.keepOpen)
-        console.log(options)
       }
 
     })
@@ -94,15 +103,24 @@ const appContainerStyle: React.CSSProperties = {
   pointerEvents: "none",
   userSelect: "none",
 };
-function addLocationObserver(callback: MutationCallback) {
+/**
+ * Observes changes to the child elements of a specified DOM element and executes a 
+ * callback function when mutations are detected.
+ *
+ * @param callback - The function to be executed when mutations are observed. 
+ *  It receives a list of MutationRecord objects and the MutationObserver instance as 
+ *  arguments.
+ * @param element - The DOM element to be observed for changes.
+ */
+function executeOnElementChange(callback: MutationCallback, element: HTMLElement|Document) {
   // Options for the observer (which mutations to observe)
-  const config = { attributes: false, childList: true, subtree: false };
+  const config = { childList: true, subtree: true };
 
   // Create an observer instance linked to the callback function
   const observer = new MutationObserver(callback);
 
   // Start observing the target node for configured mutations
-  observer.observe(document.body, config);
+  observer.observe(element, config);
 }
 
 const onNextChat = (smoothScroll: boolean) => {
