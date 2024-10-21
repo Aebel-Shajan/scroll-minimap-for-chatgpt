@@ -92,6 +92,7 @@ export default function ContentContainer() {
   return (
     <div className="app-container" style={appContainerStyle}>
       <OptionsContainer
+        options={options}
         onToggleMinimap={onToggleMinimap}
         onRefreshMinimap={onRefreshMinimap}
         onNextChat={() => onNextChat( options.smoothScrolling)}

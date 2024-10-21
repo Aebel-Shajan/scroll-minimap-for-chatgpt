@@ -1,10 +1,12 @@
 import { BiDownArrow, BiRefresh, BiUpArrow } from "react-icons/bi";
 import { CgClose } from "react-icons/cg";
+import { ExtensionOptions } from "../../../types/options";
 // import { HiMiniMap } from "react-icons/hi2";
 
 
 const logo = chrome.runtime.getURL("assets/logo.png");
 interface OptionsContainerProps {
+  options: ExtensionOptions;
   onToggleMinimap: CallableFunction;
   onRefreshMinimap: CallableFunction;
   onNextChat: CallableFunction;
@@ -13,6 +15,7 @@ interface OptionsContainerProps {
 }
 
 export default function OptionsContainer({
+  options,
   onToggleMinimap,
   onRefreshMinimap,
   onNextChat,
@@ -26,7 +29,9 @@ export default function OptionsContainer({
       </button>
       {showMinimap ? (
         <>
-          <button onClick={() => onRefreshMinimap()} style={buttonStyle}>
+          <button 
+            onClick={() => onRefreshMinimap()} 
+            style={options.autoRefresh ? {...buttonStyle, color: "#FF5733"} : buttonStyle }>
             <BiRefresh />
           </button>
           <button onClick={() => onPreviousChat()} style={buttonStyle}>
