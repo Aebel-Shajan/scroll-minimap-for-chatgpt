@@ -12,6 +12,7 @@ import { DEFAULT_OPTIONS } from "../../constants";
 
 // let lastChatText: string = ""
 let lastUrl: string = ""
+let refreshRetryCount: number = 0
 
 export default function ContentContainer() {
   // States
@@ -23,11 +24,21 @@ export default function ContentContainer() {
 
   function triggerCanvasRefresh() {
     // changing state always triggers a refresh of parent and child states (excluding memo compnents)
-    // console.log("manual refresh triggered")
-    setManualRefresh((temp) => !temp);
     chatContainer.current = queryChatContainer()
     if (chatContainer.current) {
       scrollContainer.current = chatContainer.current.parentElement;
+      setManualRefresh((temp) => !temp);
+    } else {
+      if (refreshRetryCount < 10) {
+        // Call function again with a delay to see if it can be found later on
+        refreshRetryCount += 1
+        setTimeout(triggerCanvasRefresh, 500)
+      } else {
+        // After 10 calls if no chat container is found render anyway.
+        // This should show an error screen on the minimap
+        refreshRetryCount = 0
+        setManualRefresh((temp) => !temp);
+      }
     }
   }
 
@@ -43,7 +54,6 @@ export default function ContentContainer() {
 
   function refreshOnAddressChange() {
     const currentUrl = location.href;
-    console.log("document changed")
     if (currentUrl !== lastUrl) {
         lastUrl = currentUrl
         triggerCanvasRefresh()

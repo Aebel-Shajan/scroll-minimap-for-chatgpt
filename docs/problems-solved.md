@@ -63,3 +63,30 @@ Results :
 
 ## Problem : When the page changes, we try querying for a chat container before it has actually loaded
 
+Attempt 1 : Call the function again 500ms later if the chat container has not been found: 
+
+```javascript
+  function triggerCanvasRefresh() {
+    // changing state always triggers a refresh of parent and child states (excluding memo compnents)
+    chatContainer.current = queryChatContainer()
+    if (chatContainer.current) {
+      scrollContainer.current = chatContainer.current.parentElement;
+      setManualRefresh((temp) => !temp);
+    } else {
+      if (refreshRetryCount < 10) {
+        // Call function again with a delay to see if it can be found later on
+        refreshRetryCount += 1
+        setTimeout(triggerCanvasRefresh, 500)
+      } else {
+        // After 10 calls if no chat container is found render anyway.
+        // This should show an error screen on the minimap
+        refreshRetryCount = 0
+        setManualRefresh((temp) => !temp);
+      }
+
+    }
+  }
+```
+Results: 
+* Works for the most part, if the chat container is not found it calls the functions again later.
+* I have seen instances where it fails to find the chat container, however the error message does not get displayed. Instead the minimap just keeps the same image.
