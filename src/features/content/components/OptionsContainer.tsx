@@ -1,7 +1,7 @@
 import { BiDownArrow, BiRefresh, BiUpArrow } from "react-icons/bi";
 import { CgClose } from "react-icons/cg";
 import { ExtensionOptions } from "../../../types/options";
-// import { HiMiniMap } from "react-icons/hi2";
+import {  IoSettingsOutline } from "react-icons/io5";
 
 
 const logo = chrome.runtime.getURL("assets/logo.png");
@@ -22,6 +22,11 @@ export default function OptionsContainer({
   onPreviousChat,
   showMinimap,
 }: OptionsContainerProps) {
+
+  function onOpenOptions() {
+    chrome.runtime.sendMessage({"action": "openOptionsPage"});
+  }
+
   return (
     <div className="options-container" style={OptionsContainerStyle}>
       <button onClick={() => onToggleMinimap()} style={buttonStyle}>
@@ -29,17 +34,25 @@ export default function OptionsContainer({
       </button>
       {showMinimap ? (
         <>
-          <button 
-            onClick={() => onRefreshMinimap()} 
-            style={options.autoRefresh ? {...buttonStyle, color: "#AAFF00"} : buttonStyle }>
-            <BiRefresh />
-          </button>
-          <button onClick={() => onPreviousChat()} style={buttonStyle}>
-            <BiUpArrow />
-          </button>
-          <button onClick={() => onNextChat()} style={buttonStyle}>
-            <BiDownArrow />
-          </button>
+          <div>
+            <button onClick={() => onOpenOptions()} style={buttonStyle} >
+            <IoSettingsOutline />
+            </button>
+            <button
+              onClick={() => onRefreshMinimap()} 
+              style={options.autoRefresh ? {...buttonStyle, color: "#AAFF00"} : buttonStyle }>
+              <BiRefresh />
+            </button>
+   
+          </div>
+          <div>
+            <button onClick={() => onPreviousChat()} style={buttonStyle}>
+              <BiUpArrow />
+            </button>
+            <button onClick={() => onNextChat()} style={buttonStyle}>
+              <BiDownArrow />
+            </button>
+          </div>
         </>
       ) : null}
     </div>
@@ -51,7 +64,7 @@ const OptionsContainerStyle: React.CSSProperties = {
   height: "fit-content",
   display: "flex",
   flexDirection: "column",
-  gap: "0.3em",
+  gap: "1em",
   paddingTop: "1em"
 };
 const buttonStyle: React.CSSProperties = {
