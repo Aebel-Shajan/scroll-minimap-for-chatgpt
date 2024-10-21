@@ -31,7 +31,7 @@ export default function OptionsContainer({
         <>
           <button 
             onClick={() => onRefreshMinimap()} 
-            style={options.autoRefresh ? {...buttonStyle, color: "#FF5733"} : buttonStyle }>
+            style={options.autoRefresh ? {...buttonStyle, color: "#AAFF00"} : buttonStyle }>
             <BiRefresh />
           </button>
           <button onClick={() => onPreviousChat()} style={buttonStyle}>
