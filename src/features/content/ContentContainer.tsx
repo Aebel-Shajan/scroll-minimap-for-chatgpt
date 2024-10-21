@@ -4,43 +4,83 @@ import Minimap from "./components/MinimapContainer/MinimapContainer";
 import {
   queryAllChatElements,
   queryChatContainer,
+  queryChatScrollContainer,
   queryNavElement,
 } from "./utils/renderLogic";
+import { ExtensionOptions } from "../../types/options";
+import { DEFAULT_OPTIONS } from "../../constants";
+
+let lastChatText: string = ""
+let lastUrl: string = ""
+let refreshRetryCount: number = 0
 
 export default function ContentContainer() {
-  const [showMinimap, setShowMinimap] = useState<boolean>(false);
+  // States
+  const [options, setOptions] = useState<ExtensionOptions>(DEFAULT_OPTIONS)
+  const [showMinimap, setShowMinimap] = useState<boolean>(DEFAULT_OPTIONS.keepOpen);
   const [manualRefresh, setManualRefresh] = useState<boolean>(false);
   const chatContainer = useRef<HTMLElement | null>(null);
   const scrollContainer = useRef<HTMLElement | null>(null);
 
   function triggerCanvasRefresh() {
     // changing state always triggers a refresh of parent and child states (excluding memo compnents)
-    // console.log("manual refresh triggered")
-    setManualRefresh((temp) => !temp);
     chatContainer.current = queryChatContainer()
     if (chatContainer.current) {
       scrollContainer.current = chatContainer.current.parentElement;
+      setManualRefresh((temp) => !temp);
+    } else {
+      if (refreshRetryCount < 10) {
+        // Call function again with a delay to see if it can be found later on
+        refreshRetryCount += 1
+        setTimeout(triggerCanvasRefresh, 500)
+      } else {
+        // After 10 calls if no chat container is found render anyway.
+        // This should show an error screen on the minimap
+        refreshRetryCount = 0
+        setManualRefresh((temp) => !temp);
+      }
     }
   }
 
-  // Run when mounted
+  function refreshOnChatChange() {
+    const chatContainer = queryChatContainer()
+    if (!chatContainer) return 
+    const currentChatText = chatContainer.innerText
+    if (currentChatText !== lastChatText) {
+      lastChatText = currentChatText
+      triggerCanvasRefresh();
+    }
+  }
+
+  function refreshOnAddressChange() {
+    const currentUrl = location.href;
+    if (currentUrl !== lastUrl) {
+        lastUrl = currentUrl
+        triggerCanvasRefresh()
+      }
+    }
+
+  // On initial render
   useEffect(() => {
-    addLocationObserver(() => {
-      // console.log("document body changed");
-      setTimeout(() => {
-        const newChat = queryChatContainer();
-        if (chatContainer.current !== newChat) {
-          // console.log("chat container changed");
-          triggerCanvasRefresh();
+    // Detect all changes in dom -> is it a url change? -> if so refresh the minimap
+    executeOnElementChange(refreshOnAddressChange, document)
+    
+    let intervalId: number;
+    chrome.storage.sync.get(['options'], function(data) {
+      if (data.options) {
+        const options: ExtensionOptions = {...data.options}
+        setOptions(options)
+        setShowMinimap(options.keepOpen)
+        if (options.autoRefresh) {
+          intervalId = setInterval(refreshOnChatChange, options.refreshPeriod * 1000)
         }
-        chatContainer.current = newChat;
-        if (newChat) {
-          scrollContainer.current = newChat.parentElement;
-        }
-      }, 500); // delayed because it takes some time for chats  to load
-    });
+      }
+    })
+
+    return () => clearInterval(intervalId)
   }, []);
 
+  // Helper functions
   const onToggleMinimap = () => {
     setShowMinimap(!showMinimap);
     triggerCanvasRefresh();
@@ -52,10 +92,11 @@ export default function ContentContainer() {
   return (
     <div className="app-container" style={appContainerStyle}>
       <OptionsContainer
+        options={options}
         onToggleMinimap={onToggleMinimap}
         onRefreshMinimap={onRefreshMinimap}
-        onNextChat={() => onNextChat(scrollContainer.current)}
-        onPreviousChat={() => onPreviousChat(scrollContainer.current)}
+        onNextChat={() => onNextChat( options.smoothScrolling)}
+        onPreviousChat={() => onPreviousChat(options.smoothScrolling)}
         showMinimap={showMinimap}
       />
       {showMinimap ? (
@@ -78,18 +119,29 @@ const appContainerStyle: React.CSSProperties = {
   pointerEvents: "none",
   userSelect: "none",
 };
-function addLocationObserver(callback: MutationCallback) {
+/**
+ * Observes changes to the child elements of a specified DOM element and executes a 
+ * callback function when mutations are detected.
+ *
+ * @param callback - The function to be executed when mutations are observed. 
+ *  It receives a list of MutationRecord objects and the MutationObserver instance as 
+ *  arguments.
+ * @param element - The DOM element to be observed for changes.
+ */
+function executeOnElementChange(callback: MutationCallback, element: HTMLElement|Document) {
   // Options for the observer (which mutations to observe)
-  const config = { attributes: false, childList: true, subtree: false };
+  const config = { childList: true, subtree: true };
 
   // Create an observer instance linked to the callback function
   const observer = new MutationObserver(callback);
 
   // Start observing the target node for configured mutations
-  observer.observe(document.body, config);
+  observer.observe(element, config);
 }
 
-const onNextChat = (scrollContainer: HTMLElement | null) => {
+const onNextChat = (smoothScroll: boolean) => {
+  // Calculate scroll pos of closest next chat
+  const scrollContainer = queryChatScrollContainer();
   const navElement = queryNavElement();
   if (!scrollContainer || !navElement) return;
   const navHeight = navElement.offsetHeight;
@@ -98,16 +150,26 @@ const onNextChat = (scrollContainer: HTMLElement | null) => {
     return element.getBoundingClientRect().top > 1.1 * navHeight;
   });
   if (nextChats.length === 0) return;
-  const firstNextChat = nextChats[0];
-  scrollContainer.scrollTo({
-    top:
-      scrollContainer.scrollTop +
-      firstNextChat.getBoundingClientRect().top -
-      navHeight,
-    behavior: "smooth",
-  });
+  const closestNextChat = nextChats[0];
+  const scrollPos = scrollContainer.scrollTop +
+  closestNextChat.getBoundingClientRect().top -
+  navHeight
+
+  // Configure scroll options
+  const scrollOptions: ScrollToOptions= {
+    top: scrollPos,
+    behavior: "instant"
+  }
+  if (smoothScroll) {
+    scrollOptions["behavior"] = "smooth"
+  }
+
+  // Scroll scrollContainer
+  scrollContainer.scrollTo(scrollOptions);
 };
-const onPreviousChat = (scrollContainer: HTMLElement | null) => {
+const onPreviousChat = (smoothScroll: boolean) => {
+  // Calculate scroll pos of closest previous chat
+  const scrollContainer = queryChatScrollContainer();
   const navElement = queryNavElement();
   if (!scrollContainer || !navElement) return;
   const navHeight = navElement.offsetHeight;
@@ -117,11 +179,19 @@ const onPreviousChat = (scrollContainer: HTMLElement | null) => {
   });
   if (nextChats.length === 0) return;
   const firstNextChat = nextChats[nextChats.length - 1];
-  scrollContainer.scrollTo({
-    top:
-      scrollContainer.scrollTop +
-      firstNextChat.getBoundingClientRect().top -
-      navHeight,
-    behavior: "smooth",
-  });
+  const scrollPos = scrollContainer.scrollTop +
+  firstNextChat.getBoundingClientRect().top -
+  navHeight
+
+  // Configure scroll options
+  const scrollOptions: ScrollToOptions = {
+    top: scrollPos,
+    behavior: "instant"
+  }
+  if (smoothScroll) {
+    scrollOptions["behavior"] = "smooth"
+  }
+
+  // Scroll container
+  scrollContainer.scrollTo(scrollOptions);
 };
