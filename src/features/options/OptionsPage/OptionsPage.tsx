@@ -76,7 +76,7 @@ const OptionsPage = () => {
               onChange={handleChangeCheckbox(setAutoRefresh)} />
             <div>
               <Text td={!autoRefresh? "line-through": ""}>
-                Refresh period: {refreshPeriod}
+                Refresh every {refreshPeriod} seconds.
               </Text>
             <Slider 
               disabled={!autoRefresh}
