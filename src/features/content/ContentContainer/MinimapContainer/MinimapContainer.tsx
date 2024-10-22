@@ -46,7 +46,7 @@ const MinimapContainer = () => {
     if (!currentScrollContainer) return;
     if (!minimapContainer) return;
     currentScrollContainer.addEventListener("scroll", () =>
-      onScroll(minimapContainer, currentScrollContainer, scale)
+      setMinimapContainerScroll(minimapContainer, currentScrollContainer, scale)
     );
   }, [currentScrollContainer, scale, currentScrollContainer]);
 
@@ -94,15 +94,14 @@ function onDrag(
   scrollContainer.scrollTo(0, newScrollPos);
 }
 
-function onScroll(
+function setMinimapContainerScroll(
   minimapContainer: HTMLElement,
   scrollContainer: HTMLElement,
   scale: number
 ) {
-  const ratio =
-    scrollContainer.scrollTop /
-    (scrollContainer.scrollHeight + scrollContainer.offsetHeight);
-
-  minimapContainer.scrollTop =
-    scale * scrollContainer.scrollTop - ratio * minimapContainer.offsetHeight;
+  const scrollPercentage = scrollContainer.scrollTop / scrollContainer.scrollHeight
+  const viewScrollTop = scrollPercentage * minimapContainer.scrollHeight 
+  const adjustedMinimapHeight = minimapContainer.offsetHeight - (scale * scrollContainer.offsetHeight) 
+  console.log(adjustedMinimapHeight)
+  minimapContainer.scrollTop = viewScrollTop- (adjustedMinimapHeight * scrollPercentage)
 }

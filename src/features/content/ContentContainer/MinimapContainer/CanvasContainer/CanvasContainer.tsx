@@ -16,7 +16,7 @@ const CanvasContainer = ({
   const isLoading = useRef<boolean>(false)
 
   // useEffect(()=> console.log("canvas container rerendered", isLoading.current, chatContainer===null))
-  
+
   // On chat container change, on chat text change
   useEffect(() => {
     if (isLoading.current===true) return 
@@ -41,7 +41,7 @@ const CanvasContainer = ({
       const scale = canvasContainer.offsetWidth / canvas.offsetWidth;
       canvas.style.width = `${canvasContainer.offsetWidth}px`;
       canvas.style.height = `${scale * canvas.offsetHeight}px`;
-      setScale(scale);
+      setScale(canvas.offsetHeight / chatContainer.offsetHeight);
     })();
   }, [setScale, chatContainer, chatText]);
 
