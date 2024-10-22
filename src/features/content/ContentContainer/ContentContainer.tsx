@@ -4,6 +4,7 @@ import {
 } from "../utils/renderLogic";
 import ButtonContainer from "./ButtonContainer/ButtonContainer";
 import MinimapContainer from "./MinimapContainer/MinimapContainer";
+import styles from "./ContentContainer.module.css";
 
 interface ContentContextType {
   currentChatContainer: HTMLElement|null,
@@ -81,21 +82,10 @@ export default function ContentContainer() {
         showMinimap
       }
       } >
-      <div className="app-container" style={appContainerStyle}>
+      <div className={styles.appContainer}>
         <ButtonContainer />
         {showMinimap ? <MinimapContainer /> : null}
       </div>
     </ContentContext.Provider>
   );
 }
-
-const appContainerStyle: React.CSSProperties = {
-  display: "flex",
-  height: "100%",
-  width: "100%",
-  overflow: "hidden",
-  justifyContent: "right",
-  pointerEvents: "none",
-  userSelect: "none",
-};
-
