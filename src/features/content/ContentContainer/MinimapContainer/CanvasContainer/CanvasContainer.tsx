@@ -4,17 +4,20 @@ import { generateMinimapCanvas } from "../../../utils/renderLogic";
 interface CanvasContainerProps {
   setScale: CallableFunction;
   chatContainer: HTMLElement | null;
+  chatText: string
 }
 
 const CanvasContainer = ({
   setScale,
   chatContainer,
+  chatText
 }: CanvasContainerProps) => {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
   const isLoading = useRef<boolean>(false)
 
   // useEffect(()=> console.log("canvas container rerendered", isLoading.current, chatContainer===null))
-
+  
+  // On chat container change, on chat text change
   useEffect(() => {
     if (isLoading.current===true) return 
     (async () => {
@@ -40,7 +43,7 @@ const CanvasContainer = ({
       canvas.style.height = `${scale * canvas.offsetHeight}px`;
       setScale(scale);
     })();
-  }, [setScale, chatContainer]);
+  }, [setScale, chatContainer, chatText]);
 
   return (
     <div

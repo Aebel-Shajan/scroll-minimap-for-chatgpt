@@ -10,7 +10,7 @@ const MinimapContainer = () => {
     if (!context) {
       throw new Error("OptionsContainer should be used within content context")
     }
-    const {currentChatContainer, currentScrollContainer} = context;
+    const {currentChatText, currentChatContainer, currentScrollContainer} = context;
   
   const [scale, setScale] = useState<number>(0);
   const mouseDown = useRef<boolean>(false);
@@ -57,6 +57,7 @@ const MinimapContainer = () => {
       ref={minimapContainerRef}
     >
       <CanvasContainer
+        chatText={currentChatText}
         chatContainer={currentChatContainer}
         setScale={setScale}
       />

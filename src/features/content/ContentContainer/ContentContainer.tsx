@@ -7,6 +7,7 @@ import MinimapContainer from "./MinimapContainer/MinimapContainer";
 
 interface ContentContextType {
   currentChatContainer: HTMLElement|null,
+  currentChatText: string,
   currentScrollContainer: HTMLElement|null,
   showMinimap: boolean,
   setShowMinimap: CallableFunction,
@@ -19,6 +20,7 @@ export default function ContentContainer() {
   // states
   const [currentUrl, setCurrentUrl] = useState<string>("")
   const [showMinimap, setShowMinimap] = useState<boolean>(false)
+  const [currentChatText, setCurrentChatText] = useState<string>("")
   const [currentChatContainer, setCurrentChatContainer] = useState<HTMLElement|null>(null)
   const [currentScrollContainer, setCurrentScrollContainer] = useState<HTMLElement|null>(null)
 
@@ -31,17 +33,20 @@ export default function ContentContainer() {
     return new Promise(res => setTimeout(res, milliseconds));
   }
 
-  async function searchForChat(): Promise<HTMLElement|null> {
+  async function searchForChat(): Promise<null> {
     for (let i =0; i<10; i++) {
         const chat = queryChatContainer()
         if (chat) {
           setCurrentChatContainer(chat)
+          setCurrentChatText(chat.innerText)
           if (chat) {
             setCurrentScrollContainer(chat?.parentElement)
           } else {
             setCurrentScrollContainer(null)
           }
+          return null
         }
+        
         await delay(100)
     }
     return null
@@ -69,6 +74,7 @@ export default function ContentContainer() {
     <ContentContext.Provider value={
       {
         currentChatContainer, 
+        currentChatText,
         currentScrollContainer, 
         searchForChat,
         setShowMinimap, 
