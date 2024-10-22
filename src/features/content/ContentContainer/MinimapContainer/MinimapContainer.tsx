@@ -1,17 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import ViewOverlay from "./ViewOverlay/ViewOverlay";
 import CanvasContainer from "./CanvasContainer/CanvasContainer";
+import { ContentContext } from "../ContentContainer";
 
-interface MinimapProps {
-  refreshMinimap: boolean;
-  chatContainer: HTMLElement | null;
-  scrollContainer: HTMLElement | null;
-}
-const MinimapContainer = ({
-  refreshMinimap,
-  chatContainer,
-  scrollContainer,
-}: MinimapProps) => {
+
+const MinimapContainer = () => {
+    // Context
+    const context = useContext(ContentContext);
+    if (!context) {
+      throw new Error("OptionsContainer should be used within content context")
+    }
+    const {currentChatContainer, currentScrollContainer} = context;
+  
   const [scale, setScale] = useState<number>(0);
   const mouseDown = useRef<boolean>(false);
   const [dragPos, setDragPos] = useState<number>(0);
@@ -37,18 +37,18 @@ const MinimapContainer = ({
   useEffect(() => {
     const minimapContainer = minimapContainerRef.current;
     if (!minimapContainer) return;
-    if (!scrollContainer) return;
-    onDrag(minimapContainer, scrollContainer, scale, dragPos);
-  }, [dragPos, scrollContainer, scale]);
+    if (!currentScrollContainer) return;
+    onDrag(minimapContainer, currentScrollContainer, scale, dragPos);
+  }, [dragPos, currentScrollContainer, scale]);
 
   useEffect(() => {
     const minimapContainer = minimapContainerRef.current;
-    if (!scrollContainer) return;
+    if (!currentScrollContainer) return;
     if (!minimapContainer) return;
-    scrollContainer.addEventListener("scroll", () =>
-      onScroll(minimapContainer, scrollContainer, scale)
+    currentScrollContainer.addEventListener("scroll", () =>
+      onScroll(minimapContainer, currentScrollContainer, scale)
     );
-  }, [refreshMinimap, scale, scrollContainer]);
+  }, [currentScrollContainer, scale, currentScrollContainer]);
 
   return (
     <div
@@ -57,15 +57,10 @@ const MinimapContainer = ({
       ref={minimapContainerRef}
     >
       <CanvasContainer
-        refreshCanvas={refreshMinimap}
-        chatContainer={chatContainer}
+        chatContainer={currentChatContainer}
         setScale={setScale}
       />
-      <ViewOverlay
-        refreshCanvas={refreshMinimap}
-        scrollContainer={scrollContainer}
-        scale={scale}
-      />
+      <ViewOverlay scale={scale}/>
     </div>
   );
 };

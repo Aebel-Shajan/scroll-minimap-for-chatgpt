@@ -1,16 +1,20 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { ContentContext } from "../../ContentContainer";
 
 interface ViewOverLayProps {
-  refreshCanvas: boolean;
   scale: number;
-  scrollContainer: HTMLElement | null;
 }
 
 const ViewOverlay = ({
-  refreshCanvas,
-  scale,
-  scrollContainer,
+  scale
 }: ViewOverLayProps) => {
+    // Context
+    const context = useContext(ContentContext);
+    if (!context) {
+      throw new Error("OptionsContainer should be used within content context")
+    }
+    const {currentScrollContainer} = context;
+  
   const [scrollTop, setScrollTop] = useState(0);
   const [height, setHeight] = useState(0);
 
@@ -20,13 +24,13 @@ const ViewOverlay = ({
   }
 
   useEffect(() => {
-    if (!scrollContainer) return;
-    onScroll(scrollContainer, scale);
-    scrollContainer.addEventListener("scroll", (event) => {
+    if (!currentScrollContainer) return;
+    onScroll(currentScrollContainer, scale);
+    currentScrollContainer.addEventListener("scroll", (event) => {
       if (!(event.target instanceof HTMLElement)) return;
       onScroll(event.target, scale);
     });
-  }, [scale, refreshCanvas, scrollContainer]);
+  }, [scale, currentScrollContainer]);
 
   const currentViewStyle: React.CSSProperties = {
     position: "absolute",

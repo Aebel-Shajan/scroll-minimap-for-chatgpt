@@ -1,27 +1,22 @@
 import { BiDownArrow, BiRefresh, BiUpArrow } from "react-icons/bi";
 import { CgClose } from "react-icons/cg";
-import { ExtensionOptions } from "../../../types/options";
+// import { ExtensionOptions } from "../../../../types/options";
 import {  IoSettingsOutline } from "react-icons/io5";
+import { useContext } from "react";
+import { ContentContext } from "../ContentContainer";
+import { onNextChat, onPreviousChat } from "../../utils/renderLogic";
 
 
 const logo = chrome.runtime.getURL("assets/logo.png");
-interface OptionsContainerProps {
-  options: ExtensionOptions;
-  onToggleMinimap: CallableFunction;
-  onRefreshMinimap: CallableFunction;
-  onNextChat: CallableFunction;
-  onPreviousChat: CallableFunction;
-  showMinimap: boolean;
-}
 
-export default function OptionsContainer({
-  options,
-  onToggleMinimap,
-  onRefreshMinimap,
-  onNextChat,
-  onPreviousChat,
-  showMinimap,
-}: OptionsContainerProps) {
+
+export default function OptionsContainer() {
+  // Context
+  const context = useContext(ContentContext);
+  if (!context) {
+    throw new Error("OptionsContainer should be used within content context")
+  }
+  const {showMinimap, setShowMinimap, searchForChat} = context;
 
   function onOpenOptions() {
     chrome.runtime.sendMessage({"action": "openOptionsPage"});
@@ -29,7 +24,7 @@ export default function OptionsContainer({
 
   return (
     <div className="options-container" style={OptionsContainerStyle}>
-      <button onClick={() => onToggleMinimap()} style={buttonStyle}>
+      <button onClick={() => setShowMinimap((last: boolean) => !last)} style={buttonStyle}>
         {showMinimap ? <CgClose /> : <img src={logo} style={imageStyle}/>}
       </button>
       {showMinimap ? (
@@ -39,17 +34,18 @@ export default function OptionsContainer({
             <IoSettingsOutline />
             </button>
             <button
-              onClick={() => onRefreshMinimap()} 
-              style={options.autoRefresh ? {...buttonStyle, color: "#AAFF00"} : buttonStyle }>
+              onClick={() => searchForChat()} 
+              // style={options.autoRefresh ? {...buttonStyle, color: "#AAFF00"} : buttonStyle }
+              >
               <BiRefresh />
             </button>
    
           </div>
           <div>
-            <button onClick={() => onPreviousChat()} style={buttonStyle}>
+            <button onClick={() => onPreviousChat(true)} style={buttonStyle}>
               <BiUpArrow />
             </button>
-            <button onClick={() => onNextChat()} style={buttonStyle}>
+            <button onClick={() => onNextChat(true)} style={buttonStyle}>
               <BiDownArrow />
             </button>
           </div>

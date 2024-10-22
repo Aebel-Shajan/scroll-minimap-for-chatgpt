@@ -2,13 +2,11 @@ import { memo, useEffect, useRef } from "react";
 import { generateMinimapCanvas } from "../../../utils/renderLogic";
 
 interface CanvasContainerProps {
-  refreshCanvas: boolean;
   setScale: CallableFunction;
   chatContainer: HTMLElement | null;
 }
 
 const CanvasContainer = ({
-  refreshCanvas,
   setScale,
   chatContainer,
 }: CanvasContainerProps) => {
@@ -22,9 +20,9 @@ const CanvasContainer = ({
     (async () => {
       const canvasContainer = canvasContainerRef.current;
       if (!canvasContainer) return;
-      if (canvasContainer.parentElement){ // scroll to top to display message
-        canvasContainer.parentElement.scrollTo(0, 0)
-      }
+      // if (canvasContainer.parentElement){ // scroll to top to display message
+      //   canvasContainer.parentElement.scrollTo(0, 0)
+      // }
       if (!chatContainer) {
         canvasContainer.innerHTML = "No chat detected, try refreshing the minimap"
         return
@@ -42,8 +40,7 @@ const CanvasContainer = ({
       canvas.style.height = `${scale * canvas.offsetHeight}px`;
       setScale(scale);
     })();
-  }, [refreshCanvas, setScale, chatContainer]);
-
+  }, [setScale, chatContainer]);
 
   return (
     <div
