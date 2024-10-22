@@ -35,6 +35,7 @@ export default function OptionsContainer() {
             </button>
             <button
               onClick={() => searchForChat()} 
+              style={buttonStyle}
               // style={options.autoRefresh ? {...buttonStyle, color: "#AAFF00"} : buttonStyle }
               >
               <BiRefresh />
