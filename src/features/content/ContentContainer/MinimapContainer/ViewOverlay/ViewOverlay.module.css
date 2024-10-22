@@ -1,0 +1,9 @@
+.viewOverlay {
+    position: absolute;
+    top: var(--scrollTop);
+    left: 0;
+    width: 100%;
+
+    background-color: #00FFD744;
+    cursor: grab;
+}

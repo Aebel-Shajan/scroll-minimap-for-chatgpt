@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { ContentContext } from "../../ContentContainer";
+import styles from "./ViewOverlay.module.css"
 
 interface ViewOverLayProps {
   scale: number;
@@ -32,16 +33,12 @@ const ViewOverlay = ({
     });
   }, [scale, currentScrollContainer]);
 
-  const currentViewStyle: React.CSSProperties = {
-    position: "absolute",
+  const overrideStyle: React.CSSProperties = {
     top: `${scrollTop}px`,
-    left: "0",
-    width: "100%",
-    height: `${height}px`,
-    backgroundColor: `#00FFD744`,
-    cursor: "grab",
-  };
-  return <div className="current-view" style={currentViewStyle}></div>;
+    height: `${height}px`
+  }
+
+  return <div className={styles.viewOverlay} style={overrideStyle}></div>;
 };
 
 export default ViewOverlay;

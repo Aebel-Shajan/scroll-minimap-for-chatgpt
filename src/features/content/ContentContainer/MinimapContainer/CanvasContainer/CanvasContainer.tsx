@@ -1,5 +1,6 @@
 import { memo, useEffect, useRef } from "react";
 import { generateMinimapCanvas } from "../../../utils/renderLogic";
+import styles from "./CanvasContainer.module.css"
 
 interface CanvasContainerProps {
   setScale: CallableFunction;
@@ -47,17 +48,10 @@ const CanvasContainer = ({
 
   return (
     <div
-      className="canvas-container"
-      style={canvasContainerStyle}
+      className={styles.canvasContainer}
       ref={canvasContainerRef}
     ></div>
   );
-};
-
-const canvasContainerStyle: React.CSSProperties = {
-  width: "100%",
-  color: "white",
-  fontWeight: "bold"
 };
 
 export default memo(CanvasContainer);
