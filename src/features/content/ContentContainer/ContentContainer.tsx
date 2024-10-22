@@ -99,24 +99,3 @@ const appContainerStyle: React.CSSProperties = {
   userSelect: "none",
 };
 
-
-
-/**
- * Observes changes to the child elements of a specified DOM element and executes a 
- * callback function when mutations are detected.
- *
- * @param callback - The function to be executed when mutations are observed. 
- *  It receives a list of MutationRecord objects and the MutationObserver instance as 
- *  arguments.
- * @param element - The DOM element to be observed for changes.
- */
-// function executeOnElementChange(callback: MutationCallback, element: HTMLElement|Document) {
-//   // Options for the observer (which mutations to observe)
-//   const config = { childList: true, subtree: true };
-
-//   // Create an observer instance linked to the callback function
-//   const observer = new MutationObserver(callback);
-
-//   // Start observing the target node for configured mutations
-//   observer.observe(element, config);
-// }
