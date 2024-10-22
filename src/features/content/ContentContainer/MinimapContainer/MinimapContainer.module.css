@@ -1,0 +1,10 @@
+.minimapContainer {
+    position: relative;
+    width: 80px;
+    height: 90vh;
+    background-color: #343442;
+    pointer-events: all;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 1);
+    overflow-y: scroll;
+    scrollbar-width: none;
+}

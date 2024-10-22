@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import ViewOverlay from "./ViewOverlay/ViewOverlay";
 import CanvasContainer from "./CanvasContainer/CanvasContainer";
 import { ContentContext } from "../ContentContainer";
+import styles from "./MinimapContainer.module.css";
 
 
 const MinimapContainer = () => {
@@ -52,8 +53,7 @@ const MinimapContainer = () => {
 
   return (
     <div
-      className="minimap-container"
-      style={minimapContainerStyle}
+      className={styles.minimapContainer}
       ref={minimapContainerRef}
     >
       <CanvasContainer
@@ -66,16 +66,6 @@ const MinimapContainer = () => {
   );
 };
 
-const minimapContainerStyle: React.CSSProperties = {
-  position: "relative",
-  width: "80px",
-  height: "90vh",
-  backgroundColor: "#343442",
-  pointerEvents: "all",
-  boxShadow: "0 0 20px rgba(0, 0, 0, 1)",
-  overflowY: "scroll",
-  scrollbarWidth: "none",
-};
 
 export default MinimapContainer;
 
