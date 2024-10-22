@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import {
   queryChatContainer,
 } from "../utils/renderLogic";
-import OptionsContainer from "./OptionsContainer/OptionsContainer";
+import ButtonContainer from "./ButtonContainer/ButtonContainer";
 import MinimapContainer from "./MinimapContainer/MinimapContainer";
 
 interface ContentContextType {
@@ -82,7 +82,7 @@ export default function ContentContainer() {
       }
       } >
       <div className="app-container" style={appContainerStyle}>
-        <OptionsContainer />
+        <ButtonContainer />
         {showMinimap ? <MinimapContainer /> : null}
       </div>
     </ContentContext.Provider>

@@ -10,7 +10,7 @@ import { onNextChat, onPreviousChat } from "../../utils/renderLogic";
 const logo = chrome.runtime.getURL("assets/logo.png");
 
 
-export default function OptionsContainer() {
+export default function ButtonContainer() {
   // Context
   const context = useContext(ContentContext);
   if (!context) {
