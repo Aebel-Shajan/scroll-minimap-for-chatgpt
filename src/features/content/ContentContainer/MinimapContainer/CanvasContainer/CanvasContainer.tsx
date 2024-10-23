@@ -5,37 +5,40 @@ import styles from "./CanvasContainer.module.css"
 interface CanvasContainerProps {
   setScale: CallableFunction;
   chatContainer: HTMLElement | null;
-  chatText: string
+  chatText: string,
+  setShowOverlay: CallableFunction;
+  setOverlayText: CallableFunction;
 }
 
 const CanvasContainer = ({
   setScale,
   chatContainer,
-  chatText
+  chatText,
+  setShowOverlay,
+  setOverlayText
 }: CanvasContainerProps) => {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
-  const isLoading = useRef<boolean>(false)
 
   // useEffect(()=> console.log("canvas container rerendered", isLoading.current, chatContainer===null))
 
   // On chat container change, on chat text change
   useEffect(() => {
-    if (isLoading.current===true) return 
     (async () => {
       const canvasContainer = canvasContainerRef.current;
       if (!canvasContainer) return;
       // if (canvasContainer.parentElement){ // scroll to top to display message
       //   canvasContainer.parentElement.scrollTo(0, 0)
       // }
+      setShowOverlay(true)
       if (!chatContainer) {
-        canvasContainer.innerHTML = "No chat detected, try refreshing the minimap"
+        setOverlayText("No chat detected, try refreshing the minimap")
+        canvasContainer.innerHTML = ""
         return
       }
-      isLoading.current = true
+      setOverlayText("loading")
       // console.log("generating minmiap canvas...")
-      canvasContainer.innerHTML = "loading.."
       const canvas = await generateMinimapCanvas(chatContainer);
-      isLoading.current = false
+      setShowOverlay(false)
       canvasContainer.innerHTML = "";
       canvasContainer.appendChild(canvas);
 
@@ -44,13 +47,10 @@ const CanvasContainer = ({
       canvas.style.height = `${scale * canvas.offsetHeight}px`;
       setScale(canvas.offsetHeight / chatContainer.offsetHeight);
     })();
-  }, [setScale, chatContainer, chatText]);
+  }, [chatContainer, chatText]);
 
   return (
-    <div
-      className={styles.canvasContainer}
-      ref={canvasContainerRef}
-    ></div>
+    <div className={styles.canvasContainer}ref={canvasContainerRef}></div>
   );
 };
 

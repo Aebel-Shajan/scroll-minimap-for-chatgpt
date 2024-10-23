@@ -33,7 +33,7 @@ export async function generateMinimapCanvas(
         .querySelectorAll('[data-message-author-role="user"]')
         .forEach((k) => {
           const j = k as HTMLElement;
-          j.style.backgroundColor = "yellow";
+          j.style.backgroundColor = "#7cffd1";
         });
     },
     ignoreElements: (element) => element.classList.contains("top-0"), // ignores nav bar

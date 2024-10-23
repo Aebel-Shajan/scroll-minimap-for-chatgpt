@@ -6,6 +6,7 @@ import { useContext } from "react";
 import { ContentContext } from "../ContentContainer";
 import { onNextChat, onPreviousChat } from "../../utils/renderLogic";
 import styles from "./ButtonContainer.module.css"
+import { Tooltip } from "@mantine/core";
 
 
 const logo = chrome.runtime.getURL("assets/logo.png");
@@ -25,21 +26,31 @@ export default function ButtonContainer() {
 
   return (
     <div className={styles.buttonContainer} >
-      <button onClick={() => setShowMinimap((last: boolean) => !last)} >
-        {showMinimap ? <CgClose /> : <img src={logo} />}
-      </button>
+        <button onClick={() => setShowMinimap((last: boolean) => !last)} >
+          {showMinimap ? <CgClose /> : <img src={logo} />}
+        </button>
       {showMinimap ? (
         <>
           <div>
             <button onClick={() => onOpenOptions()} >
               <IoSettingsOutline />
             </button>
+            <Tooltip
+              position="left"
+              label={options.autoRefresh? `Auto refreshes every ${options.refreshPeriod} seconds`:"Refresh minimap"}
+              color="teal"
+              openDelay={200}
+              w={150}
+              multiline
+              withArrow
+            >
             <button
               onClick={() => searchForChat()}
               style={options.autoRefresh ? {color: "#AAFF00"}: {}}
-            >
+              >
               <BiRefresh />
             </button>
+            </Tooltip>
           </div>
           <div>
             <button onClick={() => onPreviousChat(options.smoothScrolling)} >
