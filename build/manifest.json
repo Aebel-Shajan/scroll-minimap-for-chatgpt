@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "ChatGPT ScrollMap",
+    "name": "Chat GPT Scroll Map",
     "version": "1.4",
-    "description": "A minimap for scrolling through chatgpt messages, similar to the one in VS Code",
+    "description": "A minimap for scrolling through chat gpt messages, similar to the one in VS Code",
     "icons": {
         "128": "assets/logo.png"
     },
