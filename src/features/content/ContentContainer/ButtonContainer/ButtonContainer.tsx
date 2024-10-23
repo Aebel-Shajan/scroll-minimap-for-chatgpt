@@ -42,10 +42,10 @@ export default function ButtonContainer() {
             </button>
           </div>
           <div>
-            <button onClick={() => onPreviousChat(true)} >
+            <button onClick={() => onPreviousChat(options.smoothScrolling)} >
               <BiUpArrow />
             </button>
-            <button onClick={() => onNextChat(true)}>
+            <button onClick={() => onNextChat(options.smoothScrolling)}>
               <BiDownArrow />
             </button>
           </div>
