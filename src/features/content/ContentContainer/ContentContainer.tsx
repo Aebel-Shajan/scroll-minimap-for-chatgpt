@@ -39,18 +39,20 @@ export default function ContentContainer() {
   }
 
   async function searchForChat(): Promise<null> {
+    await delay(500)
     for (let i =0; i<10; i++) {
-        const chat = queryChatContainer()
-        if (chat) {
+      const chat = queryChatContainer()
+      if (chat) {
           setCurrentChatContainer(chat)
           setCurrentChatText(chat.innerText)
           setCurrentScrollContainer(chat.parentElement)
           return null
-        }
-        await delay(300)
       }
-      setCurrentChatContainer(null)
-      setCurrentScrollContainer(null)
+      await delay(300)
+    }
+    setCurrentChatContainer(null)
+    setCurrentChatText("")
+    setCurrentScrollContainer(null)
     return null
 }
 
@@ -82,14 +84,19 @@ export default function ContentContainer() {
   // On options change
   useEffect(() => {
     // Auto refresh
-    const autoRefreshInterval = setInterval(searchForChat, options.refreshPeriod * 1000);
+    let autoRefreshInterval: number |null;
+    if (options.autoRefresh) {
+      autoRefreshInterval = setInterval(searchForChat, options.refreshPeriod * 1000);
+    }
 
     // Keep open
     if (options.keepOpen) {
       setShowMinimap(true)
     }
     return () => {
-      clearInterval(autoRefreshInterval);
+      if (autoRefreshInterval) {
+        clearInterval(autoRefreshInterval);
+      }
     };
   }, [options])
 
