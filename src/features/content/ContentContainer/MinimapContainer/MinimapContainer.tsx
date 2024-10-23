@@ -40,16 +40,17 @@ const MinimapContainer = () => {
     if (!minimapContainer) return;
     if (!currentScrollContainer) return;
     onDrag(minimapContainer, currentScrollContainer, scale, dragPos);
-  }, [dragPos, currentScrollContainer, scale]);
+  }, [dragPos]);
 
   useEffect(() => {
     const minimapContainer = minimapContainerRef.current;
     if (!currentScrollContainer) return;
     if (!minimapContainer) return;
+    setMinimapContainerScroll(minimapContainer, currentScrollContainer, scale)
     currentScrollContainer.addEventListener("scroll", () =>
       setMinimapContainerScroll(minimapContainer, currentScrollContainer, scale)
     );
-  }, [currentScrollContainer, scale, currentScrollContainer]);
+  }, [currentScrollContainer, scale]);
 
   return (
     <div
@@ -92,6 +93,5 @@ function setMinimapContainerScroll(
   const scrollPercentage = scrollContainer.scrollTop / scrollContainer.scrollHeight
   const viewScrollTop = scrollPercentage * minimapContainer.scrollHeight 
   const adjustedMinimapHeight = minimapContainer.offsetHeight - (scale * scrollContainer.offsetHeight) 
-  console.log(adjustedMinimapHeight)
   minimapContainer.scrollTop = viewScrollTop- (adjustedMinimapHeight * scrollPercentage)
 }

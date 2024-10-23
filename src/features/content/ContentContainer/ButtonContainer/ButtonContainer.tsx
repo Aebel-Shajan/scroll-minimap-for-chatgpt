@@ -17,7 +17,7 @@ export default function ButtonContainer() {
   if (!context) {
     throw new Error("OptionsContainer should be used within content context")
   }
-  const { showMinimap, setShowMinimap, searchForChat } = context;
+  const { showMinimap, setShowMinimap, searchForChat, options } = context;
 
   function onOpenOptions() {
     chrome.runtime.sendMessage({ "action": "openOptionsPage" });
@@ -36,7 +36,7 @@ export default function ButtonContainer() {
             </button>
             <button
               onClick={() => searchForChat()}
-            // style={options.autoRefresh ? {...buttonStyle, color: "#AAFF00"} : buttonStyle }
+              style={options.autoRefresh ? {color: "#AAFF00"}: {}}
             >
               <BiRefresh />
             </button>
