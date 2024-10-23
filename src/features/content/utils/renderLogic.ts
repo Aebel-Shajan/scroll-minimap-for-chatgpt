@@ -81,3 +81,61 @@ export function queryNavElement(): HTMLElement| null {
   if (!chatContainer|| chatContainer.childNodes.length === 0) return null
   return chatContainer.childNodes[0] as HTMLElement;
 }
+
+export const onNextChat = (smoothScroll: boolean) => {
+  // Calculate scroll pos of closest next chat
+  const scrollContainer = queryChatScrollContainer();
+  const navElement = queryNavElement();
+  if (!scrollContainer || !navElement) return;
+  const navHeight = navElement.offsetHeight;
+  const chatElements = queryAllChatElements();
+  const nextChats = chatElements.filter((element) => {
+    return element.getBoundingClientRect().top > 1.1 * navHeight;
+  });
+  if (nextChats.length === 0) return;
+  const closestNextChat = nextChats[0];
+  const scrollPos = scrollContainer.scrollTop +
+  closestNextChat.getBoundingClientRect().top -
+  navHeight
+
+  // Configure scroll options
+  const scrollOptions: ScrollToOptions= {
+    top: scrollPos,
+    behavior: "instant"
+  }
+  if (smoothScroll) {
+    scrollOptions["behavior"] = "smooth"
+  }
+
+  // Scroll scrollContainer
+  scrollContainer.scrollTo(scrollOptions);
+};
+
+export const onPreviousChat = (smoothScroll: boolean) => {
+  // Calculate scroll pos of closest previous chat
+  const scrollContainer = queryChatScrollContainer();
+  const navElement = queryNavElement();
+  if (!scrollContainer || !navElement) return;
+  const navHeight = navElement.offsetHeight;
+  const chatElements = queryAllChatElements();
+  const nextChats = chatElements.filter((element) => {
+    return element.getBoundingClientRect().top < navHeight;
+  });
+  if (nextChats.length === 0) return;
+  const firstNextChat = nextChats[nextChats.length - 1];
+  const scrollPos = scrollContainer.scrollTop +
+  firstNextChat.getBoundingClientRect().top -
+  navHeight
+
+  // Configure scroll options
+  const scrollOptions: ScrollToOptions = {
+    top: scrollPos,
+    behavior: "instant"
+  }
+  if (smoothScroll) {
+    scrollOptions["behavior"] = "smooth"
+  }
+
+  // Scroll container
+  scrollContainer.scrollTo(scrollOptions);
+};

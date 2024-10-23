@@ -1,17 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import ViewOverlay from "./ViewOverlay/ViewOverlay";
 import CanvasContainer from "./CanvasContainer/CanvasContainer";
+import { ContentContext } from "../ContentContainer";
+import styles from "./MinimapContainer.module.css";
 
-interface MinimapProps {
-  refreshMinimap: boolean;
-  chatContainer: HTMLElement | null;
-  scrollContainer: HTMLElement | null;
-}
-const MinimapContainer = ({
-  refreshMinimap,
-  chatContainer,
-  scrollContainer,
-}: MinimapProps) => {
+
+const MinimapContainer = () => {
+    // Context
+    const context = useContext(ContentContext);
+    if (!context) {
+      throw new Error("OptionsContainer should be used within content context")
+    }
+    const {currentChatText, currentChatContainer, currentScrollContainer} = context;
+  
   const [scale, setScale] = useState<number>(0);
   const mouseDown = useRef<boolean>(false);
   const [dragPos, setDragPos] = useState<number>(0);
@@ -37,49 +38,35 @@ const MinimapContainer = ({
   useEffect(() => {
     const minimapContainer = minimapContainerRef.current;
     if (!minimapContainer) return;
-    if (!scrollContainer) return;
-    onDrag(minimapContainer, scrollContainer, scale, dragPos);
-  }, [dragPos, scrollContainer, scale]);
+    if (!currentScrollContainer) return;
+    onDrag(minimapContainer, currentScrollContainer, scale, dragPos);
+  }, [dragPos]);
 
   useEffect(() => {
     const minimapContainer = minimapContainerRef.current;
-    if (!scrollContainer) return;
+    if (!currentScrollContainer) return;
     if (!minimapContainer) return;
-    scrollContainer.addEventListener("scroll", () =>
-      onScroll(minimapContainer, scrollContainer, scale)
+    setMinimapContainerScroll(minimapContainer, currentScrollContainer, scale)
+    currentScrollContainer.addEventListener("scroll", () =>
+      setMinimapContainerScroll(minimapContainer, currentScrollContainer, scale)
     );
-  }, [refreshMinimap, scale, scrollContainer]);
+  }, [currentScrollContainer, scale]);
 
   return (
     <div
-      className="minimap-container"
-      style={minimapContainerStyle}
+      className={styles.minimapContainer}
       ref={minimapContainerRef}
     >
       <CanvasContainer
-        refreshCanvas={refreshMinimap}
-        chatContainer={chatContainer}
+        chatText={currentChatText}
+        chatContainer={currentChatContainer}
         setScale={setScale}
       />
-      <ViewOverlay
-        refreshCanvas={refreshMinimap}
-        scrollContainer={scrollContainer}
-        scale={scale}
-      />
+      <ViewOverlay scale={scale}/>
     </div>
   );
 };
 
-const minimapContainerStyle: React.CSSProperties = {
-  position: "relative",
-  width: "80px",
-  height: "90vh",
-  backgroundColor: "#343442",
-  pointerEvents: "all",
-  boxShadow: "0 0 20px rgba(0, 0, 0, 1)",
-  overflowY: "scroll",
-  scrollbarWidth: "none",
-};
 
 export default MinimapContainer;
 
@@ -98,15 +85,13 @@ function onDrag(
   scrollContainer.scrollTo(0, newScrollPos);
 }
 
-function onScroll(
+function setMinimapContainerScroll(
   minimapContainer: HTMLElement,
   scrollContainer: HTMLElement,
   scale: number
 ) {
-  const ratio =
-    scrollContainer.scrollTop /
-    (scrollContainer.scrollHeight + scrollContainer.offsetHeight);
-
-  minimapContainer.scrollTop =
-    scale * scrollContainer.scrollTop - ratio * minimapContainer.offsetHeight;
+  const scrollPercentage = scrollContainer.scrollTop / scrollContainer.scrollHeight
+  const viewScrollTop = scrollPercentage * minimapContainer.scrollHeight 
+  const adjustedMinimapHeight = minimapContainer.offsetHeight - (scale * scrollContainer.offsetHeight) 
+  minimapContainer.scrollTop = viewScrollTop- (adjustedMinimapHeight * scrollPercentage)
 }
