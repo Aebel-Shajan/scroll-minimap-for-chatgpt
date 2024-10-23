@@ -32,9 +32,10 @@ const CanvasContainer = ({
       setShowOverlay(true)
       if (!chatContainer) {
         setOverlayText("No chat detected, try refreshing the minimap")
+        canvasContainer.innerHTML = ""
         return
       }
-      setOverlayText("Loading...")
+      setOverlayText("loading")
       // console.log("generating minmiap canvas...")
       const canvas = await generateMinimapCanvas(chatContainer);
       setShowOverlay(false)

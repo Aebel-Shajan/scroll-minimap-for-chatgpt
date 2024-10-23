@@ -3,7 +3,7 @@ import ViewOverlay from "./ViewOverlay/ViewOverlay";
 import CanvasContainer from "./CanvasContainer/CanvasContainer";
 import { ContentContext } from "../ContentContainer";
 import styles from "./MinimapContainer.module.css";
-import { Box, LoadingOverlay } from "@mantine/core";
+import { Box, Loader, LoadingOverlay } from "@mantine/core";
 
 
 const MinimapContainer = () => {
@@ -19,7 +19,7 @@ const MinimapContainer = () => {
   const [dragPos, setDragPos] = useState<number>(0);
   const minimapContainerRef = useRef<HTMLDivElement>(null);
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
-  const [overlayText, setOverlayText] = useState<string>("Loadding...")
+  const [overlayText, setOverlayText] = useState<string>("loading")
 
   useEffect(() => {
     const minimapContainer = minimapContainerRef.current;
@@ -76,7 +76,7 @@ const MinimapContainer = () => {
         }}
         visible={showOverlay} 
         zIndex={1000} 
-        loaderProps={{children: overlayText}}
+        loaderProps={{children: overlayText ==="loading" ? <Loader color="white" /> : overlayText}}
         overlayProps={{color: "#000", backgroundOpacity: 0.1, blur: 5}}
         
         />
