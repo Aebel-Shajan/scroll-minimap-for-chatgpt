@@ -40,17 +40,13 @@ export default function ContentContainer() {
         if (chat) {
           setCurrentChatContainer(chat)
           setCurrentChatText(chat.innerText)
-          if (chat) {
-            setCurrentScrollContainer(chat?.parentElement)
-          } else {
-            setCurrentScrollContainer(null)
-          }
+          setCurrentScrollContainer(chat.parentElement)
           return null
         }
-        
         await delay(300)
-    }
-    setCurrentChatContainer(null)
+      }
+      setCurrentChatContainer(null)
+      setCurrentScrollContainer(null)
     return null
 }
 
