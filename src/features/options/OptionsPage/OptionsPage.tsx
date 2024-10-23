@@ -62,6 +62,9 @@ const OptionsPage = () => {
       <AppShell.Main className={styles.main}>
         <div>
           <Stack>
+          <Text>
+            Make sure to refresh the page for the options to apply
+          </Text>
             <Checkbox
               label="Keep minimap open"
               checked={keepOpen}
@@ -70,14 +73,13 @@ const OptionsPage = () => {
               label="Enable smooth scrolling"
               checked={smoothScrolling}
               onChange={handleChangeCheckbox(setSmoothScrolling)}/>
+            <div>
             <Checkbox
               label="Enable auto refresh"
               checked={autoRefresh}
-              onChange={handleChangeCheckbox(setAutoRefresh)} />
-            <div>
-              <Text td={!autoRefresh? "line-through": ""}>
-                Refresh every {refreshPeriod} seconds.
-              </Text>
+              onChange={handleChangeCheckbox(setAutoRefresh)}
+              description={`Refresh every ${refreshPeriod} seconds.`}
+              />
             <Slider 
               disabled={!autoRefresh}
               min={0.5} 
