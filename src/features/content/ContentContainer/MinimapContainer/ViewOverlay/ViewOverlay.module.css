@@ -8,3 +8,7 @@
     border: solid 1px #00f2ff9f;
     cursor: grab;
 }
+
+.viewOverlay:active {
+    cursor: grabbing
+}
