@@ -72,14 +72,14 @@ export default function ContentContainer() {
 
   // On current url change
   useEffect(() => {
-    console.log("current url", currentUrl.slice(-2))
+    // console.log("current url", currentUrl.slice(-2))
     searchForChat()
   }, [currentUrl])
 
   // On current chat change
-  useEffect(() => {
-    console.log("current chat", currentChatContainer?.innerText.replace(/\s/g, "").slice(0, 10))
-  }, [currentChatContainer])
+  // useEffect(() => {
+  //   console.log("current chat", currentChatContainer?.innerText.replace(/\s/g, "").slice(0, 10))
+  // }, [currentChatContainer])
 
   // On options change
   useEffect(() => {
