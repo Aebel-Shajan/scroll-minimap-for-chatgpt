@@ -72,7 +72,8 @@ const MinimapContainer = () => {
     </div>
       <LoadingOverlay
         classNames={{
-          loader: styles.Loader,
+          root: styles.loadingOverlay,
+          loader: styles.loader,
         }}
         visible={showOverlay} 
         zIndex={1000} 

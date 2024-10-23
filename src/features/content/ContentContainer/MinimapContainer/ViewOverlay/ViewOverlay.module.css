@@ -4,8 +4,9 @@
     left: 0;
     width: 100%;
 
-    background-color: #00FFD744;
-    border: solid 1px #00f2ff9f;
+    background-color: #00ffa643;
+    border-radius: 3px;
+    border: solid 1px #00ffa6;
     cursor: grab;
 }
 
