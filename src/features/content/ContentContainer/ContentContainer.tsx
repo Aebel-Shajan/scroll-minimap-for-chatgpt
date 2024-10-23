@@ -48,8 +48,9 @@ export default function ContentContainer() {
           return null
         }
         
-        await delay(100)
+        await delay(500)
     }
+    setCurrentChatContainer(null)
     return null
 }
 
