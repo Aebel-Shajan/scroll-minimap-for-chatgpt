@@ -71,9 +71,15 @@ const MinimapContainer = () => {
       <ViewOverlay scale={scale}/>      
     </div>
       <LoadingOverlay
+        classNames={{
+          loader: styles.Loader,
+        }}
         visible={showOverlay} 
         zIndex={1000} 
-        loaderProps={{children: overlayText}} />
+        loaderProps={{children: overlayText}}
+        overlayProps={{color: "#000", backgroundOpacity: 0.1, blur: 5}}
+        
+        />
     </Box>
   );
 };
