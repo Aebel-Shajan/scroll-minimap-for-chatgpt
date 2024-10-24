@@ -50,11 +50,25 @@ export default function ButtonContainer() {
 
   return (
     <div className={styles.buttonContainer} >
-        <button onClick={() => setShowMinimap((last: boolean) => !last)} >
-          {showMinimap ? <CgClose /> : <img src={logo} />}
-        </button>
-      {showMinimap ? (
+
+      {!showMinimap ? 
+      (
+        <CustomTooltip
+          label="Open minimap"
+        >
+          <button onClick={() => setShowMinimap((last: boolean) => !last)} style={{borderRadius: "9999px", padding: "0rem 0.5rem"}}>
+            <img src={logo} />
+          </button>
+        </CustomTooltip>
+      )
+      :
+      (
         <>
+          <div>
+            <button onClick={() => setShowMinimap((last: boolean) => !last)} >
+              <CgClose /> 
+            </button>
+          </div>
           <div>
             <button onClick={() => onOpenOptions()} >
               <IoSettingsOutline />
@@ -72,6 +86,7 @@ export default function ButtonContainer() {
             </CustomTooltip>
             
           </div>
+
           <div>
             
             <CustomTooltip 
@@ -95,7 +110,7 @@ export default function ButtonContainer() {
 
           </div>
         </>
-      ) : null}
+      )}
     </div>
   );
 }
