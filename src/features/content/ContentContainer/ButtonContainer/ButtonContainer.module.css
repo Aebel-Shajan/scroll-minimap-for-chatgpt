@@ -1,0 +1,39 @@
+.buttonContainer {
+    font-size: 16px;
+    height: fit-content;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    padding-top: 1em;
+
+    button {
+        font-size: 16px;
+        all: initial;
+        padding: 0 0.2em;
+        background-color: #212121;
+        color: white;
+        border-top-left-radius: 1em;
+        border-bottom-left-radius: 1em;
+        pointer-events: auto;
+        border: solid #535353 1px;
+        font-family: Verdana;
+        height: 4em;
+        width: 1.2em;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    button:hover {
+        background-color: #2F2F2F;
+        cursor: pointer;
+    }
+
+    button:active {
+        background-color: #535353;
+    }
+
+    img {
+        object-fit: contain;
+    }
+}

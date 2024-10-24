@@ -4,12 +4,19 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "build": "npm run build-content && npm run build-popup && npm run build-options && npm run build-background",
+    "build-content": "tsc -b && vite build --config .config/content.config.ts",
+    "build-popup": "tsc -b && vite build --config .config/popup.config.ts",
+    "build-options": "tsc -b && vite build --config .config/options.config.ts",
+    "build-background": "tsc -b && vite build --config .config/background.config.ts",
+    "dev-popup": "vite --config .config/content.config.ts",
+    "dev-options": "vite --config .config/options.config.ts"
   },
   "dependencies": {
+    "@mantine/core": "^7.13.3",
+    "@mantine/hooks": "^7.13.3",
     "@types/chrome": "^0.0.273",
     "html2canvas": "^1.4.1",
     "react": "^18.3.1",
@@ -26,6 +33,9 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.9",
     "globals": "^15.9.0",
+    "postcss": "^8.4.47",
+    "postcss-preset-mantine": "^1.17.0",
+    "postcss-simple-vars": "^7.0.1",
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.0.1",
     "vite": "^5.4.1"

@@ -1,0 +1,41 @@
+{
+    "manifest_version": 3,
+    "name": "Chat GPT Scroll Map",
+    "version": "1.4",
+    "description": "A minimap for scrolling through chat gpt messages, similar to the one in VS Code",
+    "icons": {
+        "128": "assets/logo.png"
+    },
+    "permissions": [
+        "storage"
+    ],
+    "background": {
+    "service_worker": "background/background.js"
+    },
+    "options_ui": {
+        "page": "options/options.html",
+        "open_in_tab": true
+    },
+    "action": {
+        "default_popup": "popup/popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://chatgpt.com/*"
+            ],
+            "js": [
+                "content/content.js"
+            ],
+            "css": [
+                "content/content.css"
+            ]
+        }
+    ],
+    "web_accessible_resources": [
+        {
+          "resources": ["assets/logo.png"],
+          "matches": ["https://chatgpt.com/*"]
+        }
+    ]
+}

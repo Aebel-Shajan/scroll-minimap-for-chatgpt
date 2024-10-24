@@ -1,0 +1,15 @@
+.viewOverlay {
+    position: absolute;
+    top: var(--scrollTop);
+    left: 0;
+    width: 100%;
+
+    background-color: #00ffa643;
+    border-radius: 3px;
+    border: solid 1px #00ffa6;
+    cursor: grab;
+}
+
+.viewOverlay:active {
+    cursor: grabbing
+}
