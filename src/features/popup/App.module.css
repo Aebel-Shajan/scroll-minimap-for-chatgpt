@@ -1,0 +1,86 @@
+
+.heading {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  align-items: center;
+  height: 3rem;
+  width: 100%;
+  padding: 0.8rem;
+  object-fit: contain;
+  border-bottom: solid 1px var(--border-color);
+
+  & img {
+   height: 100%;
+  }
+  
+  h1 {
+    font-size: medium;
+    font-weight: bold;
+  }
+
+}
+
+.body {
+  padding: 1rem;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem
+}
+
+.demo {
+  width: 100%;
+  display: flex;
+
+  img {
+    width: 40%;
+    border-radius: 1rem;
+    border: solid 1px var(--border-color)
+  }
+}
+
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.2rem;
+  width: 100%;
+  border-top: solid 1px var(--border-color);
+  padding: 0.7rem 0;
+  a {
+    color: var(--text-color);
+    background-color: var(--background);
+    cursor: pointer;
+    text-decoration: none;
+    border:solid 1px var(--border-color);
+    border-radius: 9999px;
+    padding: 0.5rem 0.875rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  a:hover {
+    background-color: var(--hover-color);
+  }
+}
+
+.buttonStyle {
+  font-size: larger;
+  color: var(--text-color);
+  background-color: var(--background);
+  cursor: pointer;
+  text-decoration: none;
+  border:solid 1px var(--border-color);
+  border-radius: 9999px;
+  padding: 0.5rem 0.875rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.buttonStyle :hover {
+  background-color: var(--hover-color);
+}
