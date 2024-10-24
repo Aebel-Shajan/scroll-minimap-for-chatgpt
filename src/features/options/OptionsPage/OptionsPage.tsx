@@ -30,10 +30,12 @@ const OptionsPage = () => {
   useEffect(() => {
     chrome.storage.sync.get(['options'], function(data) {
       const options = {...data.options}
-      setKeepOpen(options.keepOpen)
-      setSmoothScrolling(options.smoothScrolling)
-      setAutoRefresh(options.autoRefresh)
-      setRefreshPeriod(options.refreshPeriod)
+      if (options) {
+        setKeepOpen(options.keepOpen)
+        setSmoothScrolling(options.smoothScrolling)
+        setAutoRefresh(options.autoRefresh)
+        setRefreshPeriod(options.refreshPeriod)
+      }
   });
   }, [])
 
