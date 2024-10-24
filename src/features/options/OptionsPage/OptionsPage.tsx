@@ -34,7 +34,9 @@ const OptionsPage = () => {
         setKeepOpen(options.keepOpen)
         setSmoothScrolling(options.smoothScrolling)
         setAutoRefresh(options.autoRefresh)
-        setRefreshPeriod(options.refreshPeriod)
+        if (options.refreshPeriod) {
+          setRefreshPeriod(options.refreshPeriod)
+        }
       }
   });
   }, [])
