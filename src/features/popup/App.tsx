@@ -5,7 +5,6 @@ import { FaGithub, FaStar } from 'react-icons/fa'
 import { MdBugReport } from 'react-icons/md'
 import { GoGear } from 'react-icons/go'
 import { Tooltip } from '@mantine/core'
-import { CiCoinInsert } from 'react-icons/ci'
 
 
 function App() {
@@ -71,12 +70,12 @@ function App() {
               <MdBugReport />
           </a>
         </Tooltip>
-        <Tooltip label="Recommend me some books 📖">
+        <Tooltip label="Request the next feature 🧪">
           <a
             href='https://buymeacoffee.com/aebel'
             target='_blank'
           >
-            <CiCoinInsert />
+            🧪
           </a>
         </Tooltip>
       </div>
