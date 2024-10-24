@@ -120,9 +120,9 @@ export default function ContentContainer() {
   }, [currentScrollContainer])
 
   // On currentScrollPos change
-  useEffect(() => {
-    console.log("currentScrollPos: ", currentScrollPos)
-  }, [currentScrollPos])
+  // useEffect(() => {
+  //   console.log("currentScrollPos: ", currentScrollPos)
+  // }, [currentScrollPos])
 
   return (
     <ContentContext.Provider value={
