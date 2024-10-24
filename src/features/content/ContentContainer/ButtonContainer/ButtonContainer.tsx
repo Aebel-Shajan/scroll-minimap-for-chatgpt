@@ -110,12 +110,12 @@ function getChatPreviewFormat(chat: HTMLElement|null): PreviewFormat {
     previewText: "end",
     previewColor: "grey"
   }
-  const trimmedChat = chat.querySelector("[data-message-id]") as HTMLElement
-  const author:string|null = trimmedChat.getAttribute("data-message-author-role")
+  const trimmedChat = chat.querySelector("[data-message-id]") as HTMLElement|null
   if (!trimmedChat) return {
     previewText: "error getting next element",
     previewColor: "red"
   }
+  const author:string|null = trimmedChat.getAttribute("data-message-author-role")
   return {
     previewText: trimmedChat.innerText.replace(/\n/g, '').slice(0, 60) + "...",
     previewColor: author === "user" ? "teal" : "#2E2E2E" // mantine color
