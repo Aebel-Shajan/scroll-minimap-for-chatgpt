@@ -27,6 +27,7 @@ export default function ContentContainer() {
   const [currentChatText, setCurrentChatText] = useState<string>("")
   const [currentChatContainer, setCurrentChatContainer] = useState<HTMLElement|null>(null)
   const [currentScrollContainer, setCurrentScrollContainer] = useState<HTMLElement|null>(null)
+  const [currentScrollPos, setCurrentScrollPos] = useState<number>(0)
   const [options, setOptions] = useState<ExtensionOptions>(DEFAULT_OPTIONS)
 
   // functions
@@ -99,6 +100,28 @@ export default function ContentContainer() {
       }
     };
   }, [options])
+
+  // On currentScrollContainer change
+  useEffect(() => {
+    if (!currentScrollContainer) return 
+    // Sync scroll pos
+    setCurrentScrollPos(currentScrollContainer.scrollTop)
+    function updateScrollPos(event: Event) {
+      const target: HTMLElement = event.target as HTMLElement
+      setCurrentScrollPos(target.scrollTop)
+    }
+    currentScrollContainer.addEventListener("scroll", updateScrollPos)
+    return () => {
+      if (currentScrollContainer) {
+      currentScrollContainer.removeEventListener("scroll", updateScrollPos);
+      }
+    };
+  }, [currentScrollContainer])
+
+  // On currentScrollPos change
+  useEffect(() => {
+    console.log("currentScrollPos: ", currentScrollPos)
+  }, [currentScrollPos])
 
   return (
     <ContentContext.Provider value={
