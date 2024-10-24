@@ -7,53 +7,38 @@ import { Box, Loader, LoadingOverlay } from "@mantine/core";
 
 
 const MinimapContainer = () => {
-    // Context
-    const context = useContext(ContentContext);
-    if (!context) {
-      throw new Error("OptionsContainer should be used within content context")
-    }
-    const {currentChatText, currentChatContainer, currentScrollContainer} = context;
+  // Context
+  const context = useContext(ContentContext);
+  if (!context) {
+    throw new Error("OptionsContainer should be used within content context")
+  }
+  const {currentChatText, currentChatContainer, currentScrollContainer, currentScrollPos} = context;
   
+  // States & refs
   const [scale, setScale] = useState<number>(0);
-  const mouseDown = useRef<boolean>(false);
-  const [dragPos, setDragPos] = useState<number>(0);
   const minimapContainerRef = useRef<HTMLDivElement>(null);
   const [showOverlay, setShowOverlay] = useState<boolean>(false);
   const [overlayText, setOverlayText] = useState<string>("loading")
 
-  useEffect(() => {
-    const minimapContainer = minimapContainerRef.current;
-    if (!minimapContainer) return;
-    // console.log("event listeners added.");
-    window.addEventListener("mouseup", () => {
-      mouseDown.current = false;
-    });
-    minimapContainer.addEventListener("mousedown", () => {
-      mouseDown.current = true;
-    });
-    minimapContainer.addEventListener("mousemove", (e) => {
-      if (mouseDown.current) {
-        setDragPos(e.clientY);
-      }
-    });
-  }, [setDragPos]);
+  // Functions
+  function handleDrag(
+    mouseY: number
+  ) {
+    const minimapContainer = minimapContainerRef.current
+    if (!minimapContainer || !currentScrollContainer) return 
+    const relativeMousePos =
+      mouseY - minimapContainer.getBoundingClientRect().top;
+    const newScrollPos =
+      (relativeMousePos + minimapContainer.scrollTop) / scale -
+      0.5 * currentScrollContainer.offsetHeight;
+    currentScrollContainer.scrollTo(0, newScrollPos);
+  }
 
   useEffect(() => {
-    const minimapContainer = minimapContainerRef.current;
-    if (!minimapContainer) return;
-    if (!currentScrollContainer) return;
-    onDrag(minimapContainer, currentScrollContainer, scale, dragPos);
-  }, [dragPos]);
-
-  useEffect(() => {
-    const minimapContainer = minimapContainerRef.current;
-    if (!currentScrollContainer) return;
-    if (!minimapContainer) return;
+    const minimapContainer = minimapContainerRef.current
+    if (!minimapContainer || !currentScrollContainer) return 
     setMinimapContainerScroll(minimapContainer, currentScrollContainer, scale)
-    currentScrollContainer.addEventListener("scroll", () =>
-      setMinimapContainerScroll(minimapContainer, currentScrollContainer, scale)
-    );
-  }, [currentScrollContainer, scale]);
+  }, [currentScrollPos, currentScrollContainer, scale])
 
   return (
     <Box pos="relative">
@@ -68,7 +53,7 @@ const MinimapContainer = () => {
         setShowOverlay={setShowOverlay}
         setOverlayText={setOverlayText}
       />
-      <ViewOverlay scale={scale}/>      
+      <ViewOverlay scale={scale} handleDrag={handleDrag}/>      
     </div>
       <LoadingOverlay
         classNames={{
@@ -88,20 +73,6 @@ const MinimapContainer = () => {
 
 export default MinimapContainer;
 
-function onDrag(
-  minimapContainer: HTMLElement,
-  scrollContainer: HTMLElement,
-  scale: number,
-  mousePos: number
-) {
-  const relativeMousePos =
-    mousePos - minimapContainer.getBoundingClientRect().top;
-  const newScrollPos =
-    (relativeMousePos + minimapContainer.scrollTop) / scale -
-    0.5 * scrollContainer.offsetHeight;
-
-  scrollContainer.scrollTo(0, newScrollPos);
-}
 
 function setMinimapContainerScroll(
   minimapContainer: HTMLElement,

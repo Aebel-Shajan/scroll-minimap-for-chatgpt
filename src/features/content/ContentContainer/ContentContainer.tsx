@@ -12,6 +12,7 @@ interface ContentContextType {
   currentChatContainer: HTMLElement|null,
   currentChatText: string,
   currentScrollContainer: HTMLElement|null,
+  currentScrollPos: number,
   showMinimap: boolean,
   setShowMinimap: CallableFunction,
   searchForChat: CallableFunction,
@@ -119,9 +120,9 @@ export default function ContentContainer() {
   }, [currentScrollContainer])
 
   // On currentScrollPos change
-  useEffect(() => {
-    console.log("currentScrollPos: ", currentScrollPos)
-  }, [currentScrollPos])
+  // useEffect(() => {
+  //   console.log("currentScrollPos: ", currentScrollPos)
+  // }, [currentScrollPos])
 
   return (
     <ContentContext.Provider value={
@@ -129,6 +130,7 @@ export default function ContentContainer() {
         currentChatContainer, 
         currentChatText,
         currentScrollContainer, 
+        currentScrollPos,
         searchForChat,
         setShowMinimap, 
         showMinimap,

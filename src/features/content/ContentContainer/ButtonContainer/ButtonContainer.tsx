@@ -79,7 +79,7 @@ export default function ButtonContainer() {
             >
               <button
                 onClick={() => searchForChat()}
-                style={options.autoRefresh ? {color: "#AAFF00"}: {}}
+                style={options.autoRefresh ? {color: "teal"}: {}}
                 >
                 <BiRefresh />
               </button>
