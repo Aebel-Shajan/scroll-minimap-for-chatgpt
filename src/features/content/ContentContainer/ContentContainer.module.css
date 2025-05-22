@@ -4,6 +4,4 @@
     width: 100%;
     overflow: hidden;
     justify-content: right;
-    pointer-events: none;
-    user-select: none;
 }

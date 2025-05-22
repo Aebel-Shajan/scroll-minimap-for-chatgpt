@@ -2,11 +2,10 @@ import { createContext, useEffect, useState } from "react";
 import {
   queryChatContainer,
 } from "../utils/renderLogic";
-import ButtonContainer from "./ButtonContainer/ButtonContainer";
-import MinimapContainer from "./MinimapContainer/MinimapContainer";
 import styles from "./ContentContainer.module.css";
 import { DEFAULT_OPTIONS } from "../../../constants";
 import { ExtensionOptions } from "../../../types/options";
+import Minimap from "./Minimap/Minimap";
 
 interface ContentContextType {
   currentChatContainer: HTMLElement|null,
@@ -124,6 +123,7 @@ export default function ContentContainer() {
   //   console.log("currentScrollPos: ", currentScrollPos)
   // }, [currentScrollPos])
 
+
   return (
     <ContentContext.Provider value={
       {
@@ -138,8 +138,7 @@ export default function ContentContainer() {
       }
       } >
       <div className={styles.appContainer}>
-        <ButtonContainer />
-        {showMinimap ? <MinimapContainer /> : null}
+        <Minimap elementToMap={currentScrollContainer}/>
       </div>
     </ContentContext.Provider>
   );
