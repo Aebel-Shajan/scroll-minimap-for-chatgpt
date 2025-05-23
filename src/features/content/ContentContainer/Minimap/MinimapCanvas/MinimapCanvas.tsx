@@ -49,8 +49,8 @@ const MinimapCanvas = (
 
   // On checkRedraw force redraw if queueRedraw=true
   useEffect(() => {
-    console.log("redraw checked")
     if (queueRedraw) {
+      console.log("redraw queued..")
       setQueueRedraw(false)
       setForceRedraw(old => !old)
     }

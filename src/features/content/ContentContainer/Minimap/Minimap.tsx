@@ -36,7 +36,6 @@ const Minimap = (
   const [sliderTop, setSliderTop] = useState(0)
   const [canvasLoading, setCanvasLoading] = useState(false)
   const [queueRedraw, setQueueRedraw] = useState(false)
-  console.log("mapScale", mapScale)
   const minimapRef = useRef<HTMLDivElement>(null);
 
   const showMinimap = () => setShow(true)
