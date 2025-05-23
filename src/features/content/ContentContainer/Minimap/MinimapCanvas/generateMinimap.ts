@@ -20,7 +20,7 @@ export default async function generateMinimapCanvas(
     ...renderOptions,
     scrollX: 0,
     scrollY: 0,
-    scale: 0.2,
+    scale: 0.25,
     backgroundColor: rootBackgroundColor,
     onclone(document: Document, element: HTMLElement) {
       removeOverflowRestriction(element)
@@ -61,12 +61,16 @@ function removeAllImages(documentClone: Document) {
   })
 }
 
-function removeChatMargins(element: HTMLElement) {
+export function removeChatMargins(element: HTMLElement) {
   let chatWidth = 0;
   element.querySelectorAll(".mx-auto").forEach((k) => {
     const j = k as HTMLElement;
     j.style.marginLeft = "0px";
     j.style.marginRight = "0px";
+    if (j.parentElement) {
+      j.parentElement.style.paddingRight = "0px";
+      j.parentElement.style.paddingLeft = "0px"
+    }
     chatWidth = j.offsetWidth;
   });
   element.style.width = `${chatWidth}px`;

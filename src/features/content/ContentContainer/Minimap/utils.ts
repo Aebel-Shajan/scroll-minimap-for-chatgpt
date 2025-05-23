@@ -193,7 +193,7 @@ export function queryPreviousElement(): HTMLElement | null {
   const navHeight = navElement.offsetHeight;
   const chatElements = queryAllChatElements();
   const previousChats = chatElements.filter((element) => {
-    return element.getBoundingClientRect().top < navHeight;
+    return element.getBoundingClientRect().top < 0.9* navHeight;
   });
   if (previousChats.length === 0) return null;
   return previousChats[previousChats.length - 1];
