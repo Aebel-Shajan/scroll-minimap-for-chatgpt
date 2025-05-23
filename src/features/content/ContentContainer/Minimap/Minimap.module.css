@@ -1,26 +1,28 @@
 .container {
   width: 100px;
-  height: 800px;
+  height: 80vh;
   user-select: none;
   position: fixed;
   top: 4rem;
-  right: 1rem;
+  right: 2rem;
   color: black !important;
-
+  font-size: small !important;
 }
 
 .hiddenContainer {
   position: fixed;
   top: 4rem;
-  right: 1rem;
+  right: 2rem;
   color: black !important;
+  font-size: small !important;
 
   button {
     width: fit-content;
-    background-color: aliceblue;
-    border: none;
     border-radius: 1rem;
     padding: 0.5rem 1rem;
+    background-color: #212121;
+    border: solid #535353 1px;
+    color: white;
   }
   
   button:hover {
@@ -41,18 +43,23 @@
     width: fit-content;
     transform:rotate(90deg);;
     transform-origin: top left;
-    border: none;
     padding: 0.3rem 1rem;
     padding-bottom: 0.5rem;
     border-bottom-left-radius: 1rem;
     border-bottom-right-radius: 1rem;
-    background-color: aliceblue;
+    background-color: #212121;
+    border: solid #535353 1px;
+    color: white;
   }
 
   button:hover {
-    background-color: black;
-    color: aliceblue;
+    background-color: #2F2F2F;
     cursor: pointer;
+  }
+
+  button:disabled {
+    background-color: rgb(120, 120, 120);
+    cursor:not-allowed;
   }
 }
 
