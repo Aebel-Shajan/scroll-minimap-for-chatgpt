@@ -54,6 +54,7 @@ const MinimapCanvas = (
       setQueueRedraw(false)
       setForceRedraw(old => !old)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checkRedraw])
 
 
@@ -93,6 +94,7 @@ const MinimapCanvas = (
       setCanvasLoading(false)
     })();
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elementToMap, forceRedraw])
 
 

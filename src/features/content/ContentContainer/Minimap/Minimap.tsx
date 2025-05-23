@@ -121,7 +121,7 @@ const Minimap = (
       }
       minimap.removeEventListener("wheel", syncMinimapScroll)
     };
-  }, [canvasLoading, show, elementToMap])
+  }, [canvasLoading, show, elementToMap, isFullHtml, mapScale])
 
   // Update the sliderHeight when the mapScale and elementToMap is updated
   useEffect(() => {
@@ -131,7 +131,7 @@ const Minimap = (
     } else {
       setSliderHeight(mapScale * elementToMap.offsetHeight)
     }
-  }, [mapScale, elementToMap])
+  }, [mapScale, elementToMap, isFullHtml])
 
 
   // JSX 

@@ -43,6 +43,7 @@ export default function ContentContainer() {
   useEffect(() => {
     // console.log("current url", currentUrl.slice(-2))
     searchForChat()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUrl])
 
   return (
