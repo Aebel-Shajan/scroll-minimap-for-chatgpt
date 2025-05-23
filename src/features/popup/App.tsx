@@ -59,7 +59,13 @@ function App() {
           href='https://buymeacoffee.com/aebel'
           target='_blank'
         >
-          🧪
+          🎁
+        </a>
+        <a
+          href='https://www.brainrotreader.com/'
+          target='_blank'
+        >
+          📣
         </a>
       </div>
     </div>

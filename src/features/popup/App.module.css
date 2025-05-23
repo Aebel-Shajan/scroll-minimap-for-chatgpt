@@ -41,6 +41,11 @@
 }
 
 
+a {
+  color: var(--text-color);
+}
+
+
 .footer {
   display: flex;
   flex-wrap: wrap;
