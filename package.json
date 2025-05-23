@@ -6,11 +6,9 @@
   "scripts": {
     "lint": "eslint .",
     "preview": "vite preview",
-    "build": "npm run build-content && npm run build-popup && npm run build-options && npm run build-background",
+    "build": "npm run build-content && npm run build-popup",
     "build-content": "tsc -b && vite build --config .config/content.config.ts",
     "build-popup": "tsc -b && vite build --config .config/popup.config.ts",
-    "build-options": "tsc -b && vite build --config .config/options.config.ts",
-    "build-background": "tsc -b && vite build --config .config/background.config.ts",
     "dev-popup": "vite --config .config/content.config.ts",
     "dev-options": "vite --config .config/options.config.ts"
   },

@@ -130,3 +130,123 @@ function checkIgnoreMutation(mutation: MutationRecord): boolean {
 
   return false;
 }
+
+
+
+/**
+ * Queries the chat container element in the DOM.
+ * @returns The chat container element if found, otherwise null.
+ */
+export function queryChatContainer(): HTMLElement | null {
+  let firstChatMessage: HTMLElement | null = null;
+  let chatMessageContainer: HTMLElement | null = null;
+  firstChatMessage = document.querySelector(
+    '[data-testid^="conversation-turn-"]'
+  );
+  if (firstChatMessage) {
+    chatMessageContainer = firstChatMessage.parentElement;
+  }
+  return chatMessageContainer;
+}
+
+export function queryChatScrollContainer(): HTMLElement | null {
+  let chatMessageContainer: HTMLElement | null = null;
+  let chatScrollContainer: HTMLElement | null = null;
+  chatMessageContainer = queryChatContainer();
+  if (chatMessageContainer) {
+    chatScrollContainer = chatMessageContainer.parentElement;
+  }
+  return chatScrollContainer;
+}
+
+export function queryAllChatElements(): HTMLElement[] {
+  return [...document.querySelectorAll(
+    // '[data-testid^="conversation-turn-"]'
+    '[data-message-author-role="user"]'
+  )] as HTMLElement[];
+}
+
+export function queryNavElement(): HTMLElement| null {
+  const chatContainer = queryChatContainer();
+  if (!chatContainer|| chatContainer.childNodes.length === 0) return null
+  return chatContainer.childNodes[0] as HTMLElement;
+}
+
+export function queryNextElement(): HTMLElement | null {
+  // Calculate scroll pos of closest next chat
+  const scrollContainer = queryChatScrollContainer();
+  const navElement = queryNavElement();
+  if (!scrollContainer || !navElement) return null;
+  const navHeight = navElement.offsetHeight;
+  const chatElements = queryAllChatElements();
+  const nextChats = chatElements.filter((element) => {
+    return element.getBoundingClientRect().top > 1.1 * navHeight;
+  });
+  if (nextChats.length === 0) return null;
+  return nextChats[0];
+}
+
+export function queryPreviousElement(): HTMLElement | null {
+  // Calculate scroll pos of closest previous chat
+  const navElement = queryNavElement();
+  if (!navElement) return null;
+  const navHeight = navElement.offsetHeight;
+  const chatElements = queryAllChatElements();
+  const previousChats = chatElements.filter((element) => {
+    return element.getBoundingClientRect().top < navHeight;
+  });
+  if (previousChats.length === 0) return null;
+  return previousChats[previousChats.length - 1];
+}
+
+export const onNextChat = (smoothScroll: boolean) => {
+  const scrollContainer = queryChatScrollContainer();
+  if (!scrollContainer) return null;
+  const navElement = queryNavElement();
+  if (!navElement) return null;
+  const nextChat = queryNextElement()
+  let scrollPos = scrollContainer.scrollHeight
+  if (nextChat){
+    scrollPos = scrollContainer.scrollTop +
+    nextChat.getBoundingClientRect().top -
+    navElement.offsetHeight
+  }
+
+  // Configure scroll options
+  const scrollOptions: ScrollToOptions= {
+    top: scrollPos,
+    behavior: "instant"
+  }
+  if (smoothScroll) {
+    scrollOptions["behavior"] = "smooth"
+  }
+
+  // Scroll scrollContainer
+  scrollContainer.scrollTo(scrollOptions);
+};
+
+export const onPreviousChat = (smoothScroll: boolean) => {
+  const scrollContainer = queryChatScrollContainer();
+  if (!scrollContainer) return null;
+  const navElement = queryNavElement();
+  if (!navElement) return null;
+  const previousChat = queryPreviousElement()
+  let scrollPos = 0
+  if (previousChat){
+    scrollPos = scrollContainer.scrollTop +
+      previousChat.getBoundingClientRect().top -
+      navElement.offsetHeight
+  }
+
+  // Configure scroll options
+  const scrollOptions: ScrollToOptions = {
+    top: scrollPos,
+    behavior: "instant"
+  }
+  if (smoothScroll) {
+    scrollOptions["behavior"] = "smooth"
+  }
+
+  // Scroll container
+  scrollContainer.scrollTo(scrollOptions);
+};

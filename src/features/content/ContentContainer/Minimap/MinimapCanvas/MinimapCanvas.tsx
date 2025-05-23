@@ -85,7 +85,7 @@ const MinimapCanvas = (
       );
       container.innerHTML = ""
       container.appendChild(canvas)
-      const canvasHeight = 0.9*(container.offsetWidth / canvas.offsetWidth) * canvas.offsetHeight
+      const canvasHeight = 0.95*(container.offsetWidth / canvas.offsetWidth) * canvas.offsetHeight
       canvas.style.width = `${container.offsetWidth}px`;
       canvas.style.height = `${canvasHeight}px`;
       const scale = canvasHeight / elementToMap.scrollHeight

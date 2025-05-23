@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import styles from "./Minimap.module.css"
 import Slider from "./Slider/Slider";
 import MinimapCanvas from "./MinimapCanvas/MinimapCanvas";
-import { createChildObserver, createSizeObserver } from "./utils";
-import { BiRefresh } from "react-icons/bi";
+import { createChildObserver, createSizeObserver, onNextChat, onPreviousChat } from "./utils";
+import { BiLeftArrow, BiRefresh, BiRightArrow,  } from "react-icons/bi";
 import { VscLoading } from "react-icons/vsc";
 import { CgClose } from "react-icons/cg";
-import logo from "../../../../assets/logo.png" 
+import logo from "../../../../assets/logo.png"
 
 /**
  * Minimap component that provides a visual representation of a larger element's scrollable area.
@@ -176,8 +176,16 @@ const Minimap = (
           </button> :
           <button onClick={handleQueueRedraw}>
             <BiRefresh />
+
           </button>
         }
+
+        <button onClick={() => onPreviousChat(false)} >
+          <BiLeftArrow />
+        </button>
+        <button onClick={() => onNextChat(false)} >
+          <BiRightArrow />
+        </button>
       </div>
     </div>
   );

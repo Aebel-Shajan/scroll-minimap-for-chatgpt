@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import {
   queryChatContainer,
-} from "../utils/renderLogic";
+} from "./Minimap/utils";
 import styles from "./ContentContainer.module.css";
 import Minimap from "./Minimap/Minimap";
 
