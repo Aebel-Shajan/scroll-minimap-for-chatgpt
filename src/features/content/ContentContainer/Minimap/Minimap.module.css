@@ -5,6 +5,8 @@
   position: fixed;
   top: 4rem;
   right: 1rem;
+  color: black !important;
+
 }
 
 .hiddenContainer {
