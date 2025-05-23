@@ -1,23 +1,9 @@
-import { createContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   queryChatContainer,
 } from "../utils/renderLogic";
 import styles from "./ContentContainer.module.css";
-import { ExtensionOptions } from "../../../types/options";
 import Minimap from "./Minimap/Minimap";
-
-interface ContentContextType {
-  currentChatContainer: HTMLElement|null,
-  currentChatText: string,
-  currentScrollContainer: HTMLElement|null,
-  currentScrollPos: number,
-  showMinimap: boolean,
-  setShowMinimap: CallableFunction,
-  searchForChat: CallableFunction,
-  options: ExtensionOptions
-}
-export const ContentContext = createContext<ContentContextType|null>(null);
-
 
 export default function ContentContainer() {
   // states
