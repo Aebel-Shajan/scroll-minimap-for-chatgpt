@@ -3,14 +3,15 @@
   height: 800px;
   user-select: none;
   position: fixed;
-  top: 1rem;
+  top: 4rem;
   right: 1rem;
 }
 
 .hiddenContainer {
   position: fixed;
-  top: 1rem;
+  top: 4rem;
   right: 1rem;
+  color: black !important;
 
   button {
     width: fit-content;
