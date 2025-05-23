@@ -68,6 +68,18 @@ const Minimap = (
     setQueueRedraw(true)
   }
 
+  useEffect(() => {
+    chrome.storage.local.get("minimapOpenState", (result) => {
+      if (result.minimapOpenState !== undefined) {
+        setShow(result.minimapOpenState);
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    chrome.storage.local.set({ minimapOpenState: show });
+  }, [show]);
+
 
 
   // Add observers to look for changes in elementToMap and queue a redraw
