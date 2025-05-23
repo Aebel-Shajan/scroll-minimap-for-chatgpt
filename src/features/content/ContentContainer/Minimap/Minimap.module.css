@@ -37,13 +37,13 @@
   flex-direction: column;
   justify-content: space-around;
   position: relative;
-  gap: 3rem;
+  gap: 2rem;
   padding-top: 1rem;;
   button {
     width: fit-content;
     transform:rotate(90deg);;
     transform-origin: top left;
-    padding: 0.3rem 1rem;
+    padding: 0.3rem 1.2rem;
     padding-bottom: 0.5rem;
     border-bottom-left-radius: 1rem;
     border-bottom-right-radius: 1rem;
@@ -70,4 +70,17 @@
   position: absolute;
   box-shadow: 0 0 20px rgba(0, 0, 0, 1);
   background-color: #212121;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
 }

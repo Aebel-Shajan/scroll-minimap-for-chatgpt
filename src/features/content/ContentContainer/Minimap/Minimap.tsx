@@ -3,6 +3,9 @@ import styles from "./Minimap.module.css"
 import Slider from "./Slider/Slider";
 import MinimapCanvas from "./MinimapCanvas/MinimapCanvas";
 import { createChildObserver, createSizeObserver } from "./utils";
+import { BiRefresh } from "react-icons/bi";
+import { VscLoading } from "react-icons/vsc";
+import { CgClose } from "react-icons/cg";
 
 
 /**
@@ -164,13 +167,13 @@ const Minimap = (
         />}
       </div>
       <div className={styles.options}>
-        <button onClick={hideMinimap}>close</button>
+        <button onClick={hideMinimap}><CgClose /></button>
         {disableRefresh ?
           <button disabled>
-            Refreshing..
+            <VscLoading className={styles.spinning} />
           </button> :
           <button onClick={handleQueueRedraw}>
-            Refresh
+            <BiRefresh />
           </button>
         }
       </div>
