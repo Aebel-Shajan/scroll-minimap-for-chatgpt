@@ -6,7 +6,7 @@ import { createChildObserver, createSizeObserver } from "./utils";
 import { BiRefresh } from "react-icons/bi";
 import { VscLoading } from "react-icons/vsc";
 import { CgClose } from "react-icons/cg";
-
+import logo from "../../../../assets/logo.png" 
 
 /**
  * Minimap component that provides a visual representation of a larger element's scrollable area.
@@ -138,7 +138,9 @@ const Minimap = (
   if (!show) {
     return (
       <div className={styles.hiddenContainer}>
-        <button onClick={showMinimap}>show</button>
+        <button onClick={showMinimap}>
+          <img src={logo} />
+        </button>
       </div>
     )
   }
