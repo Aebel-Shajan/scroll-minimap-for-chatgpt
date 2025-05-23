@@ -24,9 +24,9 @@ export default async function generateMinimapCanvas(
     backgroundColor: rootBackgroundColor,
     onclone(document: Document, element: HTMLElement) {
       removeOverflowRestriction(element)
-      removeAllImages(document);
-      otherStuff(element)
-      
+      removeAllImages(document)
+      removeChatMargins(element)
+      colorUserChats(element)      
     },
   };
 
@@ -61,20 +61,21 @@ function removeAllImages(documentClone: Document) {
   })
 }
 
+function removeChatMargins(element: HTMLElement) {
+  let chatWidth = 0;
+  element.querySelectorAll(".mx-auto").forEach((k) => {
+    const j = k as HTMLElement;
+    j.style.marginLeft = "0px";
+    j.style.marginRight = "0px";
+    chatWidth = j.offsetWidth;
+  });
+  element.style.width = `${chatWidth}px`;
+  if (chatWidth === 0) {
+    element.style.width = "fit-content";
+  }
+}
 
-function otherStuff(element: HTMLElement) {
-  // // Remove all horizontal margins
-  // let chatWidth = 0;
-  // element.querySelectorAll(".mx-auto").forEach((k) => {
-  //   const j = k as HTMLElement;
-  //   j.style.marginLeft = "0px";
-  //   j.style.marginRight = "0px";
-  //   chatWidth = j.offsetWidth;
-  // });
-  // element.style.width = `${chatWidth}px`;
-  // if (chatWidth === 0) {
-  //   element.style.width = "fit-content";
-  // }
+function colorUserChats(element: HTMLElement) {
   // Color user chat white
   element
     .querySelectorAll('[data-message-author-role="user"]')
