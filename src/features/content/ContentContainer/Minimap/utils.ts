@@ -66,6 +66,13 @@ export function createChildObserver(
     mutations.forEach(function (mutation) {
       const targetElement = mutation.target as HTMLElement;
       if (targetElement.id === "minimap-component" || minimapComponent.contains(targetElement)) return;
+      
+      const ignoreMutation = checkIgnoreMutation(mutation)
+      if (ignoreMutation) {
+        console.log("mutation ignored!")
+        return
+      }
+
       callback()
       console.log(mutation);
     });
@@ -105,4 +112,21 @@ export function createSizeObserver(
 
   resizeObserver.observe(elementToObserve);
   return resizeObserver
+}
+
+
+function checkIgnoreMutation(mutation: MutationRecord): boolean {
+  if (mutation.type !== 'childList') return false;
+
+  for (const node of [...mutation.addedNodes, ...mutation.removedNodes]) {
+    if (!(node instanceof HTMLElement)) continue;
+
+    // Check if the element is big enough
+    const rect = node.getBoundingClientRect();
+    if (rect.width < 80 || rect.height < 80) {
+      return true;
+    }
+  }
+
+  return false;
 }
