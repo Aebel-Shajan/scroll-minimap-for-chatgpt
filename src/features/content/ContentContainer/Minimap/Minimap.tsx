@@ -23,7 +23,7 @@ import { createChildObserver, createSizeObserver } from "./utils";
 const Minimap = (
   {
     elementToMap,
-    isFullHtml=false,
+    isFullHtml = false,
   }:
     {
       elementToMap: HTMLElement | null,
@@ -53,7 +53,13 @@ const Minimap = (
     const minimapRect = minimap.getBoundingClientRect();
     const relativeMousePos = mouseY - minimapRect.top;
     const newScrollPos = (relativeMousePos + minimap.scrollTop) / mapScale - 0.5 * viewportHeight;
-    elementToMap.scrollTo(0, newScrollPos);
+    elementToMap.scrollTo(
+      {
+        left: 0,
+        top: newScrollPos,
+        behavior: "instant",
+      }
+    );
   }
 
   function handleQueueRedraw() {
@@ -135,6 +141,8 @@ const Minimap = (
     )
   }
 
+  const disableRefresh = queueRedraw || canvasLoading
+
   return (
     <div
       id="minimap-component"
@@ -158,7 +166,14 @@ const Minimap = (
       </div>
       <div className={styles.options}>
         <button onClick={hideMinimap}>close</button>
-        <button onClick={handleQueueRedraw} disabled={queueRedraw}>Refresh</button>
+        {disableRefresh ?
+          <button disabled>
+            Refreshing..
+          </button> :
+          <button onClick={handleQueueRedraw}>
+            Refresh
+          </button>
+        }
       </div>
     </div>
   );
