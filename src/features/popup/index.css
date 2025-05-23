@@ -8,6 +8,7 @@
 body {
     width: 250px;
     height: fit-content;
+    background-color: var(--background);
     color: var(--text-color)
 }
  
