@@ -3,7 +3,6 @@ import {
   queryChatContainer,
 } from "../utils/renderLogic";
 import styles from "./ContentContainer.module.css";
-import { DEFAULT_OPTIONS } from "../../../constants";
 import { ExtensionOptions } from "../../../types/options";
 import Minimap from "./Minimap/Minimap";
 
@@ -23,12 +22,7 @@ export const ContentContext = createContext<ContentContextType|null>(null);
 export default function ContentContainer() {
   // states
   const [currentUrl, setCurrentUrl] = useState<string>("")
-  const [showMinimap, setShowMinimap] = useState<boolean>(false)
-  const [currentChatText, setCurrentChatText] = useState<string>("")
-  const [currentChatContainer, setCurrentChatContainer] = useState<HTMLElement|null>(null)
   const [currentScrollContainer, setCurrentScrollContainer] = useState<HTMLElement|null>(null)
-  const [currentScrollPos, setCurrentScrollPos] = useState<number>(0)
-  const [options, setOptions] = useState<ExtensionOptions>(DEFAULT_OPTIONS)
 
   // functions
   function updateCurrentUrl() {
@@ -44,15 +38,11 @@ export default function ContentContainer() {
     for (let i =0; i<10; i++) {
       const chat = queryChatContainer()
       if (chat) {
-          setCurrentChatContainer(chat)
-          setCurrentChatText(chat.innerText)
           setCurrentScrollContainer(chat.parentElement)
           return null
       }
       await delay(300)
     }
-    setCurrentChatContainer(null)
-    setCurrentChatText("")
     setCurrentScrollContainer(null)
     return null
 }
@@ -61,14 +51,6 @@ export default function ContentContainer() {
   useEffect(() => {
     const urlObserver = new MutationObserver(updateCurrentUrl)
     urlObserver.observe(document, {childList: true, subtree: true})
-
-    chrome.storage.sync.get(['options'], function(data) {
-        if (data.options) {
-            const options: ExtensionOptions = {...data.options}
-            setOptions(options)
-        }
-    })
-
   }, [])
 
   // On current url change
@@ -77,69 +59,11 @@ export default function ContentContainer() {
     searchForChat()
   }, [currentUrl])
 
-  // On current chat change
-  // useEffect(() => {
-  //   console.log("current chat", currentChatContainer?.innerText.replace(/\s/g, "").slice(0, 10))
-  // }, [currentChatContainer])
-
-  // On options change
-  useEffect(() => {
-    // Auto refresh
-    let autoRefreshInterval: number |null;
-    if (options.autoRefresh) {
-      autoRefreshInterval = setInterval(searchForChat, options.refreshPeriod * 1000);
-    }
-
-    // Keep open
-    if (options.keepOpen) {
-      setShowMinimap(true)
-    }
-    return () => {
-      if (autoRefreshInterval) {
-        clearInterval(autoRefreshInterval);
-      }
-    };
-  }, [options])
-
-  // On currentScrollContainer change
-  useEffect(() => {
-    if (!currentScrollContainer) return 
-    // Sync scroll pos
-    setCurrentScrollPos(currentScrollContainer.scrollTop)
-    function updateScrollPos(event: Event) {
-      const target: HTMLElement = event.target as HTMLElement
-      setCurrentScrollPos(target.scrollTop)
-    }
-    currentScrollContainer.addEventListener("scroll", updateScrollPos)
-    return () => {
-      if (currentScrollContainer) {
-      currentScrollContainer.removeEventListener("scroll", updateScrollPos);
-      }
-    };
-  }, [currentScrollContainer])
-
-  // On currentScrollPos change
-  // useEffect(() => {
-  //   console.log("currentScrollPos: ", currentScrollPos)
-  // }, [currentScrollPos])
-
-
   return (
-    <ContentContext.Provider value={
-      {
-        currentChatContainer, 
-        currentChatText,
-        currentScrollContainer, 
-        currentScrollPos,
-        searchForChat,
-        setShowMinimap, 
-        showMinimap,
-        options
-      }
-      } >
+ 
       <div className={styles.appContainer}>
         <Minimap elementToMap={currentScrollContainer}/>
       </div>
-    </ContentContext.Provider>
+
   );
 }
