@@ -21,7 +21,7 @@ export function elementObserver(
         mutation.addedNodes.forEach((node) => {
           if (!(node instanceof HTMLElement)) return 
           if (node.matches(elementSelector)) {
-            console.log(`Element with selector ${elementSelector} was added to the DOM.`);
+            // console.log(`Element with selector ${elementSelector} was added to the DOM.`);
             onElementAdd(elementSelector)
           }
         });
@@ -30,7 +30,7 @@ export function elementObserver(
         mutation.removedNodes.forEach(node => {
           if (!(node instanceof HTMLElement)) return 
           if (node.matches(elementSelector)) {
-            console.log(`Element with selector ${elementSelector} was removed from the DOM.`);
+            // console.log(`Element with selector ${elementSelector} was removed from the DOM.`);
             onElementRemove()
           }
         });
@@ -69,12 +69,12 @@ export function createChildObserver(
       
       const ignoreMutation = checkIgnoreMutation(mutation)
       if (ignoreMutation) {
-        console.log("mutation ignored!")
+        // console.log("mutation ignored!")
         return
       }
 
       callback()
-      console.log(mutation);
+      // console.log(mutation);
     });
   });
 
@@ -103,10 +103,10 @@ export function createSizeObserver(
   elementToObserve: HTMLElement,
   callback: CallableFunction
 ): ResizeObserver {
-  const resizeObserver = new ResizeObserver((entries) => {
-    for (const entry of entries) {
-      console.log("Resize observed:", entry);
-    }
+  const resizeObserver = new ResizeObserver(() => {
+    // for (const entry of entries) {
+    //   console.log("Resize observed:", entry);
+    // }
     callback()
   });
 

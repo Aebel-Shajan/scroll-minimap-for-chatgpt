@@ -85,11 +85,11 @@ const Minimap = (
   // Add observers to look for changes in elementToMap and queue a redraw
   useEffect(() => {
     if (!elementToMap) return
-    console.log("observers attached!")
+    // console.log("observers attached!")
     const childObserver = createChildObserver(elementToMap, handleQueueRedraw)
     const sizeObserver = createSizeObserver(elementToMap, handleQueueRedraw)
     return () => {
-      console.log("observers disconnected!")
+      // console.log("observers disconnected!")
       childObserver.disconnect();
       sizeObserver.disconnect()
     };
