@@ -89,3 +89,34 @@ a {
 .buttonStyle :hover {
   background-color: var(--hover-color);
 }
+
+
+
+.settings {
+  width: 100%;
+
+  & > h3 {
+    padding: 0rem 1rem
+  }
+  & > .checkbox {
+    padding: 0.5rem 1.2rem;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border-top: solid 1px var(--border-color);
+    & > label {
+      font-weight: bold;
+      cursor: pointer;
+    }
+    & > input {
+      cursor: pointer;
+
+    }
+  }
+}
+
+summary {
+  cursor: pointer;
+}

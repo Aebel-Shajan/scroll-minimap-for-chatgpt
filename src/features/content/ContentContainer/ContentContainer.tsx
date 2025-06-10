@@ -9,6 +9,7 @@ export default function ContentContainer() {
   // states
   const [currentUrl, setCurrentUrl] = useState<string>("")
   const [currentScrollContainer, setCurrentScrollContainer] = useState<HTMLElement|null>(null)
+  const [showButton, setShowButton] = useState<boolean>(true)
 
   // functions
   function updateCurrentUrl() {
@@ -37,6 +38,11 @@ export default function ContentContainer() {
   useEffect(() => {
     const urlObserver = new MutationObserver(updateCurrentUrl)
     urlObserver.observe(document, {childList: true, subtree: true})
+    chrome.storage.local.get("showButton", (result) => {
+      if (result.showButton !== undefined) {
+        setShowButton(result.showButton);
+      }
+    });
   }, [])
 
   // On current url change
@@ -49,7 +55,7 @@ export default function ContentContainer() {
   return (
  
       <div className={styles.appContainer}>
-        <Minimap elementToMap={currentScrollContainer}/>
+        {showButton && <Minimap elementToMap={currentScrollContainer}/>}
       </div>
 
   );

@@ -3,9 +3,39 @@ import demoImage from '../../assets/demo.png'
 import logoImage from '../../assets/logo.png'
 import { FaGithub, FaStar } from 'react-icons/fa'
 import { MdBugReport } from 'react-icons/md'
+import { useEffect, useState } from 'react'
 
 
 function App() {
+  const [showButton, setShowButton] = useState(false)
+
+  function toggleShowButton(newValue: boolean) {
+    setShowButton(newValue)
+
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      const currentTabID = tabs[0].id
+      if (currentTabID) {
+        chrome.tabs.reload(currentTabID)
+      }
+    });
+
+  }
+
+
+  useEffect(() => {
+    chrome.storage.local.get("showButton", (result) => {
+      if (result.showButton !== undefined) {
+        setShowButton(result.showButton);
+      }
+    });
+  }, []);
+
+
+  useEffect(() => {
+    chrome.storage.local.set({ showButton: showButton });
+  }, [showButton]);
+
+
   return (
     <div>
       <div className={styles.heading}>
@@ -29,16 +59,42 @@ function App() {
           <img id="demo" src={demoImage} />
         </div>
 
-        <div>
-          Trouble shooting:
+        <details>
+          <summary>Trouble shooting:</summary>
           <ul>
             <li>Refresh page if button has not appeared</li>
             <li>Click refresh button if chat contents do not match</li>
+            <li>Make sure "hide minimap" is not selected below</li>
+            <li><a target='_blank' href="https://github.com/Aebel-Shajan/scroll-minimap-for-chatgpt/issues">Make a bug report</a></li>
           </ul>
-        </div>
+        </details>
+
+
 
       </div>
 
+      <div
+      className={styles.settings}
+      >
+        {/* <h3>
+          Settings
+        </h3> */}
+        <div
+          className={styles.checkbox}
+          onClick={() => toggleShowButton(!showButton)}
+        >
+          <label>
+            Hide minimap
+          </label>
+
+          <input
+            type="checkbox"
+            checked={!showButton}
+          // onChange={(e) => setShowButton(e.target.checked)}
+          />
+
+        </div>
+      </div>
       <div className={styles.footer}>
         <a
           href="https://github.com/Aebel-Shajan/scroll-minimap-for-chatgpt"
