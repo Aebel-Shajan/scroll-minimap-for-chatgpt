@@ -33,3 +33,5 @@ build/*
 
 # Ignore all tsbuildinfo files
 *.tsbuildinfo
+
+*.zip
