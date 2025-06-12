@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 
 
 function App() {
-  const [showButton, setShowButton] = useState(false)
+  const [showButton, setShowButton] = useState(true)
 
   function toggleShowButton(newValue: boolean) {
     setShowButton(newValue)
