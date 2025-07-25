@@ -1,23 +1,32 @@
 import "@/assets/tailwind.css";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { PanelRightClose, PanelRightOpen, X } from "lucide-react";
 
 
-function ToggleOpenButton(
+
+
+function TogglePanelButton(
   {
-    openState,
-    setOpenState,
+    isOpen,
+    setIsOpen,
+    className = ""
   }: {
-    openState: boolean,
-    setOpenState: CallableFunction,
+    isOpen: boolean,
+    setIsOpen: CallableFunction,
+    className?: string,
   }
 ) {
 
+  function toggleOpen() {
+    setIsOpen((old: boolean) => !old)
+  }
+
   return (
-    <button
-      className="bg-gray-500 rounded w-7 h-7 flex items-center justify-center fixed top-3 right-3 cursor-pointer text-white"
-      onClick={() => setOpenState((old: boolean) => !old)}
-    >
-      {openState ? "x" : "<>"}
-    </button>
+    <Button onClick={toggleOpen} className={cn(className, "w-fit h-fit")}>
+      {isOpen ? <PanelRightClose /> : <PanelRightOpen />}
+    </Button>
   )
 }
 
@@ -25,15 +34,26 @@ export default function App() {
   const [isOpen, setIsOpen] = useState(true)
 
 
+
   if (!isOpen) {
-    return <ToggleOpenButton openState={isOpen} setOpenState={setIsOpen} />
+    return (
+      <TogglePanelButton
+        className="fixed top-0 right-0"
+
+        isOpen={isOpen} setIsOpen={setIsOpen} />
+    )
   }
 
 
   return (
-    <div className="bg-gray-50 text-black fixed top-0 right-0 w-100 h-100 z-99999999 rounded-xl border-gray-300 border-1 p-5 overflow-hidden">
-      Hello world
-      <ToggleOpenButton openState={isOpen} setOpenState={setIsOpen} />
-    </div>
+    <Card className="bg-gray-50 text-black fixed top-0 right-0 w-50 h-full pt-0">
+      <div className="flex justify-between items-center pr-5 bg-background border-b-1">
+        <TogglePanelButton isOpen={isOpen} setIsOpen={setIsOpen} />
+        Sidepanel
+      </div>
+      <CardContent>
+
+      </CardContent>
+    </Card>
   )
 }
