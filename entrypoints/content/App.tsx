@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { PanelRightClose, PanelRightOpen, X } from "lucide-react";
+import { createRoot } from "react-dom/client";
 
 
 
@@ -34,14 +35,13 @@ export default function App() {
   const [isOpen, setIsOpen] = useState(true)
 
 
-
   if (!isOpen) {
     return (
       <TogglePanelButton
-        className="fixed top-0 right-0"
-
-        isOpen={isOpen} setIsOpen={setIsOpen} />
-    )
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
+    );
   }
 
 

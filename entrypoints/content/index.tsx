@@ -4,7 +4,7 @@ import "./reset.css";
 import App from "./App.tsx";
 
 export default defineContentScript({
-  matches: ["*://*/*"],
+  matches: ["https://chatgpt.com/*"],
   cssInjectionMode: "ui",
 
   async main(ctx) {
@@ -23,8 +23,8 @@ export default defineContentScript({
 function defineOverlay(ctx: ContentScriptContext) {
   return createShadowRootUi(ctx, {
     name: "react-overlay",
-    position: "modal",
-    zIndex: 99999,
+    position: "inline",
+    anchor: "header",
     onMount(container, shadowRoot, shadowHost) {
       // Don't mount react app directly on <body>
       const wrapper = document.createElement("div");
