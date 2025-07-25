@@ -26,21 +26,30 @@ function defineOverlay(ctx: ContentScriptContext) {
     position: "inline",
     anchor: "header :nth-child(3)",
     onMount(container, shadowRoot, shadowHost) {
+
       // Don't mount react app directly on <body>
       const wrapper = document.createElement("div");
       container.append(wrapper);
 
 
       const shadowHtml = shadowRoot.querySelector("html")
-      console.log(shadowRoot)
       if (shadowHtml) {
+
+
         shadowHtml.style.pointerEvents = "none";
-        shadowHtml.style.zIndex = "9999999";   
+        shadowHtml.style.zIndex = "9999999";
         const shadowBody = shadowHtml.querySelector("body")
         if (shadowBody) {
-          shadowBody.style.pointerEvents = "all";
+          shadowBody.style.pointerEvents = "all"
+          // to prevent duplicates
+          if (shadowBody.childNodes.length > 1) {
+            while (shadowBody.childNodes.length > 1) {
+              shadowBody.removeChild(shadowBody.lastChild!);
+            }
+          }
         }
       }
+
 
       const root = createRoot(wrapper);
       root.render(<App />);
