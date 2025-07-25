@@ -24,7 +24,7 @@ function defineOverlay(ctx: ContentScriptContext) {
   return createShadowRootUi(ctx, {
     name: "react-overlay",
     position: "inline",
-    anchor: "header",
+    anchor: "header :nth-child(3)",
     onMount(container, shadowRoot, shadowHost) {
       // Don't mount react app directly on <body>
       const wrapper = document.createElement("div");
