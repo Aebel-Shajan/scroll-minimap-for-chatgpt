@@ -28,7 +28,7 @@ function defineOverlay(ctx: ContentScriptContext) {
     position: "inline",
     anchor: "body",
     //"header :nth-child(3)",
-    onMount(container, shadowRoot, shadowHost) {
+    onMount(container, shadowRoot) {
 
       if (root) {
         root.unmount();
@@ -41,29 +41,20 @@ function defineOverlay(ctx: ContentScriptContext) {
       wrapper = document.createElement("div");
       container.append(wrapper);
 
-
       const shadowHtml = shadowRoot.querySelector("html")
       if (shadowHtml) {
-
-
         shadowHtml.style.pointerEvents = "none";
         shadowHtml.style.zIndex = "9999999";
         const shadowBody = shadowHtml.querySelector("body")
         if (shadowBody) {
           shadowBody.style.pointerEvents = "all"
-          console.log(shadowBody.childNodes)
-          // to prevent duplicates
-          if (shadowBody.childNodes.length > 1) {
-            // shadowBody.childNodes[1].remove()
-          }
         }
       }
-
 
       root = createRoot(wrapper);
       root.render(<App />);
     },
-    onRemove: (elements) => {
+    onRemove: () => {
       if (root) {
         root.unmount();
       }
