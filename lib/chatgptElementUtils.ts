@@ -288,3 +288,22 @@ export function extractFilteredTreeBySelectors(
   return result;
 }
 
+export function getScrollableParent(el: Element | null): Element | null {
+  while (el) {
+    const style = window.getComputedStyle(el);
+
+    const overflowY = style.overflowY;
+    const overflowX = style.overflowX;
+
+    const isScrollableY = (overflowY === 'auto' || overflowY === 'scroll') && el.scrollHeight > el.clientHeight;
+    const isScrollableX = (overflowX === 'auto' || overflowX === 'scroll') && el.scrollWidth > el.clientWidth;
+
+    if (isScrollableY || isScrollableX) {
+      return el;
+    }
+
+    el = el.parentElement;
+  }
+
+  return null;
+}

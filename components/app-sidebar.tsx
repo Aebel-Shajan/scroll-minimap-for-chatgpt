@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ChevronRight, CircleSmall, File, Folder } from "lucide-react"
+import { Bot, BotMessageSquare, ChevronRight, CircleSmall, Code, File, Folder, MessageSquare, Section, User } from "lucide-react"
 
 import {
   Collapsible,
@@ -20,6 +20,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { HTMLElementItem } from "@/types"
+import { getChatAuthor, getScrollableParent } from "@/lib/chatgptElementUtils"
 
 // This is sample data.
 const data = {
@@ -105,18 +106,49 @@ export function AppSidebar({ treeItems, ...props }: React.ComponentProps<typeof 
 
 
 
+const ICON_MAP = {
+  "user": User,
+  "assistant": BotMessageSquare,
+  "code": Code,
+  "section": Section,
+  "chat": MessageSquare,
+}
+
+function getItemIcon(item: HTMLElementItem) {
+  const element = item.element
+  if (element.matches('[data-testid^="conversation-turn-"]')) {
+    return ICON_MAP[getChatAuthor(element)]
+  }
+  if (element.tagName === "PRE") return ICON_MAP["code"]
+  if (element.matches("h1, h2, h3")) return ICON_MAP["section"]
+  return ICON_MAP["chat"]
+}
+
 function Tree({ item }: { item: HTMLElementItem }) {
-  const label = item.element.tagName
+  const label = item.element.innerText
   const children = item.children
+  const ItemIcon = getItemIcon(item)
+
+  function scrollElementIntoView() {
+
+    // why not use chatElement.scrollIntoView()?
+    const scrollContainer = getScrollableParent(item.element)
+    if (scrollContainer) {
+      console.log(item.element)
+      scrollContainer.scrollTop = item.element.getBoundingClientRect().top + scrollContainer.scrollTop - 60
+    }
+  }
+
 
   if (!children.length) {
     return (
       <SidebarMenuButton
         // isActive={name === "button.tsx"}
         className="data-[active=true]:bg-transparent grid grid-cols-12"
+        onClick={scrollElementIntoView}
       >
         <div className="col-span-1" />
-        <File className="col-span-1" />
+        <ItemIcon className="col-span-1" />
         <span className="col-span-10">
           {label}
         </span>
@@ -134,8 +166,12 @@ function Tree({ item }: { item: HTMLElementItem }) {
           <CollapsibleTrigger asChild>
             <ChevronRight className="transition-transform col-span-1" />
           </CollapsibleTrigger>
-          <Folder className="col-span-1" />
-          <span className="col-span-10">
+          <ItemIcon className="col-span-1" />
+          <span className="col-span-10"
+            onClick={scrollElementIntoView}
+
+
+          >
             {label}
           </span>
         </SidebarMenuButton>

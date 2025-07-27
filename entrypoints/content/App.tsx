@@ -2,7 +2,7 @@ import "@/assets/tailwind.css";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronsUpDown, PanelRightClose, PanelRightOpen, X } from "lucide-react";
-import { extractFilteredTreeBySelectors, getChatAuthor, queryAllChatElements, queryChatScrollContainer } from "./utils";
+import { extractFilteredTreeBySelectors, getChatAuthor, queryAllChatElements, queryChatScrollContainer } from "../../lib/chatgptElementUtils";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { HTMLElementItem } from "@/types";
@@ -125,7 +125,6 @@ export default function App() {
       'h3',
     ]
     elementTree = extractFilteredTreeBySelectors(scrollContainer, allowedSelectors)
-    console.log(elementTree)
   }
 
   if (!isOpen) {
