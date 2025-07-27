@@ -2,8 +2,9 @@ import "@/assets/tailwind.css";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { PanelRightClose, PanelRightOpen, X } from "lucide-react";
-import { createRoot } from "react-dom/client";
+import { ChevronDown, ChevronsUpDown, PanelRightClose, PanelRightOpen, X } from "lucide-react";
+import { queryAllChatElements, queryChatScrollContainer } from "./utils";
+import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 
 
@@ -31,15 +32,60 @@ function TogglePanelButton(
   )
 }
 
+
+function ChatPreview({
+  chatElement
+}: {
+  chatElement: HTMLElement
+}) {
+
+  function scrollChatToTop() {
+    // why not use chatElement.scrollIntoView()?
+    const scrollContainer = queryChatScrollContainer()
+    if (scrollContainer) {
+      scrollContainer.scrollTop = chatElement.offsetTop
+      console.log(chatElement.offsetTop)
+    }
+  }
+
+  return (
+      <Button
+        variant="ghost"
+        size="icon"
+        className="h-fit w-full justify-between p-2 overflow-hidden"
+        onClick={() => scrollChatToTop()}
+      >
+        <span
+          className="block text-xs overflow-hidden w-full text-left"
+          style={{
+        display: '-webkit-box',
+        WebkitLineClamp: 2,
+        WebkitBoxOrient: 'vertical',
+        whiteSpace: 'normal',
+        textOverflow: 'ellipsis',
+          }}
+        >
+          {chatElement.innerText}
+        </span>
+      </Button>
+  )
+}
+
 export default function App() {
   const [isOpen, setIsOpen] = useState(true)
+  const allChatElements = queryAllChatElements()
 
+
+
+  console.log(
+  )
 
   if (!isOpen) {
     return (
       <TogglePanelButton
         isOpen={isOpen}
         setIsOpen={setIsOpen}
+        className="fixed top-0 right-0"
       />
     );
   }
@@ -51,9 +97,11 @@ export default function App() {
         <TogglePanelButton isOpen={isOpen} setIsOpen={setIsOpen} />
         Sidepanel
       </div>
-      <CardContent>
-
-      </CardContent>
+      <div className="flex flex-col">
+        {
+          allChatElements.map((element, index) => <ChatPreview chatElement={element} key={"chat-item-" + index}/>)
+        }
+      </div>
     </Card>
   )
 }

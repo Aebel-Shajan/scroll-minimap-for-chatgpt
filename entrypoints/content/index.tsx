@@ -1,5 +1,5 @@
 import { ContentScriptContext } from "#imports";
-import { createRoot } from "react-dom/client";
+import { createRoot, Root } from "react-dom/client";
 import "./reset.css";
 import App from "./App.tsx";
 
@@ -20,15 +20,25 @@ export default defineContentScript({
   },
 });
 
+let root: null | Root = null
+let wrapper: null | HTMLElement = null
 function defineOverlay(ctx: ContentScriptContext) {
   return createShadowRootUi(ctx, {
     name: "react-overlay",
     position: "inline",
-    anchor: "header :nth-child(3)",
+    anchor: "body",
+    //"header :nth-child(3)",
     onMount(container, shadowRoot, shadowHost) {
 
+      if (root) {
+        root.unmount();
+      }
+      if (wrapper) {
+        wrapper.remove();
+      }
+
       // Don't mount react app directly on <body>
-      const wrapper = document.createElement("div");
+      wrapper = document.createElement("div");
       container.append(wrapper);
 
 
@@ -41,23 +51,25 @@ function defineOverlay(ctx: ContentScriptContext) {
         const shadowBody = shadowHtml.querySelector("body")
         if (shadowBody) {
           shadowBody.style.pointerEvents = "all"
+          console.log(shadowBody.childNodes)
           // to prevent duplicates
           if (shadowBody.childNodes.length > 1) {
-            while (shadowBody.childNodes.length > 1) {
-              shadowBody.removeChild(shadowBody.lastChild!);
-            }
+            // shadowBody.childNodes[1].remove()
           }
         }
       }
 
 
-      const root = createRoot(wrapper);
+      root = createRoot(wrapper);
       root.render(<App />);
-      return { root, wrapper };
     },
     onRemove: (elements) => {
-      elements?.root.unmount();
-      elements?.wrapper.remove();
+      if (root) {
+        root.unmount();
+      }
+      if (wrapper) {
+        wrapper.remove();
+      }
     },
   });
 }
