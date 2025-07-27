@@ -8,8 +8,6 @@ import { HTMLElementItem } from "@/types";
 
 export default function App() {
   const [isOpen, setIsOpen] = useState(true)
-  const scrollContainer = queryChatScrollContainer()
-  let elementTree: HTMLElementItem[] = []
 
   const { setTheme } = useTheme();
   useEffect(() => {
@@ -27,16 +25,8 @@ export default function App() {
     return () => observer.disconnect();
   }, [setTheme]);
 
-  if (scrollContainer) {
-    const allowedSelectors = [
-      '[data-testid^="conversation-turn-"]',
-      'pre',
-      'h1',
-      'h2',
-      'h3',
-    ]
-    elementTree = extractFilteredTreeBySelectors(scrollContainer, allowedSelectors)
-  }
+
+
 
   if (!isOpen) {
     return (
@@ -56,7 +46,6 @@ export default function App() {
             <AppSidebar 
               collapsible="none" 
               className="w-full h-full" 
-              treeItems={elementTree}
               isOpen={isOpen}
               setIsOpen={setIsOpen}
             />

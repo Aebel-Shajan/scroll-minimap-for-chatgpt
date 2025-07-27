@@ -3,7 +3,10 @@ import {
   BotMessageSquare,
   ChevronRight,
   Code,
+  LucideCopyMinus,
+  LucideCopyPlus,
   MessageSquare,
+  RefreshCcw,
   Section,
   User,
 } from "lucide-react"
@@ -21,12 +24,13 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
+  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
 } from "@/components/ui/sidebar"
 import { HTMLElementItem } from "@/types"
-import { getChatAuthor, getScrollableParent } from "@/lib/chatgptElementUtils"
+import { extractFilteredTreeBySelectors, getChatAuthor, getScrollableParent, queryChatScrollContainer } from "@/lib/chatgptElementUtils"
 
 import {
   FaPython,
@@ -44,30 +48,60 @@ import {
 } from "react-icons/fa"
 
 import { MdOutlineGpsFixed } from "react-icons/md";
+import { buttonVariants } from "./ui/button"
+import { cn } from "@/lib/utils"
 
 
 
 
 export function AppSidebar(
   {
-    treeItems,
     isOpen,
     setIsOpen,
     ...props
   }:
     React.ComponentProps<typeof Sidebar> &
     {
-      treeItems: HTMLElementItem[],
       isOpen: boolean,
       setIsOpen: CallableFunction,
 
     }
 ) {
+
+  const scrollContainer = queryChatScrollContainer()
+  let elementTree: HTMLElementItem[] = []
+
+
+  if (scrollContainer) {
+    const allowedSelectors = [
+      '[data-testid^="conversation-turn-"]',
+      'pre',
+      'h1',
+      'h2',
+      'h3',
+    ]
+    elementTree = extractFilteredTreeBySelectors(scrollContainer, allowedSelectors)
+  }
+
+  const [, forceRefresh] = React.useReducer(x => x + 1, 0);
+  const [collapseState, setCollapseState] = React.useState<Record<string, boolean>>({})
+  const anyOpen = Object.values(collapseState).some(Boolean)
+
+  function toggleAll() {
+    setCollapseState(prev => {
+      const newState: Record<string, boolean> = {}
+      Object.keys(prev).forEach(key => {
+        newState[key] = !anyOpen
+      })
+      return newState
+    })
+  }
+
   return (
     <Sidebar {...props}>
-      <SidebarHeader 
+      <SidebarHeader
         className="bg-background flex flex-row justify-between items-center border-accent border-b-1 h-13 w-full">
-        <TogglePanelButton isOpen={isOpen} setIsOpen={setIsOpen} />
+        <TogglePanelButton isOpen={isOpen} setIsOpen={setIsOpen} variant={"ghost"} className="cursor-e-resize" />
         <div className="flex items-center justify-end w-full h-full gap-1">
           <MdOutlineGpsFixed />
           <span>
@@ -77,11 +111,27 @@ export function AppSidebar(
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Chat outline</SidebarGroupLabel>
+          <div className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "flex justify-between")}>
+            Chat outline
+            <div className="flex gap-1">
+              <div className={buttonVariants({ variant: "ghost", size: "sm", className: "cursor-pointer" })} onClick={toggleAll}>
+                {anyOpen ? <LucideCopyMinus className="size-3" /> : <LucideCopyPlus className="size-3" />}
+              </div>
+              <div className={buttonVariants({ variant: "ghost", size: "sm", className: "cursor-pointer" })} onClick={forceRefresh}>
+                <RefreshCcw className="size-3" />
+              </div>
+            </div>
+          </div>
           <SidebarGroupContent>
             <SidebarMenu className="gap-0">
-              {treeItems.map((item, index) => (
-                <Tree key={index} item={item} />
+              {elementTree.map((item, index) => (
+                <Tree 
+                  key={index} 
+                  item={item} 
+                  setCollapseState={setCollapseState} 
+                  collapseState={collapseState}
+                  index={String(index)}
+                />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -168,7 +218,20 @@ function getItemInfo(item: HTMLElementItem) {
   }
 }
 
-function Tree({ item }: { item: HTMLElementItem }) {
+function Tree(
+  {
+    item,
+    index,
+    collapseState,
+    setCollapseState,
+  }: 
+  { 
+    item: HTMLElementItem,
+    index: string,
+    collapseState: Record<string, boolean>,
+    setCollapseState: CallableFunction,
+  }
+) {
   const children = item.children
   const { label, icon } = getItemInfo(item)
   const ItemIcon = icon
@@ -181,6 +244,19 @@ function Tree({ item }: { item: HTMLElementItem }) {
       scrollContainer.scrollTop = item.element.getBoundingClientRect().top + scrollContainer.scrollTop - 60
     }
   }
+
+  function handleCollapseChange(open: boolean) {
+    setCollapseState((oldState: Record<string, boolean>) => {
+      const newState = {...oldState}
+      newState[index] = open
+      return newState
+    }
+    )
+  }
+
+  useEffect(() => {
+    handleCollapseChange(false)
+  }, [])
 
 
   if (!children.length) {
@@ -202,10 +278,12 @@ function Tree({ item }: { item: HTMLElementItem }) {
     <SidebarMenuItem>
       <Collapsible
         className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
+        onOpenChange={handleCollapseChange}
+        open={collapseState[index]}
       // defaultOpen={name === "components" || name === "ui"}
       >
         <SidebarMenuButton className="flex gap-1 py-0 h-5.5">
-          <CollapsibleTrigger asChild>
+          <CollapsibleTrigger asChild >
             <ChevronRight className="transition-transform" />
           </CollapsibleTrigger>
           <ItemIcon className="" />
@@ -217,8 +295,8 @@ function Tree({ item }: { item: HTMLElementItem }) {
         </SidebarMenuButton>
         <CollapsibleContent>
           <SidebarMenuSub className="pr-0 mr-0 gap-0">
-            {children.map((subItem, index) => (
-              <Tree key={index} item={subItem} />
+            {children.map((subItem, subIndex) => (
+              <Tree key={subIndex} item={subItem} collapseState={collapseState} setCollapseState={setCollapseState} index={index + "" +subIndex} />
             ))}
           </SidebarMenuSub>
         </CollapsibleContent>

@@ -6,11 +6,13 @@ export function TogglePanelButton(
   {
     isOpen,
     setIsOpen,
-    className = ""
+    className = "",
+    variant = "default",
   }: {
     isOpen: boolean,
     setIsOpen: CallableFunction,
     className?: string,
+    variant?: "link" | "default" | "destructive" | "outline" | "secondary" | "ghost" | null | undefined
   }
 ) {
 
@@ -19,7 +21,7 @@ export function TogglePanelButton(
   }
 
   return (
-    <Button onClick={toggleOpen} className={cn(className, "w-fit h-fit")}>
+    <Button onClick={toggleOpen} className={cn(className, "w-fit h-fit")} variant={variant}>
       {isOpen ? <PanelRightClose /> : <PanelRightOpen />}
     </Button>
   )
