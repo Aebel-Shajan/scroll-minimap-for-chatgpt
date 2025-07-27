@@ -54,7 +54,11 @@ function defineOverlay(ctx: ContentScriptContext) {
       }
 
       root = createRoot(wrapper);
-      root.render(<App />);
+      root.render(
+        <ThemeProvider wrapperRoot={wrapper}>
+          <App />
+        </ThemeProvider>
+      );
     },
     onRemove: () => {
       if (root) {

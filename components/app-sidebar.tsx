@@ -19,6 +19,7 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -42,13 +43,38 @@ import {
   FaTerminal, // for Shell
 } from "react-icons/fa"
 
+import { MdOutlineGpsFixed } from "react-icons/md";
 
 
 
 
-export function AppSidebar({ treeItems, ...props }: React.ComponentProps<typeof Sidebar> & { treeItems: HTMLElementItem[] }) {
+export function AppSidebar(
+  {
+    treeItems,
+    isOpen,
+    setIsOpen,
+    ...props
+  }:
+    React.ComponentProps<typeof Sidebar> &
+    {
+      treeItems: HTMLElementItem[],
+      isOpen: boolean,
+      setIsOpen: CallableFunction,
+
+    }
+) {
   return (
     <Sidebar {...props}>
+      <SidebarHeader 
+        className="bg-background flex flex-row justify-between items-center border-accent border-b-1 h-13 w-full">
+        <TogglePanelButton isOpen={isOpen} setIsOpen={setIsOpen} />
+        <div className="flex items-center justify-end w-full h-full gap-1">
+          <MdOutlineGpsFixed />
+          <span>
+            Chat GPS
+          </span>
+        </div>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Chat outline</SidebarGroupLabel>
