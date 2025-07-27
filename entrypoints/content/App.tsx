@@ -1,10 +1,10 @@
 import "@/assets/tailwind.css";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronsUpDown, PanelRightClose, PanelRightOpen, X } from "lucide-react";
-import { queryAllChatElements, queryChatScrollContainer } from "./utils";
-import { Collapsible, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { getChatAuthor, queryAllChatElements, queryChatScrollContainer } from "./utils";
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
+import { SidebarProvider } from "@/components/ui/sidebar";
 
 
 
@@ -33,11 +33,16 @@ function TogglePanelButton(
 }
 
 
-function ChatPreview({
-  chatElement
-}: {
-  chatElement: HTMLElement
-}) {
+function ChatPreviewText(
+  {
+    chatElement,
+    className = "",
+  }: {
+    chatElement: HTMLElement,
+    className?: string,
+  }
+) {
+
 
   function scrollChatToTop() {
     // why not use chatElement.scrollIntoView()?
@@ -49,25 +54,58 @@ function ChatPreview({
   }
 
   return (
-      <Button
-        variant="ghost"
-        size="icon"
-        className="h-fit w-full justify-between p-2 overflow-hidden"
-        onClick={() => scrollChatToTop()}
-      >
-        <span
-          className="block text-xs overflow-hidden w-full text-left"
-          style={{
+    <span
+      className={cn("block text-xs overflow-hidden text-left", className)}
+      onClick={() => scrollChatToTop()}
+      style={{
         display: '-webkit-box',
-        WebkitLineClamp: 2,
+        WebkitLineClamp: 1,
         WebkitBoxOrient: 'vertical',
         whiteSpace: 'normal',
         textOverflow: 'ellipsis',
-          }}
-        >
-          {chatElement.innerText}
-        </span>
-      </Button>
+      }}
+    >
+      {chatElement.innerText}
+    </span>
+  )
+}
+
+
+
+function ChatPreview({
+  chatElement
+}: {
+  chatElement: HTMLElement
+}) {
+
+
+
+  const chatAuthor = getChatAuthor(chatElement)
+  console.log(chatAuthor)
+
+  return (
+
+    <Collapsible className="flex flex-col justify-between">
+      <div
+        className="h-7 w-full overflow-hidden grid grid-cols-5 gap-1"
+      >
+        {chatAuthor === "user" ?
+          <CollapsibleTrigger >
+            <ChevronDown
+              className="col-span-1 self-center"
+            />
+          </CollapsibleTrigger>
+          : <div />
+        }
+        <ChatPreviewText
+          className="col-span-4 self-center"
+          chatElement={chatElement} />
+      </div>
+
+      <CollapsibleContent>
+        hello you have opened me
+      </CollapsibleContent>
+    </Collapsible >
   )
 }
 
@@ -92,16 +130,19 @@ export default function App() {
 
 
   return (
-    <Card className="bg-gray-50 text-black fixed top-0 right-0 w-50 h-full pt-0">
-      <div className="flex justify-between items-center pr-5 bg-background border-b-1">
+    <div className="bg-background text-black fixed top-0 right-0 w-70 h-full pt-0 border-l-2 border-accent flex flex-col">
+      <div className="flex justify-between items-center pr-5 bg-background border-b-1 h-13">
         <TogglePanelButton isOpen={isOpen} setIsOpen={setIsOpen} />
         Sidepanel
       </div>
-      <div className="flex flex-col">
-        {
-          allChatElements.map((element, index) => <ChatPreview chatElement={element} key={"chat-item-" + index}/>)
-        }
+      <div className="flex flex-col overflow-scroll grow ">
+        {/* {
+          allChatElements.map((element, index) => <ChatPreview chatElement={element} key={"chat-item-" + index} />)
+        } */}
+        <SidebarProvider className="w-full h-full" >
+          <AppSidebar collapsible="none" className="w-full h-full"/>
+        </SidebarProvider>
       </div>
-    </Card>
+    </div>
   )
 }

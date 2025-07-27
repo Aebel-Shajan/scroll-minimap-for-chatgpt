@@ -250,3 +250,10 @@ export const onPreviousChat = (smoothScroll: boolean) => {
   // Scroll container
   scrollContainer.scrollTo(scrollOptions);
 };
+
+export function getChatAuthor(chatElement: HTMLElement): "user" | "assistant" {
+  const messageAuthor = chatElement.getAttribute("data-turn")
+  if (messageAuthor === "user" || messageAuthor === "assistant") return messageAuthor
+  // Default to user if no data-turn attribute is found
+  return "user"
+} 
