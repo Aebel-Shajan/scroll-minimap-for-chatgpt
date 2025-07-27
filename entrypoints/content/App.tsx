@@ -5,6 +5,7 @@ import { ChevronDown, ChevronsUpDown, PanelRightClose, PanelRightOpen, X } from 
 import { extractFilteredTreeBySelectors, getChatAuthor, queryAllChatElements, queryChatScrollContainer } from "./utils";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import { SidebarProvider } from "@/components/ui/sidebar";
+import { HTMLElementItem } from "@/types";
 
 
 
@@ -113,7 +114,7 @@ export default function App() {
   const [isOpen, setIsOpen] = useState(true)
   const allChatElements = queryAllChatElements()
   const scrollContainer = queryChatScrollContainer()
-  console.log(scrollContainer)
+  let elementTree: HTMLElementItem[] = []
 
   if (scrollContainer) {
     const allowedSelectors = [
@@ -123,7 +124,8 @@ export default function App() {
       'h2',
       'h3',
     ]
-    console.log(extractFilteredTreeBySelectors(scrollContainer, allowedSelectors))
+    elementTree = extractFilteredTreeBySelectors(scrollContainer, allowedSelectors)
+    console.log(elementTree)
   }
 
   if (!isOpen) {
@@ -145,11 +147,8 @@ export default function App() {
         Sidepanel
       </div>
       <div className="flex flex-col overflow-scroll grow ">
-        {/* {
-          allChatElements.map((element, index) => <ChatPreview chatElement={element} key={"chat-item-" + index} />)
-        } */}
         <SidebarProvider className="w-full h-full" >
-          <AppSidebar collapsible="none" className="w-full h-full"/>
+          <AppSidebar collapsible="none" className="w-full h-full" treeItems={elementTree}/>
         </SidebarProvider>
       </div>
     </div>

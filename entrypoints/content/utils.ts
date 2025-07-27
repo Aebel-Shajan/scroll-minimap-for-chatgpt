@@ -1,3 +1,4 @@
+import { HTMLElementItem } from "@/types";
 
 
 
@@ -258,16 +259,13 @@ export function getChatAuthor(chatElement: HTMLElement): "user" | "assistant" {
   return "user"
 } 
 
-type FilteredNode = {
-  element: HTMLElement;
-  children: FilteredNode[];
-};
+
 
 export function extractFilteredTreeBySelectors(
   node: HTMLElement,
   allowedSelectors: string[]
-): FilteredNode[] {
-  const result: FilteredNode[] = [];
+): HTMLElementItem[] {
+  const result: HTMLElementItem[] = [];
 
   node.childNodes.forEach(child => {
     if (child.nodeType === Node.ELEMENT_NODE) {

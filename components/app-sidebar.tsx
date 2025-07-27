@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ChevronRight, File, Folder } from "lucide-react"
+import { ChevronRight, CircleSmall, File, Folder } from "lucide-react"
 
 import {
   Collapsible,
@@ -19,6 +19,7 @@ import {
   SidebarMenuSub,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { HTMLElementItem } from "@/types"
 
 // This is sample data.
 const data = {
@@ -64,7 +65,10 @@ const data = {
   ],
 }
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
+
+
+export function AppSidebar({ treeItems, ...props }: React.ComponentProps<typeof Sidebar> & { treeItems: HTMLElementItem[] }) {
   return (
     <Sidebar {...props}>
       <SidebarContent>
@@ -88,7 +92,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarGroupLabel>Files</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {data.tree.map((item, index) => (
+              {treeItems.map((item, index) => (
                 <Tree key={index} item={item} />
               ))}
             </SidebarMenu>
@@ -99,17 +103,23 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   )
 }
 
-function Tree({ item }: { item: string | any[] }) {
-  const [name, ...items] = Array.isArray(item) ? item : [item]
 
-  if (!items.length) {
+
+function Tree({ item }: { item: HTMLElementItem }) {
+  const label = item.element.tagName
+  const children = item.children
+
+  if (!children.length) {
     return (
       <SidebarMenuButton
-        isActive={name === "button.tsx"}
-        className="data-[active=true]:bg-transparent"
+        // isActive={name === "button.tsx"}
+        className="data-[active=true]:bg-transparent grid grid-cols-12"
       >
-        <File />
-        {name}
+        <div className="col-span-1" />
+        <File className="col-span-1" />
+        <span className="col-span-10">
+          {label}
+        </span>
       </SidebarMenuButton>
     )
   }
@@ -118,18 +128,20 @@ function Tree({ item }: { item: string | any[] }) {
     <SidebarMenuItem>
       <Collapsible
         className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
-        defaultOpen={name === "components" || name === "ui"}
+      // defaultOpen={name === "components" || name === "ui"}
       >
-        <CollapsibleTrigger asChild>
-          <SidebarMenuButton>
-            <ChevronRight className="transition-transform" />
-            <Folder />
-            {name}
-          </SidebarMenuButton>
-        </CollapsibleTrigger>
+        <SidebarMenuButton className="grid grid-cols-12 gap-1">
+          <CollapsibleTrigger asChild>
+            <ChevronRight className="transition-transform col-span-1" />
+          </CollapsibleTrigger>
+          <Folder className="col-span-1" />
+          <span className="col-span-10">
+            {label}
+          </span>
+        </SidebarMenuButton>
         <CollapsibleContent>
           <SidebarMenuSub>
-            {items.map((subItem, index) => (
+            {children.map((subItem, index) => (
               <Tree key={index} item={subItem} />
             ))}
           </SidebarMenuSub>
