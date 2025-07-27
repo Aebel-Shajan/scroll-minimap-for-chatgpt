@@ -132,7 +132,7 @@ export default function App() {
       <TogglePanelButton
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        className="fixed top-0 right-0"
+        className="fixed top-20 right-5"
       />
     );
   }
@@ -140,7 +140,7 @@ export default function App() {
 
 
   return (
-    <div className="bg-background text-black fixed top-0 right-0 w-70 h-full pt-0 border-l-2 border-accent flex flex-col">
+    <div className="bg-sidebar-accent text-black w-70 h-dvh pt-0 border-l-2 border-accent flex flex-col">
       <div className="flex justify-between items-center pr-5 bg-background border-b-1 h-13">
         <TogglePanelButton isOpen={isOpen} setIsOpen={setIsOpen} />
         Sidepanel

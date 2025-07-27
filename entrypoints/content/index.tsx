@@ -8,6 +8,8 @@ export default defineContentScript({
   cssInjectionMode: "ui",
 
   async main(ctx) {
+    document.body.style.display = "flex";
+
     const ui = await defineOverlay(ctx);
 
     // Mount initially
