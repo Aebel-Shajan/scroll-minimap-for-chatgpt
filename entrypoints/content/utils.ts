@@ -257,3 +257,36 @@ export function getChatAuthor(chatElement: HTMLElement): "user" | "assistant" {
   // Default to user if no data-turn attribute is found
   return "user"
 } 
+
+type FilteredNode = {
+  element: HTMLElement;
+  children: FilteredNode[];
+};
+
+export function extractFilteredTreeBySelectors(
+  node: HTMLElement,
+  allowedSelectors: string[]
+): FilteredNode[] {
+  const result: FilteredNode[] = [];
+
+  node.childNodes.forEach(child => {
+    if (child.nodeType === Node.ELEMENT_NODE) {
+      const el = child as HTMLElement;
+
+      const children = extractFilteredTreeBySelectors(el, allowedSelectors);
+      const isAllowed = allowedSelectors.some(selector => el.matches(selector));
+
+      if (isAllowed) {
+        result.push({
+          element: el,
+          children,
+        });
+      } else if (children.length > 0) {
+        result.push(...children); // promote valid descendants
+      }
+    }
+  });
+
+  return result;
+}
+

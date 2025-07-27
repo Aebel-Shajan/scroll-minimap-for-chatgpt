@@ -2,7 +2,7 @@ import "@/assets/tailwind.css";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { ChevronDown, ChevronsUpDown, PanelRightClose, PanelRightOpen, X } from "lucide-react";
-import { getChatAuthor, queryAllChatElements, queryChatScrollContainer } from "./utils";
+import { extractFilteredTreeBySelectors, getChatAuthor, queryAllChatElements, queryChatScrollContainer } from "./utils";
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
@@ -112,11 +112,19 @@ function ChatPreview({
 export default function App() {
   const [isOpen, setIsOpen] = useState(true)
   const allChatElements = queryAllChatElements()
+  const scrollContainer = queryChatScrollContainer()
+  console.log(scrollContainer)
 
-
-
-  console.log(
-  )
+  if (scrollContainer) {
+    const allowedSelectors = [
+      '[data-testid^="conversation-turn-"]',
+      'pre',
+      'h1',
+      'h2',
+      'h3',
+    ]
+    console.log(extractFilteredTreeBySelectors(scrollContainer, allowedSelectors))
+  }
 
   if (!isOpen) {
     return (
@@ -127,6 +135,7 @@ export default function App() {
       />
     );
   }
+
 
 
   return (
