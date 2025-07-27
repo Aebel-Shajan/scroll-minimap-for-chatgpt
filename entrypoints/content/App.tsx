@@ -1,14 +1,10 @@
 import "@/assets/tailwind.css";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { ChevronDown, ChevronsUpDown, PanelRightClose, PanelRightOpen, X } from "lucide-react";
-import { extractFilteredTreeBySelectors, getChatAuthor, queryAllChatElements, queryChatScrollContainer } from "../../lib/chatgptElementUtils";
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible";
+import { extractFilteredTreeBySelectors, queryAllChatElements, queryChatScrollContainer } from "../../lib/chatgptElementUtils";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { HTMLElementItem } from "@/types";
-
-
-
+import { PanelRightClose, PanelRightOpen } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 function TogglePanelButton(
   {
@@ -30,83 +26,6 @@ function TogglePanelButton(
     <Button onClick={toggleOpen} className={cn(className, "w-fit h-fit")}>
       {isOpen ? <PanelRightClose /> : <PanelRightOpen />}
     </Button>
-  )
-}
-
-
-function ChatPreviewText(
-  {
-    chatElement,
-    className = "",
-  }: {
-    chatElement: HTMLElement,
-    className?: string,
-  }
-) {
-
-
-  function scrollChatToTop() {
-    // why not use chatElement.scrollIntoView()?
-    const scrollContainer = queryChatScrollContainer()
-    if (scrollContainer) {
-      scrollContainer.scrollTop = chatElement.offsetTop
-      console.log(chatElement.offsetTop)
-    }
-  }
-
-  return (
-    <span
-      className={cn("block text-xs overflow-hidden text-left", className)}
-      onClick={() => scrollChatToTop()}
-      style={{
-        display: '-webkit-box',
-        WebkitLineClamp: 1,
-        WebkitBoxOrient: 'vertical',
-        whiteSpace: 'normal',
-        textOverflow: 'ellipsis',
-      }}
-    >
-      {chatElement.innerText}
-    </span>
-  )
-}
-
-
-
-function ChatPreview({
-  chatElement
-}: {
-  chatElement: HTMLElement
-}) {
-
-
-
-  const chatAuthor = getChatAuthor(chatElement)
-  console.log(chatAuthor)
-
-  return (
-
-    <Collapsible className="flex flex-col justify-between">
-      <div
-        className="h-7 w-full overflow-hidden grid grid-cols-5 gap-1"
-      >
-        {chatAuthor === "user" ?
-          <CollapsibleTrigger >
-            <ChevronDown
-              className="col-span-1 self-center"
-            />
-          </CollapsibleTrigger>
-          : <div />
-        }
-        <ChatPreviewText
-          className="col-span-4 self-center"
-          chatElement={chatElement} />
-      </div>
-
-      <CollapsibleContent>
-        hello you have opened me
-      </CollapsibleContent>
-    </Collapsible >
   )
 }
 
