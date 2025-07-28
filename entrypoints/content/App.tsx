@@ -41,15 +41,18 @@ export default function App() {
 
 
   return (
-      <div className="bg-sidebar-accent text-black w-70 h-dvh pt-0 border-l-2 border-accent flex flex-col">
-          <SidebarProvider className="w-full h-full" >
-            <AppSidebar 
-              collapsible="none" 
-              className="w-full h-full" 
-              isOpen={isOpen}
-              setIsOpen={setIsOpen}
-            />
-          </SidebarProvider>
+    <div className="bg-sidebar-accent text-black w-70 h-dvh pt-0 border-l-2 border-accent flex">
+      <div className="bg-black w-30 h-full">
+      
       </div>
+      <SidebarProvider className="grow h-full" >
+        <AppSidebar
+          collapsible="none"
+          className="w-full h-full"
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+        />
+      </SidebarProvider>
+    </div>
   )
 }
