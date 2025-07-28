@@ -25,23 +25,23 @@ import logo from "@/assets/logo.png"
 const Minimap = (
   {
     elementToMap,
+    queueRedraw,
+    setQueueRedraw,
     isFullHtml = false,
   }:
     {
       elementToMap: HTMLElement | null,
-      isFullHtml?: boolean
+      isFullHtml?: boolean,
+      queueRedraw: boolean,
+      setQueueRedraw: CallableFunction
     }
 ) => {
-  const [show, setShow] = useState(true)
   const [mapScale, setMapScale] = useState(1)
   const [sliderHeight, setSliderHeight] = useState(100)
   const [sliderTop, setSliderTop] = useState(0)
   const [canvasLoading, setCanvasLoading] = useState(false)
-  const [queueRedraw, setQueueRedraw] = useState(false)
   const minimapRef = useRef<HTMLDivElement>(null);
 
-  const showMinimap = () => setShow(true)
-  const hideMinimap = () => setShow(false)
 
   // Function which handles drag scrolling of the slider.
   function handleSliderDrag(mouseY: number) {
@@ -118,7 +118,7 @@ const Minimap = (
       }
       minimap.removeEventListener("wheel", syncMinimapScroll)
     };
-  }, [canvasLoading, show, elementToMap, isFullHtml, mapScale])
+  }, [canvasLoading, elementToMap, isFullHtml, mapScale])
 
   // Update the sliderHeight when the mapScale and elementToMap is updated
   useEffect(() => {
@@ -130,15 +130,6 @@ const Minimap = (
     }
   }, [mapScale, elementToMap, isFullHtml])
 
-
-  // JSX 
-  if (!show) {
-    return (
-      null
-    )
-  }
-
-  const disableRefresh = queueRedraw || canvasLoading
 
   return (
     <div
@@ -161,25 +152,6 @@ const Minimap = (
           handleDrag={handleSliderDrag}
         />}
       </div>
-      {/* <div className={styles.options}>
-        <button onClick={hideMinimap}><CgClose /></button>
-        {disableRefresh ?
-          <button disabled>
-            <VscLoading className={styles.spinning} />
-          </button> :
-          <button onClick={handleQueueRedraw}>
-            <BiRefresh />
-
-          </button>
-        }
-
-        <button onClick={() => onPreviousChat(false)} >
-          <BiLeftArrow />
-        </button>
-        <button onClick={() => onNextChat(false)} >
-          <BiRightArrow />
-        </button>
-      </div> */}
     </div>
   );
 }

@@ -30,7 +30,7 @@ import {
   SidebarMenuSub,
 } from "@/components/ui/sidebar"
 import { HTMLElementItem } from "@/types"
-import { extractFilteredTreeBySelectors, getChatAuthor, getScrollableParent, queryChatScrollContainer } from "@/lib/chatgptElementUtils"
+import { createChildObserver, createSizeObserver, extractFilteredTreeBySelectors, getChatAuthor, getScrollableParent, queryChatScrollContainer } from "@/lib/chatgptElementUtils"
 
 import {
   FaPython,
@@ -68,8 +68,16 @@ export function AppSidebar(
 
     }
 ) {
+  const [, forceRefresh] = React.useReducer(x => x + 1, 0);
 
-  const scrollContainer = queryChatScrollContainer()
+  let scrollContainer = queryChatScrollContainer()
+  if (!scrollContainer) {
+    setTimeout(() => {
+      scrollContainer = queryChatScrollContainer()
+      forceRefresh()
+      console.log("searched again!", scrollContainer)
+    }, 2000)
+  }
   let elementTree: HTMLElementItem[] = []
 
 
@@ -84,8 +92,8 @@ export function AppSidebar(
     elementTree = extractFilteredTreeBySelectors(scrollContainer, allowedSelectors)
   }
 
-  const [, forceRefresh] = React.useReducer(x => x + 1, 0);
   const [collapseState, setCollapseState] = React.useState<Record<string, boolean>>({})
+  const [queueRedraw, setQueueRedraw] = useState(false)
   const anyOpen = Object.values(collapseState).some(Boolean)
 
   function toggleAll() {
@@ -97,8 +105,23 @@ export function AppSidebar(
       return newState
     })
   }
+  function handleRefresh() {
+    forceRefresh()
+    setQueueRedraw(true)
+  }
 
-  const currentScrollContainer = queryChatScrollContainer()
+    useEffect(() => {
+    if (!scrollContainer) return
+    console.log("observers attached!")
+    const childObserver = createChildObserver(scrollContainer, handleRefresh)
+    const sizeObserver = createSizeObserver(scrollContainer, handleRefresh)
+    return () => {
+      console.log("observers disconnected!")
+      childObserver.disconnect();
+      sizeObserver.disconnect()
+    };
+  }, [scrollContainer])
+
 
   return (
     <Sidebar {...props}>
@@ -116,7 +139,7 @@ export function AppSidebar(
       <div className="w-full flex h-[calc(100vh-52px)]">
 
         <div className="bg-black w-15 h-full">
-          <Minimap elementToMap={currentScrollContainer} />
+          <Minimap elementToMap={scrollContainer} queueRedraw={queueRedraw} setQueueRedraw={setQueueRedraw}/>
         </div>
         <SidebarContent className="w-55 h-full overflow-y-scroll">
           <SidebarGroup>
@@ -126,7 +149,7 @@ export function AppSidebar(
                 <div className={buttonVariants({ variant: "ghost", size: "sm", className: "cursor-pointer" })} onClick={toggleAll}>
                   {anyOpen ? <LucideCopyMinus className="size-3" /> : <LucideCopyPlus className="size-3" />}
                 </div>
-                <div className={buttonVariants({ variant: "ghost", size: "sm", className: "cursor-pointer" })} onClick={forceRefresh}>
+                <div className={buttonVariants({ variant: "ghost", size: "sm", className: "cursor-pointer" })} onClick={handleRefresh}>
                   <RefreshCcw className="size-3" />
                 </div>
               </div>
