@@ -1,6 +1,6 @@
 {
-  "name": "wxt-react-starter",
-  "description": "manifest.json description",
+  "name": "chat-gps",
+  "description": "Chrome extension for Chat GPT. Helps users navigate through long chats.",
   "private": true,
   "version": "0.0.0",
   "type": "module",
