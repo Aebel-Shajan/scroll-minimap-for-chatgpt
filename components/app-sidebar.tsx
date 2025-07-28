@@ -50,6 +50,7 @@ import {
 import { MdOutlineGpsFixed } from "react-icons/md";
 import { buttonVariants } from "./ui/button"
 import { cn } from "@/lib/utils"
+import Minimap from "./Minimap/Minimap"
 
 
 
@@ -97,6 +98,8 @@ export function AppSidebar(
     })
   }
 
+  const currentScrollContainer = queryChatScrollContainer()
+
   return (
     <Sidebar {...props}>
       <SidebarHeader
@@ -104,39 +107,47 @@ export function AppSidebar(
         <TogglePanelButton isOpen={isOpen} setIsOpen={setIsOpen} variant={"ghost"} className="cursor-e-resize" />
         <div className="flex items-center justify-end w-full h-full gap-1">
           <MdOutlineGpsFixed />
-          <span>
+
+          <div className="text-[1.125rem]">
             Chat GPS
-          </span>
+          </div>
         </div>
       </SidebarHeader>
-      <SidebarContent>
-        <SidebarGroup>
-          <div className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "flex justify-between")}>
-            Chat outline
-            <div className="flex gap-1">
-              <div className={buttonVariants({ variant: "ghost", size: "sm", className: "cursor-pointer" })} onClick={toggleAll}>
-                {anyOpen ? <LucideCopyMinus className="size-3" /> : <LucideCopyPlus className="size-3" />}
-              </div>
-              <div className={buttonVariants({ variant: "ghost", size: "sm", className: "cursor-pointer" })} onClick={forceRefresh}>
-                <RefreshCcw className="size-3" />
+      <div className="w-full flex h-[calc(100vh-52px)]">
+
+        <div className="bg-black w-15 h-full">
+          <Minimap elementToMap={currentScrollContainer} />
+        </div>
+        <SidebarContent className="w-55 h-full overflow-y-scroll">
+          <SidebarGroup>
+            <div className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "flex justify-between")}>
+              Chat outline
+              <div className="flex gap-1">
+                <div className={buttonVariants({ variant: "ghost", size: "sm", className: "cursor-pointer" })} onClick={toggleAll}>
+                  {anyOpen ? <LucideCopyMinus className="size-3" /> : <LucideCopyPlus className="size-3" />}
+                </div>
+                <div className={buttonVariants({ variant: "ghost", size: "sm", className: "cursor-pointer" })} onClick={forceRefresh}>
+                  <RefreshCcw className="size-3" />
+                </div>
               </div>
             </div>
-          </div>
-          <SidebarGroupContent>
-            <SidebarMenu className="gap-0">
-              {elementTree.map((item, index) => (
-                <Tree 
-                  key={index} 
-                  item={item} 
-                  setCollapseState={setCollapseState} 
-                  collapseState={collapseState}
-                  index={String(index)}
-                />
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
+            <SidebarGroupContent>
+              <SidebarMenu className="gap-0">
+                {elementTree.map((item, index) => (
+                  <Tree
+                    key={index}
+                    item={item}
+                    setCollapseState={setCollapseState}
+                    collapseState={collapseState}
+                    index={String(index)}
+                  />
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </SidebarContent>
+      </div>
+
     </Sidebar>
   )
 }
@@ -224,13 +235,13 @@ function Tree(
     index,
     collapseState,
     setCollapseState,
-  }: 
-  { 
-    item: HTMLElementItem,
-    index: string,
-    collapseState: Record<string, boolean>,
-    setCollapseState: CallableFunction,
-  }
+  }:
+    {
+      item: HTMLElementItem,
+      index: string,
+      collapseState: Record<string, boolean>,
+      setCollapseState: CallableFunction,
+    }
 ) {
   const children = item.children
   const { label, icon } = getItemInfo(item)
@@ -247,7 +258,7 @@ function Tree(
 
   function handleCollapseChange(open: boolean) {
     setCollapseState((oldState: Record<string, boolean>) => {
-      const newState = {...oldState}
+      const newState = { ...oldState }
       newState[index] = open
       return newState
     }
@@ -296,7 +307,7 @@ function Tree(
         <CollapsibleContent>
           <SidebarMenuSub className="pr-0 mr-0 gap-0">
             {children.map((subItem, subIndex) => (
-              <Tree key={subIndex} item={subItem} collapseState={collapseState} setCollapseState={setCollapseState} index={index + "" +subIndex} />
+              <Tree key={subIndex} item={subItem} collapseState={collapseState} setCollapseState={setCollapseState} index={index + "" + subIndex} />
             ))}
           </SidebarMenuSub>
         </CollapsibleContent>

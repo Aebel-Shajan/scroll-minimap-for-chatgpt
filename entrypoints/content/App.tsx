@@ -1,7 +1,7 @@
 import "@/assets/tailwind.css";
-import { extractFilteredTreeBySelectors, queryChatScrollContainer } from "../../lib/chatgptElementUtils";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { HTMLElementItem } from "@/types";
+import Minimap from "@/components/Minimap/Minimap";
+import { queryChatContainer, queryChatScrollContainer } from "@/lib/chatgptElementUtils";
 
 
 
@@ -42,17 +42,14 @@ export default function App() {
 
   return (
     <div className="bg-sidebar-accent text-black w-70 h-dvh pt-0 border-l-2 border-accent flex">
-      <div className="bg-black w-30 h-full">
-      
-      </div>
-      <SidebarProvider className="grow h-full" >
-        <AppSidebar
-          collapsible="none"
-          className="w-full h-full"
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-        />
-      </SidebarProvider>
+        <SidebarProvider >
+          <AppSidebar
+            collapsible="none"
+            className="w-full h-full"
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+          />
+        </SidebarProvider>
     </div>
   )
 }
