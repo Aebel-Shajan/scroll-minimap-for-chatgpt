@@ -15,7 +15,7 @@ import { MdOutlineGpsFixed } from "react-icons/md";
 import { buttonVariants } from "./ui/button"
 import Minimap from "./Minimap/Minimap"
 import { useElementHeight } from "@/hooks/use-element-height"
-import ChatOutline from "./chat-outline/chat-outline";
+import ChatOutline from "./chat-outline";
 
 
 
