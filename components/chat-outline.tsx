@@ -1,7 +1,7 @@
-import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub } from "@/components/ui/sidebar";
+import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuAction, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub } from "@/components/ui/sidebar";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { LucideCopyMinus, LucideCopyPlus } from "lucide-react";
+import { Check, Copy, LucideCopyMinus, LucideCopyPlus } from "lucide-react";
 import { HTMLElementItem } from "@/types";
 import { extractFilteredTreeBySelectors, getChatAuthor, getScrollableParent } from "@/lib/chatgptElementUtils";
 import {
@@ -42,8 +42,6 @@ export default function ChatOutline(
 ) {
   const [collapseState, setCollapseState] = useState<Record<string, boolean>>({})
   const anyOpen = Object.values(collapseState).some(Boolean)
-
-
 
   let elementTree: HTMLElementItem[] = []
   if (scrollContainer) {
@@ -170,6 +168,26 @@ function getItemInfo(item: HTMLElementItem) {
   }
 }
 
+
+function CopyActionButton({ textToCopy }: { textToCopy: string }) {
+  const [copied, setCopied] = useState(false)
+
+  function handleCopy() {
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1000)
+    })
+  }
+
+  return (
+    <SidebarMenuAction
+      onClick={handleCopy}
+      className="!top-0.25 opacity-0 group-hover:opacity-100 transition-opacity duration-150 bg-accent cursor-pointer"
+    >
+      {copied ? <Check /> : <Copy />}
+    </SidebarMenuAction>
+  )
+}
 function Tree(
   {
     item,
@@ -211,18 +229,24 @@ function Tree(
   }, [])
 
 
+
   if (!children.length) {
     return (
-      <SidebarMenuButton
-        // isActive={name === "button.tsx"}
-        className="data-[active=true]:bg-transparent pl-7 py-0 h-5.5"
-        onClick={scrollElementIntoView}
-      >
-        <ItemIcon className="" />
-        <span className="text-xs">
-          {label}
-        </span>
-      </SidebarMenuButton>
+      <SidebarMenuItem className="group" >
+
+        <SidebarMenuButton
+          // isActive={name === "button.tsx"}
+          className="data-[active=true]:bg-transparent pl-7 flex gap-1 py-0 !pr-0 h-5.5"
+          onClick={scrollElementIntoView}
+        >
+          <ItemIcon className="" />
+          <span className="text-xs">
+            {label}
+          </span>
+        </SidebarMenuButton>
+        <CopyActionButton textToCopy={label} />
+      </SidebarMenuItem>
+
     )
   }
 
@@ -234,17 +258,22 @@ function Tree(
         open={collapseState[index]}
       // defaultOpen={name === "components" || name === "ui"}
       >
-        <SidebarMenuButton className="flex gap-1 py-0 h-5.5">
-          <CollapsibleTrigger asChild >
-            <ChevronRight className="transition-transform" />
-          </CollapsibleTrigger>
-          <ItemIcon className="" />
-          <span className="text-xs"
-            onClick={scrollElementIntoView}
-          >
-            {label}
-          </span>
-        </SidebarMenuButton>
+        <div className="group">
+
+          <SidebarMenuButton className="flex gap-1 py-0 !pr-0 h-5.5">
+            <CollapsibleTrigger asChild >
+              <ChevronRight className="transition-transform" />
+            </CollapsibleTrigger>
+            <ItemIcon className="" />
+            <span className="text-xs"
+              onClick={scrollElementIntoView}
+            >
+              {label}
+            </span>
+          </SidebarMenuButton>
+          <CopyActionButton textToCopy={label} />
+        </div>
+
         <CollapsibleContent>
           <SidebarMenuSub className="pr-0 mr-0 gap-0">
             {children.map((subItem, subIndex) => (
