@@ -12,4 +12,5 @@ Features the minimap should:
     * elementToMap is resized
     * the contents in elemenToMap have changed
     * elementToMap is added/removed from dom
-* Limit drawing to every couple seconds instead of immediatly to reduce lag
+* Limit drawing of minimap canvas to every couple seconds instead of immediatly to reduce lag
+* Observe the height of the scroll container and redraw as it changes/exceedes a threshold

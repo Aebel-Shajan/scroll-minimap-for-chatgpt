@@ -78,9 +78,8 @@ export function AppSidebar(
       // console.log("searched again!", scrollContainer)
     }, 2000)
   }
+
   let elementTree: HTMLElementItem[] = []
-
-
   if (scrollContainer) {
     const allowedSelectors = [
       '[data-testid^="conversation-turn-"]',
@@ -110,24 +109,22 @@ export function AppSidebar(
     setQueueRedraw(true)
   }
 
-    useEffect(() => {
-    if (!scrollContainer) return
-    // console.log("observers attached!")
-    const childObserver = createChildObserver(scrollContainer, handleRefresh)
-    const sizeObserver = createSizeObserver(scrollContainer, handleRefresh)
-    return () => {
-      // console.log("observers disconnected!")
-      childObserver.disconnect();
-      sizeObserver.disconnect()
-    };
-  }, [scrollContainer])
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      forceRefresh();
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <Sidebar {...props}>
       <SidebarHeader
         className="bg-background flex flex-row justify-between items-center border-accent border-b-1 h-13 w-full">
         <TogglePanelButton isOpen={isOpen} setIsOpen={setIsOpen} variant={"ghost"} className="cursor-e-resize" />
+        <div className={buttonVariants({ variant: "ghost", size: "sm", className: "cursor-pointer" })} onClick={handleRefresh}>
+          <RefreshCcw className="size-3" />
+        </div>
         <div className="flex items-center justify-end w-full h-full gap-1">
           <MdOutlineGpsFixed />
 
@@ -139,7 +136,7 @@ export function AppSidebar(
       <div className="w-full flex h-[calc(100vh-52px)]">
 
         <div className="bg-black w-15 h-full">
-          <Minimap elementToMap={scrollContainer} queueRedraw={queueRedraw} setQueueRedraw={setQueueRedraw}/>
+          <Minimap elementToMap={scrollContainer} queueRedraw={queueRedraw} setQueueRedraw={setQueueRedraw} />
         </div>
         <SidebarContent className="w-55 h-full overflow-y-scroll">
           <SidebarGroup>
@@ -148,9 +145,6 @@ export function AppSidebar(
               <div className="flex gap-1">
                 <div className={buttonVariants({ variant: "ghost", size: "sm", className: "cursor-pointer" })} onClick={toggleAll}>
                   {anyOpen ? <LucideCopyMinus className="size-3" /> : <LucideCopyPlus className="size-3" />}
-                </div>
-                <div className={buttonVariants({ variant: "ghost", size: "sm", className: "cursor-pointer" })} onClick={handleRefresh}>
-                  <RefreshCcw className="size-3" />
                 </div>
               </div>
             </div>
