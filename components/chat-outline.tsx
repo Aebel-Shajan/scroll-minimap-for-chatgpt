@@ -69,7 +69,7 @@ export default function ChatOutline(
 
   return (
     <SidebarGroup>
-      <div className={cn(buttonVariants({ variant: "ghost", size: "sm" }), "flex justify-between")}>
+      <div className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "flex justify-between sticky top-0 z-99")}>
         Chat outline
         <div className="flex gap-1">
           <div className={buttonVariants({ variant: "ghost", size: "sm", className: "cursor-pointer" })} onClick={toggleAll}>
