@@ -75,7 +75,7 @@ export function AppSidebar(
     setTimeout(() => {
       scrollContainer = queryChatScrollContainer()
       forceRefresh()
-      console.log("searched again!", scrollContainer)
+      // console.log("searched again!", scrollContainer)
     }, 2000)
   }
   let elementTree: HTMLElementItem[] = []
@@ -112,11 +112,11 @@ export function AppSidebar(
 
     useEffect(() => {
     if (!scrollContainer) return
-    console.log("observers attached!")
+    // console.log("observers attached!")
     const childObserver = createChildObserver(scrollContainer, handleRefresh)
     const sizeObserver = createSizeObserver(scrollContainer, handleRefresh)
     return () => {
-      console.log("observers disconnected!")
+      // console.log("observers disconnected!")
       childObserver.disconnect();
       sizeObserver.disconnect()
     };
@@ -224,7 +224,7 @@ function getItemInfo(item: HTMLElementItem) {
     let language = "unknown"
     let icon = ICON_MAP["code"]
     const splitText = label.split("\nCopy\nEdit")
-    console.log(splitText)
+
     if (splitText.length > 1) {
       label = splitText.slice(1).join("\nCopy\nEdit")
       language = splitText[0]

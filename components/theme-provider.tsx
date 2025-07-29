@@ -33,7 +33,6 @@ export function ThemeProvider({
   )
 
   useEffect(() => {
-    console.log(theme)
     wrapperRoot.classList.remove("light", "dark", "system")
     wrapperRoot.classList.add(theme)
   }, [theme])

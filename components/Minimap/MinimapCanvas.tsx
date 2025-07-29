@@ -49,7 +49,6 @@ const MinimapCanvas = (
   // On checkRedraw force redraw if queueRedraw=true
   useEffect(() => {
     if (queueRedraw) {
-      console.log("redraw queued..")
       setQueueRedraw(false)
       setForceRedraw(old => !old)
     }
@@ -61,11 +60,9 @@ const MinimapCanvas = (
   useEffect(() => {
     const container = containerRef.current
     if (!container) {
-      console.log("container ref not rendered!")
       return 
     }
     if (!elementToMap) {
-      console.log("elementToMap not rendered!")
       container.innerHTML = ""
       return
     }
@@ -73,7 +70,6 @@ const MinimapCanvas = (
 
     // Async function which draws the canvas inside the container.
     (async () => {
-      console.log("Canvas drawn")
       const canvas = await generateMinimapCanvas(
         elementToMap,
         {
