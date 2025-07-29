@@ -21,16 +21,20 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
 } from "@/components/ui/sidebar"
 import { HTMLElementItem } from "@/types"
-import { createChildObserver, createSizeObserver, extractFilteredTreeBySelectors, getChatAuthor, getScrollableParent, queryChatScrollContainer } from "@/lib/chatgptElementUtils"
+import { 
+  extractFilteredTreeBySelectors, 
+  getChatAuthor, 
+  getScrollableParent, 
+  queryChatContainer, 
+  queryChatScrollContainer,
+} from "@/lib/chatgptElementUtils"
 
 import {
   FaPython,
@@ -51,7 +55,7 @@ import { MdOutlineGpsFixed } from "react-icons/md";
 import { buttonVariants } from "./ui/button"
 import { cn } from "@/lib/utils"
 import Minimap from "./Minimap/Minimap"
-
+import { useElementHeight } from "@/hooks/use-element-height"
 
 
 
@@ -69,8 +73,21 @@ export function AppSidebar(
     }
 ) {
   const [, forceRefresh] = React.useReducer(x => x + 1, 0);
+  const [collapseState, setCollapseState] = React.useState<Record<string, boolean>>({})
+  const [queueRedraw, setQueueRedraw] = useState(false)
 
+  const anyOpen = Object.values(collapseState).some(Boolean)
+
+  // NOTE: * chatcontainer is container which is parent of all chats
+  //       * scroll container is what controls the scroll of the chat viewport
   let scrollContainer = queryChatScrollContainer()
+  const chatContainer = queryChatContainer()
+  const chatContainerHeight = useElementHeight(chatContainer)
+  console.log("reloaded")
+  useEffect(() => {
+    setQueueRedraw(true)
+  }, [chatContainerHeight])
+
   if (!scrollContainer) {
     setTimeout(() => {
       scrollContainer = queryChatScrollContainer()
@@ -91,9 +108,6 @@ export function AppSidebar(
     elementTree = extractFilteredTreeBySelectors(scrollContainer, allowedSelectors)
   }
 
-  const [collapseState, setCollapseState] = React.useState<Record<string, boolean>>({})
-  const [queueRedraw, setQueueRedraw] = useState(false)
-  const anyOpen = Object.values(collapseState).some(Boolean)
 
   function toggleAll() {
     setCollapseState(prev => {
@@ -108,14 +122,6 @@ export function AppSidebar(
     forceRefresh()
     setQueueRedraw(true)
   }
-
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      forceRefresh();
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <Sidebar {...props}>

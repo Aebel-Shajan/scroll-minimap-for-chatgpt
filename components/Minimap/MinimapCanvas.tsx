@@ -39,7 +39,7 @@ const MinimapCanvas = (
   const [forceRedraw, setForceRedraw] = useState<boolean>(false);
   // logic to check for any queued redraws
   useEffect(() => {
-    const checkPeriod = 2 * 1000
+    const checkPeriod = 4 * 1000
     const interval = setInterval(() => {
       setCheckRedraw((old:boolean)=> !old)
     }, checkPeriod)
@@ -67,9 +67,10 @@ const MinimapCanvas = (
       return
     }
     setCanvasLoading(true);
-
+    
     // Async function which draws the canvas inside the container.
     (async () => {
+      // console.log("drawing at", new Date())
       const canvas = await generateMinimapCanvas(
         elementToMap,
         {
