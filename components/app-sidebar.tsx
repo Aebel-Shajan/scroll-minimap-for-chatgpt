@@ -48,7 +48,7 @@ export function AppSidebar(
   let scrollContainer = queryChatScrollContainer()
   const chatContainer = queryChatContainer()
   const chatContainerHeight = useElementHeight(chatContainer)
-  console.log("reloaded")
+  // console.log("reloaded")
   useEffect(() => {
     setQueueRedraw(true)
   }, [chatContainerHeight])
@@ -85,10 +85,9 @@ export function AppSidebar(
         <div className="flex items-center justify-end w-full h-full gap-1">
 
           <DropdownMenu >
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild>
               <Button className="text-[1.125rem] flex gap-1 items-center" variant="ghost">
                 <MdOutlineGpsFixed />
-
                 Chat GPS
               </Button>
             </DropdownMenuTrigger>
