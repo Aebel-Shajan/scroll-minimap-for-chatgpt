@@ -1,7 +1,7 @@
 import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuAction, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub } from "@/components/ui/sidebar";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Check, Copy, LucideCopyMinus, LucideCopyPlus } from "lucide-react";
+import { Check, Copy, Filter, LucideCopyMinus, LucideCopyPlus } from "lucide-react";
 import { HTMLElementItem } from "@/types";
 import { extractFilteredTreeBySelectors, getChatAuthor, getScrollableParent } from "@/lib/chatgptElementUtils";
 import {
@@ -18,19 +18,20 @@ import {
   User,
 } from "lucide-react"
 import {
-  FaPython,
-  FaJs,
-  FaJava,
-  FaPhp,
-  FaHtml5,
-  FaCss3Alt,
-  FaMarkdown,
-  FaDocker,
   FaRust,
   FaSwift,
   FaGem, // for Ruby
-  FaTerminal, // for Shell
 } from "react-icons/fa"
+import { DropdownMenuContent, DropdownMenu, DropdownMenuTrigger, DropdownMenuCheckboxItem } from "./ui/dropdown-menu";
+import { BiLogoCPlusPlus, BiLogoCss3, BiLogoDocker, BiLogoHtml5, BiLogoJava, BiLogoJavascript, BiLogoMarkdown, BiLogoPhp, BiLogoPython, BiLogoReact, BiLogoTypescript, BiTerminal } from "react-icons/bi";
+
+
+const SELECTOR_MAP: { [key: string]: string } = {
+  "user": '[data-turn="user"]',
+  "assistant": '[data-turn="assistant"]',
+  "code blocks": 'pre',
+  "section headers": 'h1, h2, h3'
+};
 
 
 export default function ChatOutline(
@@ -41,17 +42,22 @@ export default function ChatOutline(
   }
 ) {
   const [collapseState, setCollapseState] = useState<Record<string, boolean>>({})
+  const [options, setOptions] = useState<Record<string, boolean>>({
+    "user": true,
+    "assistant": true,
+    "code blocks": true,
+    "section headers": true,
+  })
   const anyOpen = Object.values(collapseState).some(Boolean)
 
   let elementTree: HTMLElementItem[] = []
   if (scrollContainer) {
-    const allowedSelectors = [
-      '[data-testid^="conversation-turn-"]',
-      'pre',
-      'h1',
-      'h2',
-      'h3',
-    ]
+    const allowedSelectors: string[] = []
+    Object.keys(SELECTOR_MAP).forEach(key => {
+      if (options[key]) {
+        allowedSelectors.push(SELECTOR_MAP[key])
+      }
+    })
     elementTree = extractFilteredTreeBySelectors(scrollContainer, allowedSelectors)
   }
 
@@ -61,8 +67,17 @@ export default function ChatOutline(
       Object.keys(prev).forEach(key => {
         newState[key] = !anyOpen
       })
+      console.log(newState)
       return newState
     })
+  }
+
+  const onToggleOption = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, key: string) => {
+    e.preventDefault()
+    setOptions(old => {
+      return { ...old, [key]: !old[key] }
+    }
+    )
   }
 
   return (
@@ -73,8 +88,26 @@ export default function ChatOutline(
           <div className={buttonVariants({ variant: "ghost", size: "sm", className: "cursor-pointer" })} onClick={toggleAll}>
             {anyOpen ? <LucideCopyMinus className="size-3" /> : <LucideCopyPlus className="size-3" />}
           </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="sm" className="cursor-pointer">
+                <Filter className="size-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {Object.entries(options).map(([key, value]) => (
+                <DropdownMenuCheckboxItem
+                  key={key}
+                  checked={value}
+                  onClick={(e) => onToggleOption(e, key)}
+                >
+                  {key}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
-      </div>
+      </div >
       <SidebarGroupContent>
         <SidebarMenu className="gap-0">
           {elementTree.map((item, index) => (
@@ -88,7 +121,7 @@ export default function ChatOutline(
           ))}
         </SidebarMenu>
       </SidebarGroupContent>
-    </SidebarGroup>
+    </SidebarGroup >
   )
 }
 
@@ -98,19 +131,26 @@ interface ReactComponentMap {
 
 
 const LANGUAGE_MAP: ReactComponentMap = {
-  "python": FaPython,
-  "javascript": FaJs,
-  "js": FaJs,
-  "java": FaJava,
+  "python": BiLogoPython,
+  "javascript": BiLogoJavascript,
+  "typescript": BiLogoTypescript,
+  "js": BiLogoJavascript,
+  "ts": BiLogoTypescript,
+  "jsx": BiLogoReact,
+  "tsx": BiLogoReact,
+  "java": BiLogoJava,
+  "cpp": BiLogoCPlusPlus,
+  "c++": BiLogoCPlusPlus,
   "ruby": FaGem,
-  "php": FaPhp,
+  "php": BiLogoPhp,
   "rust": FaRust,
   "swift": FaSwift,
-  "html": FaHtml5,
-  "css": FaCss3Alt,
-  "shell": FaTerminal,
-  "markdown": FaMarkdown,
-  "docker": FaDocker,
+  "html": BiLogoHtml5,
+  "css": BiLogoCss3,
+  "shell": BiTerminal,
+  "markdown": BiLogoMarkdown,
+  "docker": BiLogoDocker,
+  "bash": BiTerminal,
 }
 
 
@@ -277,7 +317,7 @@ function Tree(
         <CollapsibleContent>
           <SidebarMenuSub className="pr-0 mr-0 gap-0">
             {children.map((subItem, subIndex) => (
-              <Tree key={subIndex} item={subItem} collapseState={collapseState} setCollapseState={setCollapseState} index={index + "" + subIndex} />
+              <Tree key={subIndex} item={subItem} collapseState={collapseState} setCollapseState={setCollapseState} index={index + "," + subIndex} />
             ))}
           </SidebarMenuSub>
         </CollapsibleContent>
