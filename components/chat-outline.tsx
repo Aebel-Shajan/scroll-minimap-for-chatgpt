@@ -42,13 +42,14 @@ export default function ChatOutline(
   }
 ) {
   const [collapseState, setCollapseState] = useState<Record<string, boolean>>({})
-  const [options, setOptions] = useState<Record<string, boolean>>({
+  const [options, setOptions] = useSyncedStorage<Record<string, boolean>>("filterOptions", {
     "user": true,
     "assistant": true,
     "code blocks": true,
     "section headers": true,
   })
   const anyOpen = Object.values(collapseState).some(Boolean)
+  const anyFilters = Object.values(options).some((value) => !value)
 
   let elementTree: HTMLElementItem[] = []
   if (scrollContainer) {
@@ -90,7 +91,7 @@ export default function ChatOutline(
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="sm" className="cursor-pointer">
+              <Button variant={ anyFilters? "default": "ghost"} size="sm" className="cursor-pointer">
                 <Filter className="size-3" />
               </Button>
             </DropdownMenuTrigger>

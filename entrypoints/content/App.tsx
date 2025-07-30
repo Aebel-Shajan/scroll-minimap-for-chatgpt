@@ -7,7 +7,7 @@ import { queryChatContainer, queryChatScrollContainer } from "@/lib/chatgptEleme
 
 
 export default function App() {
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] =  useSyncedStorage("sidebarOpen", false)
 
   const { setTheme } = useTheme();
   useEffect(() => {
@@ -42,14 +42,14 @@ export default function App() {
 
   return (
     <div className="bg-sidebar-accent text-black w-70 h-dvh pt-0 border-l-2 border-accent flex">
-        <SidebarProvider >
-          <AppSidebar
-            collapsible="none"
-            className="w-full h-full"
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-          />
-        </SidebarProvider>
+      <SidebarProvider >
+        <AppSidebar
+          collapsible="none"
+          className="w-full h-full"
+          isOpen={isOpen}
+          setIsOpen={setIsOpen}
+        />
+      </SidebarProvider>
     </div>
   )
 }
