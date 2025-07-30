@@ -41,7 +41,7 @@ export default function App() {
 
 
   return (
-    <div className="bg-sidebar-accent text-black w-70 h-dvh pt-0 border-l-2 border-accent flex">
+    <div className="bg-sidebar-accent text-black w-fit h-dvh pt-0 border-l-2 border-accent flex">
       <SidebarProvider >
         <AppSidebar
           collapsible="none"

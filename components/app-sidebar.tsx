@@ -12,10 +12,11 @@ import {
   queryChatScrollContainer,
 } from "@/lib/chatgptElementUtils"
 import { MdOutlineGpsFixed } from "react-icons/md";
-import { buttonVariants } from "./ui/button"
+import { Button, buttonVariants } from "./ui/button"
 import Minimap from "./Minimap/Minimap"
 import { useElementHeight } from "@/hooks/use-element-height"
 import ChatOutline from "./chat-outline";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuCheckboxItem } from "./ui/dropdown-menu";
 
 
 
@@ -34,6 +35,13 @@ export function AppSidebar(
 ) {
   const [, forceRefresh] = useReducer(x => x + 1, 0);
   const [queueRedraw, setQueueRedraw] = useState(false)
+  const [displayOptions, setDisplayOptions] = useSyncedStorage<Record<string, boolean>>(
+    "displayOptions",
+    {
+      "showMinimap": true,
+      // "showOutline": true,
+    }
+  )
 
   // NOTE: * chatcontainer is container which is parent of all chats
   //       * scroll container is what controls the scroll of the chat viewport
@@ -58,6 +66,14 @@ export function AppSidebar(
     setQueueRedraw(true)
   }
 
+  const onToggleOption = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, key: string) => {
+    e.preventDefault()
+    setDisplayOptions(old => {
+      return { ...old, [key]: !old[key] }
+    }
+    )
+  }
+
   return (
     <Sidebar {...props}>
       <SidebarHeader
@@ -67,23 +83,43 @@ export function AppSidebar(
           <RefreshCcw className="size-3" />
         </div>
         <div className="flex items-center justify-end w-full h-full gap-1">
-          <MdOutlineGpsFixed />
 
-          <div className="text-[1.125rem]">
-            Chat GPS
-          </div>
+          <DropdownMenu >
+            <DropdownMenuTrigger>
+              <Button className="text-[1.125rem] flex gap-1 items-center" variant="ghost">
+                <MdOutlineGpsFixed />
+
+                Chat GPS
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="z-9999">
+              {Object.entries(displayOptions).map(([key, value]) => (
+                <DropdownMenuCheckboxItem
+                  key={key}
+                  checked={value}
+                  onClick={(e) => onToggleOption(e, key)}
+                >
+                  {key}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
         </div>
       </SidebarHeader>
-      <div className="w-full flex h-[calc(100vh-52px)]">
+      <div className="flex h-[calc(100vh-52px)] w-70">
 
-        <div className="bg-black w-15 h-full">
-          <Minimap elementToMap={scrollContainer} queueRedraw={queueRedraw} setQueueRedraw={setQueueRedraw} />
-        </div>
+        {displayOptions["showMinimap"] &&
+          <div className="bg-black h-full w-15">
+            <Minimap elementToMap={scrollContainer} queueRedraw={queueRedraw} setQueueRedraw={setQueueRedraw} />
+          </div>
+        }
+
         <SidebarContent className="w-55 h-full overflow-y-scroll">
           <ChatOutline scrollContainer={scrollContainer} />
         </SidebarContent>
       </div>
 
-    </Sidebar>
+    </Sidebar >
   )
 }
