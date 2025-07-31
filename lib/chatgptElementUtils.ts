@@ -263,7 +263,7 @@ export function getChatAuthor(chatElement: HTMLElement): "user" | "assistant" {
   if (messageAuthor === "user" || messageAuthor === "assistant") return messageAuthor
   // Default to user if no data-turn attribute is found
   return "user"
-} 
+}
 
 
 
@@ -349,13 +349,16 @@ export const ICON_MAP: ReactComponentMap = {
 export function extractChatId(url: string) {
   const match = url.match(/chatgpt\.com\/c\/([a-f0-9-]{36})/i);
   return match ? match[1] : null;
-}export function getItemInfo(item: HTMLElementItem) {
+}
+
+export function getItemInfo(item: HTMLElementItem) {
   const element = item.element;
   if (element.matches('[data-testid^="conversation-turn-"]')) {
     let label = item.element.innerText;
     const iconName = getChatAuthor(element);
     const splitText = label.split("said:");
     if (splitText.length > 1) {
+      // rejoin incase another instance of 'said:' was in the chat.
       label = splitText.slice(1).join("said:");
     }
     return {
@@ -368,11 +371,20 @@ export function extractChatId(url: string) {
     let label = item.element.innerText;
     let language = "unknown";
     let iconName = "code";
-    const splitText = label.split("\nCopy\nEdit");
+    let splitText = label.split("\nCopy\nEdit");
 
     if (splitText.length > 1) {
       label = splitText.slice(1).join("\nCopy\nEdit");
       language = splitText[0];
+    }
+
+    if (splitText.length == 1) {
+      splitText = label.split("Copy code")
+      if (splitText.length > 1) {
+        label = splitText.slice(1).join("Copy code");
+        language = splitText[0].trim();
+
+      }
     }
     if (Object.keys(LANGUAGE_MAP).includes(language)) {
       iconName = language;
