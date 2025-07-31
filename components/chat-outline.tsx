@@ -1,29 +1,19 @@
-import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuAction, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub } from "@/components/ui/sidebar";
+import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub } from "@/components/ui/sidebar";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Check, Copy, Filter, LucideCopyMinus, LucideCopyPlus } from "lucide-react";
-import { HTMLElementItem } from "@/types";
-import { extractFilteredTreeBySelectors, getChatAuthor, getScrollableParent } from "@/lib/chatgptElementUtils";
+import { Check, Copy, Filter, LucideCopyMinus, LucideCopyPlus, StarIcon } from "lucide-react";
+import { favouritedChat, HTMLElementItem } from "@/types";
+import { extractChatId, extractFilteredTreeBySelectors, getItemInfo, getScrollableParent } from "@/lib/chatgptElementUtils";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import {
-  BotMessageSquare,
   ChevronRight,
-  Code,
-  MessageSquare,
-  Section,
-  User,
 } from "lucide-react"
-import {
-  FaRust,
-  FaSwift,
-  FaGem, // for Ruby
-} from "react-icons/fa"
 import { DropdownMenuContent, DropdownMenu, DropdownMenuTrigger, DropdownMenuCheckboxItem } from "./ui/dropdown-menu";
-import { BiLogoCPlusPlus, BiLogoCss3, BiLogoDocker, BiLogoHtml5, BiLogoJava, BiLogoJavascript, BiLogoMarkdown, BiLogoPhp, BiLogoPython, BiLogoReact, BiLogoTypescript, BiTerminal } from "react-icons/bi";
+import { FavouriteContext } from "./app-sidebar";
 
 
 const SELECTOR_MAP: { [key: string]: string } = {
@@ -91,7 +81,7 @@ export default function ChatOutline(
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant={ anyFilters? "default": "ghost"} size="sm" className="cursor-pointer">
+              <Button variant={anyFilters ? "default" : "ghost"} size="sm" className="cursor-pointer">
                 <Filter className="size-3" />
               </Button>
             </DropdownMenuTrigger>
@@ -126,90 +116,6 @@ export default function ChatOutline(
   )
 }
 
-interface ReactComponentMap {
-  [key: string]: React.ComponentType<any>
-}
-
-
-const LANGUAGE_MAP: ReactComponentMap = {
-  "python": BiLogoPython,
-  "javascript": BiLogoJavascript,
-  "typescript": BiLogoTypescript,
-  "js": BiLogoJavascript,
-  "ts": BiLogoTypescript,
-  "jsx": BiLogoReact,
-  "tsx": BiLogoReact,
-  "java": BiLogoJava,
-  "cpp": BiLogoCPlusPlus,
-  "c++": BiLogoCPlusPlus,
-  "ruby": FaGem,
-  "php": BiLogoPhp,
-  "rust": FaRust,
-  "swift": FaSwift,
-  "html": BiLogoHtml5,
-  "css": BiLogoCss3,
-  "shell": BiTerminal,
-  "markdown": BiLogoMarkdown,
-  "docker": BiLogoDocker,
-  "bash": BiTerminal,
-}
-
-
-const ICON_MAP: ReactComponentMap = {
-  "user": User,
-  "assistant": BotMessageSquare,
-  "code": Code,
-  "section": Section,
-  "chat": MessageSquare,
-}
-
-function getItemInfo(item: HTMLElementItem) {
-  const element = item.element
-  if (element.matches('[data-testid^="conversation-turn-"]')) {
-    let label = item.element.innerText
-    const splitText = label.split("said:")
-    if (splitText.length > 1) {
-      label = splitText.slice(1).join("said:")
-    }
-    return {
-      "label": label,
-      "icon": ICON_MAP[getChatAuthor(element)],
-    }
-  }
-  if (element.tagName === "PRE") {
-    let label = item.element.innerText
-    let language = "unknown"
-    let icon = ICON_MAP["code"]
-    const splitText = label.split("\nCopy\nEdit")
-
-    if (splitText.length > 1) {
-      label = splitText.slice(1).join("\nCopy\nEdit")
-      language = splitText[0]
-    }
-    if (Object.keys(LANGUAGE_MAP).includes(language)) {
-      icon = LANGUAGE_MAP[language]
-    }
-
-    return {
-      "label": label,
-      "icon": icon,
-    }
-  }
-
-  if (element.matches("h1, h2, h3")) {
-    return {
-      "label": item.element.innerText,
-      "icon": ICON_MAP["section"],
-    }
-  }
-
-  return {
-    "label": item.element.innerText,
-    "icon": ICON_MAP["chat"],
-  }
-}
-
-
 function CopyActionButton({ textToCopy }: { textToCopy: string }) {
   const [copied, setCopied] = useState(false)
 
@@ -221,14 +127,99 @@ function CopyActionButton({ textToCopy }: { textToCopy: string }) {
   }
 
   return (
-    <SidebarMenuAction
+    <div
+      className={
+        buttonVariants(
+          {
+            variant: "ghost",
+            size: "sm",
+            className: "cursor-pointer h-full !px-0",
+          }
+        )
+      }
       onClick={handleCopy}
-      className="!top-0.25 opacity-0 group-hover:opacity-100 transition-opacity duration-150 bg-accent cursor-pointer"
     >
-      {copied ? <Check /> : <Copy />}
-    </SidebarMenuAction>
+      {copied ? <Check className="h-full" /> : <Copy className="h-full" />}
+    </div>
   )
 }
+
+
+function FavouriteActionButton({ itemToFavourite }: { itemToFavourite: HTMLElementItem }) {
+
+
+  const { favourites, setFavourites } = useContext(FavouriteContext)
+  const chatId = extractChatId(window.location.href)
+  let isFavourited = false
+  let scrollPos = -1
+  const scrollContainer = getScrollableParent(itemToFavourite.element)
+  if (scrollContainer) {
+    scrollPos = itemToFavourite.element.getBoundingClientRect().top + scrollContainer.scrollTop - 60
+    const uniqueId = chatId + "-scroll-" + scrollPos
+    isFavourited = Object.keys(favourites).includes(uniqueId)
+  }
+
+  function removeExistingFavourite(uniqueId: string) {
+    setFavourites((old: Record<string, favouritedChat>) => {
+      if (!Object.keys(old).includes(uniqueId)) {
+        return old
+      }
+      const newFavs = { ...old }
+      delete newFavs[uniqueId]
+      return newFavs
+    })
+  }
+
+  function addNewFavourite(uniqueId: string, newFavourite: favouritedChat) {
+    setFavourites((old: Record<string, favouritedChat>) => {
+      const newFavs: { [x: string]: favouritedChat } = {
+        ...old,
+        [uniqueId]: newFavourite
+      }
+      console.log(newFavs)
+      return newFavs
+    })
+  }
+
+
+  function handleFavourite() {
+    if (!scrollContainer || !chatId || scrollPos === -1) {
+      alert(`error occured when trying to favourite chat. You have to be logged in to fav chats. `)
+      return
+    }
+    const uniqueId = chatId + "-scroll-" + scrollPos
+    if (isFavourited) {
+      removeExistingFavourite(uniqueId)
+    } else {
+      const { label, iconName } = getItemInfo(itemToFavourite)
+      const newFavourite = {
+        chatId: chatId,
+        scrollTop: scrollPos,
+        preview: label,
+        iconName: iconName,
+      }
+      addNewFavourite(uniqueId, newFavourite)
+    }
+  }
+
+  return (
+    <div
+      className={
+        buttonVariants(
+          {
+            variant: "ghost",
+            size: "sm",
+            className: "cursor-pointer h-full !px-0",
+          }
+        )
+      }
+      onClick={handleFavourite}
+    >
+      <StarIcon className="h-full" fill={isFavourited ? "black" : "transparent"} />
+    </div>
+  )
+}
+
 function Tree(
   {
     item,
@@ -270,6 +261,21 @@ function Tree(
   }, [])
 
 
+  const menuLabel = (<>
+    <ItemIcon className="" />
+    <span className="text-xs truncate"
+      onClick={scrollElementIntoView}
+    >
+      {label}
+    </span>
+    <div className="absolute top-0 h-full right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 bg-accent gap-2 flex">
+      <CopyActionButton textToCopy={label} />
+      <FavouriteActionButton itemToFavourite={item} />
+    </div>
+  </>
+  )
+
+
 
   if (!children.length) {
     return (
@@ -277,15 +283,11 @@ function Tree(
 
         <SidebarMenuButton
           // isActive={name === "button.tsx"}
-          className="data-[active=true]:bg-transparent pl-7 flex gap-1 py-0 !pr-0 h-5.5"
+          className="data-[active=true]:bg-transparent pl-7 flex gap-1 py-0 !pr-0 h-5.5 relative"
           onClick={scrollElementIntoView}
         >
-          <ItemIcon className="" />
-          <span className="text-xs">
-            {label}
-          </span>
+          {menuLabel}
         </SidebarMenuButton>
-        <CopyActionButton textToCopy={label} />
       </SidebarMenuItem>
 
     )
@@ -300,19 +302,12 @@ function Tree(
       // defaultOpen={name === "components" || name === "ui"}
       >
         <div className="group">
-
-          <SidebarMenuButton className="flex gap-1 py-0 !pr-0 h-5.5">
+          <SidebarMenuButton className="flex gap-1 py-0 !pr-0 h-5.5 relative group">
             <CollapsibleTrigger asChild >
               <ChevronRight className="transition-transform" />
             </CollapsibleTrigger>
-            <ItemIcon className="" />
-            <span className="text-xs"
-              onClick={scrollElementIntoView}
-            >
-              {label}
-            </span>
+            {menuLabel}
           </SidebarMenuButton>
-          <CopyActionButton textToCopy={label} />
         </div>
 
         <CollapsibleContent>

@@ -1,6 +1,17 @@
-import { HTMLElementItem } from "@/types";
-
-
+import { HTMLElementItem, ReactComponentMap } from "@/types";
+import { BiLogoCPlusPlus, BiLogoCss3, BiLogoDocker, BiLogoHtml5, BiLogoJava, BiLogoJavascript, BiLogoMarkdown, BiLogoPhp, BiLogoPython, BiLogoReact, BiLogoTypescript, BiTerminal } from "react-icons/bi";
+import {
+  BotMessageSquare,
+  Code,
+  MessageSquare,
+  Section,
+  User,
+} from "lucide-react"
+import {
+  FaRust,
+  FaSwift,
+  FaGem, // for Ruby
+} from "react-icons/fa"
 
 /**
  * Observes the DOM for the addition or removal of an element with a specific selector.
@@ -302,3 +313,91 @@ export function getScrollableParent(el: Element | null): Element | null {
 
   return null;
 }
+
+export const LANGUAGE_MAP: ReactComponentMap = {
+  "python": BiLogoPython,
+  "javascript": BiLogoJavascript,
+  "typescript": BiLogoTypescript,
+  "js": BiLogoJavascript,
+  "ts": BiLogoTypescript,
+  "jsx": BiLogoReact,
+  "tsx": BiLogoReact,
+  "java": BiLogoJava,
+  "cpp": BiLogoCPlusPlus,
+  "c++": BiLogoCPlusPlus,
+  "ruby": FaGem,
+  "php": BiLogoPhp,
+  "rust": FaRust,
+  "swift": FaSwift,
+  "html": BiLogoHtml5,
+  "css": BiLogoCss3,
+  "shell": BiTerminal,
+  "markdown": BiLogoMarkdown,
+  "docker": BiLogoDocker,
+  "bash": BiTerminal,
+}
+
+export const ICON_MAP: ReactComponentMap = {
+  "user": User,
+  "assistant": BotMessageSquare,
+  "code": Code,
+  "section": Section,
+  "chat": MessageSquare,
+  ...LANGUAGE_MAP
+}
+
+export function extractChatId(url: string) {
+  const match = url.match(/chatgpt\.com\/c\/([a-f0-9-]{36})/i);
+  return match ? match[1] : null;
+}export function getItemInfo(item: HTMLElementItem) {
+  const element = item.element;
+  if (element.matches('[data-testid^="conversation-turn-"]')) {
+    let label = item.element.innerText;
+    const iconName = getChatAuthor(element);
+    const splitText = label.split("said:");
+    if (splitText.length > 1) {
+      label = splitText.slice(1).join("said:");
+    }
+    return {
+      "label": label,
+      "icon": ICON_MAP[iconName],
+      "iconName": iconName,
+    };
+  }
+  if (element.tagName === "PRE") {
+    let label = item.element.innerText;
+    let language = "unknown";
+    let iconName = "code";
+    const splitText = label.split("\nCopy\nEdit");
+
+    if (splitText.length > 1) {
+      label = splitText.slice(1).join("\nCopy\nEdit");
+      language = splitText[0];
+    }
+    if (Object.keys(LANGUAGE_MAP).includes(language)) {
+      iconName = language;
+    }
+
+    return {
+      "label": label,
+      "icon": ICON_MAP[iconName],
+      "iconName": iconName
+    };
+  }
+
+  if (element.matches("h1, h2, h3")) {
+    const iconName = "section";
+    return {
+      "label": item.element.innerText,
+      "icon": ICON_MAP[iconName],
+      "iconName": iconName
+    };
+  }
+
+  return {
+    "label": item.element.innerText,
+    "icon": ICON_MAP["chat"],
+    "iconName": "chat"
+  };
+}
+

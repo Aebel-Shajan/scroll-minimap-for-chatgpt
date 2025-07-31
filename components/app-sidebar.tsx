@@ -17,8 +17,18 @@ import Minimap from "./Minimap/Minimap"
 import { useElementHeight } from "@/hooks/use-element-height"
 import ChatOutline from "./chat-outline";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuCheckboxItem } from "./ui/dropdown-menu";
+import FavouritesSection from "./favourites-section";
+import { favouritedChat } from "@/types";
 
+interface FavouriteContextProps {
+  favourites: Record<string, favouritedChat>,
+  setFavourites: CallableFunction,
+}
 
+export const FavouriteContext = React.createContext<FavouriteContextProps>({
+  favourites: {},
+  setFavourites: () => { }
+})
 
 export function AppSidebar(
   {
@@ -42,6 +52,7 @@ export function AppSidebar(
       // "showOutline": true,
     }
   )
+  const [favourites, setFavourites] = useSyncedStorage<Record<string, favouritedChat>>("favouritedChats", {})
 
   // NOTE: * chatcontainer is container which is parent of all chats
   //       * scroll container is what controls the scroll of the chat viewport
@@ -75,6 +86,7 @@ export function AppSidebar(
   }
 
   return (
+
     <Sidebar {...props}>
       <SidebarHeader
         className="bg-background flex flex-row justify-between items-center border-accent border-b-1 h-13 w-full">
@@ -115,10 +127,17 @@ export function AppSidebar(
         }
 
         <SidebarContent className="w-55 h-full overflow-y-scroll">
-          <ChatOutline scrollContainer={scrollContainer} />
+          <FavouriteContext.Provider
+            value={{
+              favourites,
+              setFavourites
+            }}
+          >
+            <ChatOutline scrollContainer={scrollContainer} />
+            <FavouritesSection />
+          </FavouriteContext.Provider>
         </SidebarContent>
       </div>
-
     </Sidebar >
   )
 }
