@@ -73,32 +73,52 @@ export default function ChatOutline(
 
   return (
     <SidebarGroup>
-      <div className={cn(buttonVariants({ variant: "secondary", size: "sm" }), "flex justify-between sticky top-0 z-99")}>
-        Chat outline
-        <div className="flex gap-1">
-          <div className={buttonVariants({ variant: "ghost", size: "sm", className: "cursor-pointer" })} onClick={toggleAll}>
-            {anyOpen ? <LucideCopyMinus className="size-3" /> : <LucideCopyPlus className="size-3" />}
+      <Button
+        variant="secondary"
+        size="sm"
+        className="flex justify-between sticky top-0 z-99"
+        asChild
+      >
+        <div>
+
+          Chat outline
+          <div className="flex gap-1">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="cursor-pointer"
+              onClick={toggleAll}
+              asChild
+            >
+              <div>
+                {
+                  anyOpen ?
+                    <LucideCopyMinus className="size-3" /> :
+                    <LucideCopyPlus className="size-3" />
+                }
+              </div>
+            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant={anyFilters ? "default" : "ghost"} size="sm" className="cursor-pointer">
+                  <Filter className="size-3" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {Object.entries(options).map(([key, value]) => (
+                  <DropdownMenuCheckboxItem
+                    key={key}
+                    checked={value}
+                    onClick={(e) => onToggleOption(e, key)}
+                  >
+                    {key}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant={anyFilters ? "default" : "ghost"} size="sm" className="cursor-pointer">
-                <Filter className="size-3" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              {Object.entries(options).map(([key, value]) => (
-                <DropdownMenuCheckboxItem
-                  key={key}
-                  checked={value}
-                  onClick={(e) => onToggleOption(e, key)}
-                >
-                  {key}
-                </DropdownMenuCheckboxItem>
-              ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
-      </div >
+      </Button >
       <SidebarGroupContent>
         <SidebarMenu className="gap-0">
           {elementTree.map((item, index) => (
@@ -127,20 +147,21 @@ function CopyActionButton({ textToCopy }: { textToCopy: string }) {
   }
 
   return (
-    <div
-      className={
-        buttonVariants(
-          {
-            variant: "ghost",
-            size: "sm",
-            className: "cursor-pointer h-full !px-0",
-          }
-        )
-      }
+    <Button
+      variant="ghost"
+      size="sm"
+      className="cursor-pointer h-full !px-0"
       onClick={handleCopy}
+      asChild
     >
-      {copied ? <Check className="h-full" /> : <Copy className="h-full" />}
-    </div>
+      <div>
+        {
+          copied ?
+            <Check className="h-full" /> :
+            <Copy className="h-full" />
+        }
+      </div>
+    </Button>
   )
 }
 
@@ -203,20 +224,17 @@ function FavouriteActionButton({ itemToFavourite }: { itemToFavourite: HTMLEleme
   }
 
   return (
-    <div
-      className={
-        buttonVariants(
-          {
-            variant: "ghost",
-            size: "sm",
-            className: "cursor-pointer h-full !px-0",
-          }
-        )
-      }
+    <Button
+      variant="ghost"
+      size="sm"
+      className="cursor-pointer h-full !px-0"
       onClick={handleFavourite}
+      asChild
     >
-      <StarIcon className="h-full" fill={isFavourited ? "black" : "transparent"} />
-    </div>
+      <div>
+        <StarIcon className="h-full" fill={isFavourited ? "black" : "transparent"} />
+      </div>
+    </Button>
   )
 }
 
@@ -239,7 +257,7 @@ function Tree(
   const ItemIcon = icon
 
   function scrollElementIntoView() {
-
+    console.log("span clicked")
     // why not use chatElement.scrollIntoView()?
     const scrollContainer = getScrollableParent(item.element)
     if (scrollContainer) {
@@ -284,7 +302,6 @@ function Tree(
         <SidebarMenuButton
           // isActive={name === "button.tsx"}
           className="data-[active=true]:bg-transparent pl-7 flex gap-1 py-0 !pr-0 h-5.5 relative"
-          onClick={scrollElementIntoView}
         >
           {menuLabel}
         </SidebarMenuButton>
@@ -302,7 +319,7 @@ function Tree(
       // defaultOpen={name === "components" || name === "ui"}
       >
         <div className="group">
-          <SidebarMenuButton className="flex gap-1 py-0 !pr-0 h-5.5 relative group">
+          <SidebarMenuButton className="flex gap-1 py-0 !pr-0 h-5.5 relative">
             <CollapsibleTrigger asChild >
               <ChevronRight className="transition-transform" />
             </CollapsibleTrigger>

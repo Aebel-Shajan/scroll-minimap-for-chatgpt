@@ -2,7 +2,7 @@ import { extractChatId, ICON_MAP, queryChatScrollContainer } from "@/lib/chatgpt
 import { SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar"
 import { cn } from "@/lib/utils"
 import { ExternalLink, StarIcon } from "lucide-react"
-import { buttonVariants } from "./ui/button"
+import { Button } from "./ui/button"
 import { favouritedChat } from "@/types"
 
 export default function FavouritesSection() {
@@ -48,42 +48,31 @@ function FavItem({ favChat, removeFav, uniqueKey }: { favChat: favouritedChat, r
   }
   const FavChatIcon = ICON_MAP[favChat.iconName]
   return (
-    <SidebarMenuItem
-    >
+    <SidebarMenuItem>
       <SidebarMenuButton
         className={cn(" flex gap-1 py-0 !pr-0 h-5.5 relative", isOnPage && "pl-7")}
-
-        onClick={goToFav}>
-        {!isOnPage &&
-          <ExternalLink />
-        }
+      >
+        {!isOnPage && <ExternalLink />}
         <FavChatIcon />
-
         <span className="text-xs truncate"
+          onClick={goToFav}
+
         >
           {favChat.preview}
-
         </span>
-
-        <div
-          className="absolute top-0 h-full right-0 bg-accent gap-2 flex"
-
-        >
-          <div
-            className={
-              buttonVariants(
-                {
-                  variant: "ghost",
-                  size: "sm",
-                  className: "cursor-pointer h-full !px-0",
-                }
-              )
-            }
+        <div className="absolute top-0 h-full right-0 bg-accent gap-2 flex pointer-events-auto">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="cursor-pointer h-full !px-0"
             onClick={() => removeFav(uniqueKey)}
+            asChild
           >
-            <StarIcon className="h-full" fill="black" />
+            <div>
+              <StarIcon className="h-full" fill="black" />
+            </div>
+          </Button>
 
-          </div>
         </div>
       </SidebarMenuButton>
     </SidebarMenuItem>
