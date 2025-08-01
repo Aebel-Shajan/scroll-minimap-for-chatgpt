@@ -6,6 +6,7 @@ import path from "path";
 export default defineConfig({
   modules: ["@wxt-dev/module-react", '@wxt-dev/auto-icons'],
   manifest: {
+    name: "Chat GPS",
     permissions: ['storage'],
   },
   vite: () => ({
