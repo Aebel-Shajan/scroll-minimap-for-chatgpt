@@ -2,10 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import Slider from "./Slider";
 import MinimapCanvas from "./MinimapCanvas";
 import { createChildObserver, createSizeObserver, onNextChat, onPreviousChat } from "./utils";
-import { BiLeftArrow, BiRefresh, BiRightArrow, } from "react-icons/bi";
-import { VscLoading } from "react-icons/vsc";
-import { CgClose } from "react-icons/cg";
-import logo from "@/assets/logo.png"
 
 /**
  * Minimap component that provides a visual representation of a larger element's scrollable area.

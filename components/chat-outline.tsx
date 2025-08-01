@@ -1,7 +1,6 @@
 import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub } from "@/components/ui/sidebar";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Check, Copy, Filter, LucideCopyMinus, LucideCopyPlus, StarIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Check, Copy, Filter, LucideCopyMinus, LucideCopyPlus, StarIcon, ChevronRight } from "lucide-react";
 import { favouritedChat, HTMLElementItem } from "@/types";
 import { extractChatId, extractFilteredTreeBySelectors, getItemInfo, getScrollableParent } from "@/lib/chatgptElementUtils";
 import {
@@ -9,9 +8,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
-import {
-  ChevronRight,
-} from "lucide-react"
 import { DropdownMenuContent, DropdownMenu, DropdownMenuTrigger, DropdownMenuCheckboxItem } from "./ui/dropdown-menu";
 import { FavouriteContext } from "./app-sidebar";
 

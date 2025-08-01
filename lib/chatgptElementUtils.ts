@@ -1,5 +1,18 @@
 import { HTMLElementItem, ReactComponentMap } from "@/types";
-import { BiLogoCPlusPlus, BiLogoCss3, BiLogoDocker, BiLogoHtml5, BiLogoJava, BiLogoJavascript, BiLogoMarkdown, BiLogoPhp, BiLogoPython, BiLogoReact, BiLogoTypescript, BiTerminal } from "react-icons/bi";
+import {
+  BiLogoCPlusPlus,
+  BiLogoCss3,
+  BiLogoDocker,
+  BiLogoHtml5,
+  BiLogoJava,
+  BiLogoJavascript,
+  BiLogoMarkdown,
+  BiLogoPhp,
+  BiLogoPython,
+  BiLogoReact,
+  BiLogoTypescript,
+  BiTerminal,
+} from "react-icons/bi";
 import {
   BotMessageSquare,
   Code,
@@ -7,11 +20,7 @@ import {
   Section,
   User,
 } from "lucide-react"
-import {
-  FaRust,
-  FaSwift,
-  FaGem, // for Ruby
-} from "react-icons/fa"
+
 
 /**
  * Observes the DOM for the addition or removal of an element with a specific selector.
@@ -325,10 +334,10 @@ export const LANGUAGE_MAP: ReactComponentMap = {
   "java": BiLogoJava,
   "cpp": BiLogoCPlusPlus,
   "c++": BiLogoCPlusPlus,
-  "ruby": FaGem,
+  // "ruby": FaGem,
   "php": BiLogoPhp,
-  "rust": FaRust,
-  "swift": FaSwift,
+  // "rust": FaRust,
+  // "swift": FaSwift,
   "html": BiLogoHtml5,
   "css": BiLogoCss3,
   "shell": BiTerminal,

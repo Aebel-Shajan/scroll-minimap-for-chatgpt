@@ -1,5 +1,6 @@
 import * as React from "react"
 import {
+  LocateFixed,
   RefreshCcw,
 } from "lucide-react"
 import {
@@ -11,7 +12,6 @@ import {
   queryChatContainer,
   queryChatScrollContainer,
 } from "@/lib/chatgptElementUtils"
-import { MdOutlineGpsFixed } from "react-icons/md";
 import { Button, buttonVariants } from "./ui/button"
 import Minimap from "./Minimap/Minimap"
 import { useElementHeight } from "@/hooks/use-element-height"
@@ -100,7 +100,7 @@ export function AppSidebar(
           <DropdownMenu >
             <DropdownMenuTrigger asChild>
               <Button className="text-[1.125rem] flex gap-1 items-center" variant="ghost">
-                <MdOutlineGpsFixed />
+                <LocateFixed />
                 Chat GPS
               </Button>
             </DropdownMenuTrigger>
