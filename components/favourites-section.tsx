@@ -52,11 +52,14 @@ function FavItem({ favChat, removeFav, uniqueKey }: { favChat: favouritedChat, r
       <SidebarMenuButton
         className={cn(" flex gap-1 py-0 !pr-0 h-5.5 relative", isOnPage && "pl-7")}
       >
-        {!isOnPage && <ExternalLink />}
-        <FavChatIcon />
+        {!isOnPage && <ExternalLink
+          onClick={goToFav}
+        />}
+        <FavChatIcon
+          onClick={goToFav}
+        />
         <span className="text-xs truncate"
           onClick={goToFav}
-
         >
           {favChat.preview}
         </span>

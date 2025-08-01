@@ -280,11 +280,16 @@ function Tree(
 
 
   const menuLabel = (<>
-    <ItemIcon className="" />
-    <span className="text-xs truncate"
+    <ItemIcon
+      onClick={scrollElementIntoView}
+    />
+    <span className="h-full flex items-center grow min-w-0"
       onClick={scrollElementIntoView}
     >
-      {label}
+      <span className="text-xs truncate "
+      >
+        {label}
+      </span>
     </span>
     <div className="absolute top-0 h-full right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 bg-accent gap-2 flex">
       <CopyActionButton textToCopy={label} />
