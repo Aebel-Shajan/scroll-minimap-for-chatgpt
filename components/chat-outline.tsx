@@ -56,7 +56,6 @@ export default function ChatOutline(
       Object.keys(prev).forEach(key => {
         newState[key] = !anyOpen
       })
-      console.log(newState)
       return newState
     })
   }
@@ -195,7 +194,6 @@ function FavouriteActionButton({ itemToFavourite }: { itemToFavourite: HTMLEleme
         ...old,
         [uniqueId]: newFavourite
       }
-      console.log(newFavs)
       return newFavs
     })
   }
@@ -255,7 +253,6 @@ function Tree(
   const ItemIcon = icon
 
   function scrollElementIntoView() {
-    console.log("span clicked")
     // why not use chatElement.scrollIntoView()?
     const scrollContainer = getScrollableParent(item.element)
     if (scrollContainer) {
