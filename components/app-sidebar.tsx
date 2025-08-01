@@ -19,6 +19,7 @@ import ChatOutline from "./chat-outline";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuCheckboxItem } from "./ui/dropdown-menu";
 import FavouritesSection from "./favourites-section";
 import { favouritedChat } from "@/types";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./ui/resizable";
 
 interface FavouriteContextProps {
   favourites: Record<string, favouritedChat>,
@@ -133,8 +134,17 @@ export function AppSidebar(
               setFavourites
             }}
           >
-            <ChatOutline scrollContainer={scrollContainer} />
-            <FavouritesSection />
+            <ResizablePanelGroup direction="vertical">
+              <ResizablePanel minSize={20} defaultSize={80}>
+                <ChatOutline
+                  className="h-full overflow-y-scroll [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                  scrollContainer={scrollContainer} />
+              </ResizablePanel>
+              <ResizableHandle withHandle className="cursor-ns-resize" />
+              <ResizablePanel minSize={20} defaultSize={20}>
+                <FavouritesSection />
+              </ResizablePanel>
+            </ResizablePanelGroup>
           </FavouriteContext.Provider>
         </SidebarContent>
       </div>

@@ -26,9 +26,11 @@ const SELECTOR_MAP: { [key: string]: string } = {
 
 export default function ChatOutline(
   {
-    scrollContainer
+    scrollContainer,
+    className
   }: {
-    scrollContainer: HTMLElement | null
+    scrollContainer: HTMLElement | null,
+    className?: string
   }
 ) {
   const [collapseState, setCollapseState] = useState<Record<string, boolean>>({})
@@ -72,7 +74,7 @@ export default function ChatOutline(
   }
 
   return (
-    <SidebarGroup>
+    <SidebarGroup className={className}>
       <Button
         variant="secondary"
         size="sm"
