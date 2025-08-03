@@ -75,72 +75,81 @@ export default function App() {
 
   };
   return (
-    <Card className="bg-background w-70 h-100 p-0 gap-0">
-      <Toaster
-        position="top-center"
+    <Card className="bg-background w-70 h-100 p-0 gap-0 ">
+      <div className="w-full h-90 overflow-y-scroll">
 
-      />
-      <div className="p-2 flex justify-between">
-        <Button
-          className="text-[1.125rem] flex gap-1 items-center justify-start cursor-pointer"
-          variant="ghost"
-          asChild
-        >
-          <a 
-          href="https://chromewebstore.google.com/detail/chat-gpt-scroll-map/apekbedjllgmacohbcckgipfhjddehkf"
-          target="_blank"
+        <Toaster
+          position="top-center"
+        />
+        <div className="p-2 flex justify-between">
+          <Button
+            className="text-[1.125rem] flex gap-1 items-center justify-start cursor-pointer"
+            variant="ghost"
+            asChild
           >
-            <LocateFixed />
-            Chat GPS
+            <a
+              href="https://chromewebstore.google.com/detail/chat-gpt-scroll-map/apekbedjllgmacohbcckgipfhjddehkf"
+              target="_blank"
+            >
+              <LocateFixed />
+              Chat GPS
+            </a>
+          </Button>
+        </div>
+
+        <div className="flex flex-col gap-1 w-full p-3">
+          <p>This extension only works for <a href="https://chatgpt.com" target="_blank" className="underline">chatgpt.com</a></p>
+          <div className="flex gap-1">
+            <p className="shrink">On chatgpt.com there should be a button to open the right sidebar. If its not there try reloading the page</p>
+            <img className="w-30 rounded-md border-accent-foreground border-2 object-contain" src={usageScreenshot} />
+          </div>
+
+          <div className="pt-3">
+            <div className="w-full font-bold text-xl">Feedback</div>
+            <form onSubmit={sendEmail} ref={formRef}>
+              <textarea
+                id="message"
+                name="message"
+                className="resize-none w-full h-15 border-2 border-accent-foreground rounded-md"
+                placeholder="Spotted a bug/have a feature request? Write feedback here..."
+              />
+              <Input
+                type="submit"
+                style={{
+                  cursor: `url("data:image/svg+xml;utf8,${encodeURIComponent(
+                    `<svg xmlns='http://www.w3.org/2000/svg' width='40' height='48' viewBox='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>🙏</text></svg>`
+                  )}") 0 20, auto`,
+                }}
+              />
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div className="h-10 w-full flex justify-between p-1 items-center">
+
+        <Button asChild
+
+        >
+          <a href="https://www.buymeacoffee.com/aebel" target="_blank" className="text-xs"
+
+
+          >
+            Buy me a coffee ☕️
+
           </a>
         </Button>
-      </div>
-
-      <div className="flex flex-col gap-1 w-full p-3">
-        <p>This extension only works for <a href="https://chatgpt.com" target="_blank" className="underline">chatgpt.com</a></p>
-        <div className="flex gap-1">
-          <p className="shrink">On chatgpt.com there should be a button to open the right sidebar. If its not there try reloading the page</p>
-          <img className="w-30 rounded-md border-accent-foreground border-2" src={usageScreenshot} />
-        </div>
-
-        <div className="pt-3">
-          <div className="w-full font-bold text-xl">Feedback</div>
-          <form onSubmit={sendEmail} ref={formRef}>
-            <textarea
-              id="message"
-              name="message"
-              className="resize-none w-full h-15 border-2 border-accent-foreground rounded-md"
-              placeholder="Spotted a bug/have a feature request? Write feedback here..."
-            />
-            <Input
-              type="submit"
-              style={{
-                cursor: `url("data:image/svg+xml;utf8,${encodeURIComponent(
-                  `<svg xmlns='http://www.w3.org/2000/svg' width='40' height='48' viewBox='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>😄</text></svg>`
-                )}") 0 20, auto`,
-              }}
-            />
-          </form>
-        </div>
-      </div>
-
-
-
-      <div className="fixed bottom-0 w-full flex justify-between p-1 items-center">
-
-        <a href="https://www.buymeacoffee.com/aebel">
-          <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=aebel&button_colour=000000&font_colour=ffffff&font_family=Cookie&outline_colour=ffffff&coffee_colour=FFDD00" />
-        </a>
 
         <Button
           variant="ghost"
           asChild
         >
-          <a href="https://aebel-shajan.github.io" target="_blank">
+          <a href="https://aebel-shajan.github.io" target="_blank" className="text-xs">
             <p>made by Aebel</p>
           </a>
         </Button>
       </div>
+
     </Card>
 
   );

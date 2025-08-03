@@ -49,7 +49,7 @@ export function AppSidebar(
   const [displayOptions, setDisplayOptions] = useSyncedStorage<Record<string, boolean>>(
     "displayOptions",
     {
-      "showMinimap": true,
+      "showMinimap":     import.meta.env.BROWSER === 'firefox' ? false : true,
       // "showOutline": true,
     }
   )
@@ -98,7 +98,7 @@ export function AppSidebar(
         <div className="flex items-center justify-end w-full h-full gap-1">
 
           <DropdownMenu >
-            <DropdownMenuTrigger asChild>
+            <DropdownMenuTrigger asChild disabled={import.meta.env.BROWSER === 'firefox'}>
               <Button className="text-[1.125rem] flex gap-1 items-center" variant="ghost">
                 <LocateFixed />
                 Chat GPS
