@@ -20,6 +20,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger, DropdownMenuChe
 import FavouritesSection from "./favourites-section";
 import { favouritedChat } from "@/types";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "./ui/resizable";
+import { MAX_Z_INDEX } from "@/lib/constants"
 
 interface FavouriteContextProps {
   favourites: Record<string, favouritedChat>,
@@ -104,7 +105,7 @@ export function AppSidebar(
                 Chat GPS
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="z-9999">
+            <DropdownMenuContent className={`z-[${MAX_Z_INDEX}]`}>
               {Object.entries(displayOptions).map(([key, value]) => (
                 <DropdownMenuCheckboxItem
                   key={key}

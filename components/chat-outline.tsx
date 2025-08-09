@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/collapsible"
 import { DropdownMenuContent, DropdownMenu, DropdownMenuTrigger, DropdownMenuCheckboxItem } from "./ui/dropdown-menu";
 import { FavouriteContext } from "./app-sidebar";
+import { MAX_Z_INDEX } from "@/lib/constants";
 
 
 const SELECTOR_MAP: { [key: string]: string } = {
@@ -73,7 +74,7 @@ export default function ChatOutline(
       <Button
         variant="secondary"
         size="sm"
-        className="flex justify-between sticky top-0 z-99"
+        className={`flex justify-between sticky top-0 z-[${MAX_Z_INDEX}]`}
         asChild
       >
         <div>

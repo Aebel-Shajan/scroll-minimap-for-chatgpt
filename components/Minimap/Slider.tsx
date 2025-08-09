@@ -1,3 +1,4 @@
+import { MAX_Z_INDEX } from "@/lib/constants";
 import { useEffect, useState } from "react";
 
 /**
@@ -51,7 +52,7 @@ const Slider = (
 
   const className = `
     w-full min-h-[50px] bg-[#00ffa643] rounded-[3px] border border-[#00ffa6]
-    absolute left-0 z-[9999]
+    absolute left-0 z-[${MAX_Z_INDEX}]
     hover:cursor-grab
     active:cursor-grabbing active:select-none
   `
