@@ -9,6 +9,11 @@ export default defineConfig({
     name: "Chat GPS",
     permissions: ['storage'],
   },
+  webExt: {
+    startUrls: [
+      "https://www.chat.com/"
+    ]
+  },
   vite: () => ({
     plugins: [tailwindcss()],
     resolve: {
