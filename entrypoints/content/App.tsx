@@ -31,7 +31,7 @@ export default function App() {
       <TogglePanelButton
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        className="fixed top-20 right-5"
+        className="fixed top-40 right-5"
       />
     );
   }
