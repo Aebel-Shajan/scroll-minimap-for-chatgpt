@@ -2,6 +2,7 @@ import * as React from "react"
 import {
   LocateFixed,
   RefreshCcw,
+  Settings,
 } from "lucide-react"
 import {
   Sidebar,
@@ -50,7 +51,7 @@ export function AppSidebar(
   const [displayOptions, setDisplayOptions] = useSyncedStorage<Record<string, boolean>>(
     "displayOptions",
     {
-      "showMinimap":     import.meta.env.BROWSER === 'firefox' ? false : true,
+      "showMinimap": import.meta.env.BROWSER === 'firefox' ? false : true,
       // "showOutline": true,
     }
   )
@@ -92,17 +93,12 @@ export function AppSidebar(
     <Sidebar {...props}>
       <SidebarHeader
         className="bg-background flex flex-row justify-between items-center border-accent border-b-1 h-13 w-full">
-        <TogglePanelButton isOpen={isOpen} setIsOpen={setIsOpen} variant={"ghost"} className="cursor-e-resize" />
-        <div className={buttonVariants({ variant: "ghost", size: "sm", className: "cursor-pointer" })} onClick={handleRefresh}>
-          <RefreshCcw className="size-3" />
-        </div>
-        <div className="flex items-center justify-end w-full h-full gap-1">
-
+        <div className="flex items-center">
+          <TogglePanelButton isOpen={isOpen} setIsOpen={setIsOpen} variant={"ghost"} className="cursor-e-resize" />
           <DropdownMenu >
             <DropdownMenuTrigger asChild disabled={import.meta.env.BROWSER === 'firefox'}>
               <Button className="text-[1.125rem] flex gap-1 items-center" variant="ghost">
-                <LocateFixed />
-                Chat GPS
+                <Settings />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className={`z-[${MAX_Z_INDEX}]`}>
@@ -117,8 +113,15 @@ export function AppSidebar(
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
-
         </div>
+        <Button className="text-[1.125rem] flex gap-1 items-center" variant="ghost" asChild>
+          <a href="https://www.buymeacoffee.com/aebel" target="_blank">
+            <LocateFixed />
+            Chat GPS
+          </a>
+        </Button>
+
+
       </SidebarHeader>
       <div className="flex h-[calc(100vh-52px)] w-70">
 
@@ -139,7 +142,9 @@ export function AppSidebar(
               <ResizablePanel minSize={20} defaultSize={80}>
                 <ChatOutline
                   className="h-full overflow-y-scroll [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                  scrollContainer={scrollContainer} />
+                  scrollContainer={scrollContainer}
+                  handleRefresh={handleRefresh}
+                />
               </ResizablePanel>
               <ResizableHandle withHandle className="cursor-ns-resize" />
               <ResizablePanel minSize={20} defaultSize={20}>

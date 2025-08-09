@@ -1,6 +1,6 @@
 import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Check, Copy, Filter, LucideCopyMinus, LucideCopyPlus, StarIcon, ChevronRight } from "lucide-react";
+import { Check, Copy, Filter, LucideCopyMinus, LucideCopyPlus, StarIcon, ChevronRight, RefreshCcw } from "lucide-react";
 import { favouritedChat, HTMLElementItem } from "@/types";
 import { extractChatId, extractFilteredTreeBySelectors, getItemInfo, getScrollableParent } from "@/lib/chatgptElementUtils";
 import {
@@ -11,6 +11,7 @@ import {
 import { DropdownMenuContent, DropdownMenu, DropdownMenuTrigger, DropdownMenuCheckboxItem } from "./ui/dropdown-menu";
 import { FavouriteContext } from "./app-sidebar";
 import { MAX_Z_INDEX } from "@/lib/constants";
+import { MouseEventHandler } from "react";
 
 
 const SELECTOR_MAP: { [key: string]: string } = {
@@ -24,10 +25,12 @@ const SELECTOR_MAP: { [key: string]: string } = {
 export default function ChatOutline(
   {
     scrollContainer,
-    className
+    className,
+    handleRefresh,
   }: {
     scrollContainer: HTMLElement | null,
     className?: string
+    handleRefresh: MouseEventHandler<HTMLButtonElement>
   }
 ) {
   const [collapseState, setCollapseState] = useState<Record<string, boolean>>({})
@@ -74,13 +77,13 @@ export default function ChatOutline(
       <Button
         variant="secondary"
         size="sm"
-        className={`flex justify-between sticky top-0 z-[${MAX_Z_INDEX}]`}
+        className={`flex justify-between sticky top-0 z-[${MAX_Z_INDEX}] h-10`}
         asChild
       >
         <div>
 
           Chat outline
-          <div className="flex gap-1">
+          <div className="flex items-center h-full">
             <Button
               variant="ghost"
               size="sm"
@@ -95,6 +98,9 @@ export default function ChatOutline(
                     <LucideCopyPlus className="size-3" />
                 }
               </div>
+            </Button>
+            <Button variant="ghost" className="cursor-pointer" onClick={handleRefresh}>
+              <RefreshCcw className="size-3" />
             </Button>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
