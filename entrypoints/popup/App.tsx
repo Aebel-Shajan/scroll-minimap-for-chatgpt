@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import emailjs from '@emailjs/browser';
 import { useRef } from "react";
 import { Toaster, toast } from "sonner";
+import { BiLogoGithub } from "react-icons/bi";
 
 
 const SERVICE_ID = "service_l0a9crg"
@@ -16,20 +17,14 @@ const TEMPLATE_ID = "template_fwbd5z1"
 export default function App() {
 
   const formRef = useRef<HTMLFormElement>(null)
-  const [lastEmailSent, setLastEmailSent] = useState<number>(-1)
+  const [isLoading, setIsLoading] = useState(false)
 
 
 
   const sendEmail: React.FormEventHandler<HTMLFormElement> = (e) => {
     e.persist();
     e.preventDefault();
-    if (lastEmailSent !== -1) {
-      const diffMs = (lastEmailSent - Date.now()); // milliseconds between now & Christmas
-      const diffMins = Math.round(((diffMs % 86400000) % 3600000) / 60000); // minute
-      if (diffMins < 2) {
-        toast.error("Must wait 2 mins between each message sent")
-      }
-    }
+
 
     const form = formRef.current
     if (!form) {
@@ -52,24 +47,29 @@ export default function App() {
       toast.error(`Form should not be empty!`,)
       return;
     }
+    const emailInput = form.querySelector("#email") as HTMLInputElement
 
+    setIsLoading(true)
     emailjs
       .send(
         SERVICE_ID,
         TEMPLATE_ID,
         {
           user_name: "chat-gps",
-          user_email: "chat-gps@gmail.com",
+          user_email: emailInput.value,
           message: messageText,
         }
       )
       .then(
         (result) => {
           toast.success('Message sent!')
-          setLastEmailSent(Date.now())
           textArea.value = ""
+          setIsLoading(false)
         },
-        (error) => toast.error('Something went wrong, please try again later')
+        (error) => {
+          toast.error('Something went wrong, please try again later')
+          setIsLoading(false)
+        }
       );
 
 
@@ -95,6 +95,11 @@ export default function App() {
               Chat GPS
             </a>
           </Button>
+          <Button asChild variant="ghost">
+            <a href="https://github.com/Aebel-Shajan/scroll-minimap-for-chatgpt" target="_blank">
+              <BiLogoGithub />
+            </a>
+          </Button>
         </div>
 
         <div className="flex flex-col gap-1 w-full p-3">
@@ -105,21 +110,28 @@ export default function App() {
           </div>
 
           <div className="pt-3">
-            <div className="w-full font-bold text-xl">Feedback</div>
-            <form onSubmit={sendEmail} ref={formRef}>
+            <div className="w-full font-bold text-l">Feedback</div>
+            <form onSubmit={sendEmail} ref={formRef} className="flex flex-col gap-1">
+              <input type="email"
+                id="email"
+                className="resize-none w-full border-1 border-accent-foreground rounded-md p-0.5"
+                placeholder="email (optional)"
+                disabled={isLoading}
+              />
               <textarea
                 id="message"
                 name="message"
-                className="resize-none w-full h-15 border-2 border-accent-foreground rounded-md"
+                className="resize-none w-full h-10 border-1 border-accent-foreground rounded-md p-0.5"
                 placeholder="Spotted a bug/have a feature request? Write feedback here..."
+                disabled={isLoading}
+
               />
+
               <Input
                 type="submit"
-                style={{
-                  cursor: `url("data:image/svg+xml;utf8,${encodeURIComponent(
-                    `<svg xmlns='http://www.w3.org/2000/svg' width='40' height='48' viewBox='0 0 100 100' style='fill:black;font-size:24px;'><text y='50%'>🙏</text></svg>`
-                  )}") 0 20, auto`,
-                }}
+                className="cursor-pointer"
+                disabled={isLoading}
+
               />
             </form>
           </div>
