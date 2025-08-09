@@ -144,7 +144,7 @@ function CopyActionButton({ textToCopy }: { textToCopy: string }) {
   const [copied, setCopied] = useState(false)
 
   function handleCopy() {
-    navigator.clipboard.writeText(textToCopy).then(() => {
+    navigator.clipboard.writeText(textToCopy.trimStart()).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 1000)
     })
