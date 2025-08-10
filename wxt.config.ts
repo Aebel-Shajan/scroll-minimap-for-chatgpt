@@ -1,4 +1,4 @@
-import { defineConfig } from "wxt";
+import { defineConfig, WxtViteConfig } from "wxt";
 import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 
@@ -14,12 +14,12 @@ export default defineConfig({
       "https://www.chat.com/"
     ]
   },
-  vite: () => ({
+  vite: (() => ({
     plugins: [tailwindcss()],
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./"), // or "./src" if using src directory
       },
     },
-  }),
+  })) as () => WxtViteConfig,
 });
