@@ -132,7 +132,7 @@ const Minimap = (
       className="w-full h-full select-none text-black text-sm overflow-hidden"
     >
       <div
-        className="overflow-y-hidden w-full h-full shadow-[0_0_20px_rgba(0,0,0,1)] bg-[#212121] relative"
+        className="overflow-y-hidden w-full h-full shadow-[0_0_20px_rgba(0,0,0,1)] relative"
         ref={minimapRef}
       >
         <MinimapCanvas

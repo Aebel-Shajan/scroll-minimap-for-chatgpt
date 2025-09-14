@@ -127,7 +127,7 @@ export function AppSidebar(
       <div className="flex h-[calc(100vh-52px)] w-70">
 
         {displayOptions["showMinimap"] &&
-          <div className="bg-background h-full w-15">
+          <div className="bg-accent h-full w-15 border-r-1">
             <div className="p-1">
 
               <Button
@@ -139,14 +139,14 @@ export function AppSidebar(
               </Button>
             </div>
             <div
-              className="h-[calc(100%_-_33px] w-full"
+              className="h-[calc(100%_-_41px)] w-full"
             >
               <Minimap elementToMap={scrollContainer} queueRedraw={queueRedraw} setQueueRedraw={setQueueRedraw} />
             </div>
           </div>
         }
 
-        <SidebarContent className="w-55 h-full overflow-y-scroll">
+        <SidebarContent className="w-55 h-full overflow-y-scroll bg-background">
           <FavouriteContext.Provider
             value={{
               favourites,
