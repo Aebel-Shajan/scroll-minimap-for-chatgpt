@@ -6,7 +6,7 @@ import path from "path";
 export default defineConfig({
   modules: ["@wxt-dev/module-react", '@wxt-dev/auto-icons'],
   manifest: {
-    name: "Chat GPS: Add chat outline and minimap to Chat GPT. Book",
+    name: "Chat GPS: chat outline for navigating Chat GPT",
     permissions: ['storage'],
   },
   webExt: {
