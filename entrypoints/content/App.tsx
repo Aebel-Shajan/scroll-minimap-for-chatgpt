@@ -1,6 +1,6 @@
 import "@/assets/tailwind.css";
 import { SidebarProvider } from "@/components/ui/sidebar";
-
+import { TogglePanelButton } from "@/components/toggle-panel-button";
 
 
 export default function App() {
@@ -28,11 +28,15 @@ export default function App() {
   if (!isOpen) {
     document.body.style.width = "100vw"
     return (
-      <TogglePanelButton
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        className="fixed top-40 right-5"
-      />
+
+          <TogglePanelButton
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            variant={"outline"}
+            className="fixed top-60 right-5 z-100 cursor-pointer !p-1"
+          />
+
+
     );
   }
 

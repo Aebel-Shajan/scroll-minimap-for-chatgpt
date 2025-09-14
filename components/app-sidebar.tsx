@@ -1,5 +1,6 @@
 import * as React from "react"
 import {
+  EyeOff,
   LocateFixed,
   RefreshCcw,
   Settings,
@@ -80,7 +81,7 @@ export function AppSidebar(
     setQueueRedraw(true)
   }
 
-  const onToggleOption = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, key: string) => {
+  const onToggleOption = (e: React.MouseEvent, key: string) => {
     e.preventDefault()
     setDisplayOptions(old => {
       return { ...old, [key]: !old[key] }
@@ -126,8 +127,22 @@ export function AppSidebar(
       <div className="flex h-[calc(100vh-52px)] w-70">
 
         {displayOptions["showMinimap"] &&
-          <div className="bg-black h-full w-15">
-            <Minimap elementToMap={scrollContainer} queueRedraw={queueRedraw} setQueueRedraw={setQueueRedraw} />
+          <div className="bg-background h-full w-15">
+            <div className="p-1">
+
+              <Button
+                variant={"ghost"}
+                className="h-[33px] w-full cursor-pointer"
+                onClick={(e) => onToggleOption(e, "showMinimap")}
+              >
+                <EyeOff />
+              </Button>
+            </div>
+            <div
+              className="h-[calc(100%_-_33px] w-full"
+            >
+              <Minimap elementToMap={scrollContainer} queueRedraw={queueRedraw} setQueueRedraw={setQueueRedraw} />
+            </div>
           </div>
         }
 
