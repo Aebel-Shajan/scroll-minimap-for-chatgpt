@@ -72,7 +72,10 @@ function FavItem({ favChat, removeFav, uniqueKey }: { favChat: favouritedChat, r
             asChild
           >
             <div>
-              <StarIcon className="h-full" fill="black" />
+              <StarIcon
+                className="h-full"
+                fill="#01FFA7"
+              />
             </div>
           </Button>
 

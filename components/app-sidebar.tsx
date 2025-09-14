@@ -127,7 +127,7 @@ export function AppSidebar(
       <div className="flex h-[calc(100vh-52px)] w-70">
 
         {displayOptions["showMinimap"] &&
-          <div className="bg-accent h-full w-15 border-r-1">
+          <div className="bg-background h-full w-15 border-r-1">
             <div className="p-1">
 
               <Button
