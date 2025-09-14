@@ -1,1 +1,1 @@
-export const MAX_Z_INDEX = 9
+export const MAX_Z_INDEX = 100
