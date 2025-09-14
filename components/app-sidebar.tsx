@@ -116,7 +116,7 @@ export function AppSidebar(
           </DropdownMenu>
         </div>
         <Button className="text-[1.125rem] flex gap-1 items-center" variant="ghost" asChild>
-          <a href="https://www.buymeacoffee.com/aebel" target="_blank">
+          <a href="https://aebel-shajan.github.io/chat-gps-landing" target="_blank">
             <LocateFixed />
             Chat GPS
           </a>
