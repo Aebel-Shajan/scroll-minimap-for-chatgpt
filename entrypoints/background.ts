@@ -1,3 +1,3 @@
 export default defineBackground(() => {
-  // console.log('Hello background!', { id: browser.runtime.id });
+  browser.runtime.setUninstallURL("https://aebel-shajan.github.io/chat-gps-landing/feedback");
 });
