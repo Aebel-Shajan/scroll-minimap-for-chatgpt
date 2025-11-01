@@ -156,7 +156,7 @@ export function AppSidebar(
             <ResizablePanelGroup direction="vertical">
               <ResizablePanel minSize={20} defaultSize={80}>
                 <ChatOutline
-                  className="h-full overflow-y-scroll [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                  className="h-full overflow-y-scroll [scrollbar-width:none] [&::-webkit-scrollbar]:hidden p-0"
                   scrollContainer={scrollContainer}
                   handleRefresh={handleRefresh}
                 />
