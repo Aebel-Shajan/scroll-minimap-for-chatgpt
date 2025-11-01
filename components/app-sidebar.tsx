@@ -162,7 +162,7 @@ export function AppSidebar(
                 />
               </ResizablePanel>
               <ResizableHandle withHandle className="cursor-ns-resize" />
-              <ResizablePanel minSize={20} defaultSize={20}>
+              <ResizablePanel minSize={5} defaultSize={20}>
                 <FavouritesSection />
               </ResizablePanel>
             </ResizablePanelGroup>
