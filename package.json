@@ -2,7 +2,7 @@
   "name": "chat-gps",
   "description": "Adds a minimap and chat ouline to Chatgpt. Helps users navigate through long chats. Bookmark your favourite chats.",
   "private": true,
-  "version": "2.0.3",
+  "version": "2.1.0",
   "type": "module",
   "scripts": {
     "dev": "wxt",
