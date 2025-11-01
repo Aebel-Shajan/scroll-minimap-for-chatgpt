@@ -1,3 +1,4 @@
 export default defineBackground(() => {
-  browser.runtime.setUninstallURL("https://aebel-shajan.github.io/chat-gps-landing/feedback");
+  browser.runtime.setUninstallURL("https://docs.google.com/forms/d/e/1FAIpQLSdq7tEs5lVdQC4pfSAAgHwh5LWtyirKoyf7yJh1BsAu9JfY1Q/viewform?usp=publish-editor");
+
 });
