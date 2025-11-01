@@ -318,9 +318,12 @@ function Tree(
 
   >
     <ItemIcon className="object-contain w-4" />
-    <span className="h-full text-xs shrink-100 line-clamp-2 wrap-anywhere py-1">
-      {label}
-    </span>
+    <div className="py-[3px] shrink-100">
+      <span className="text-xs line-clamp-2 wrap-anywhere">
+        {label}
+      </span>
+    </div>
+
     <div className="absolute top-0 h-full right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 bg-accent gap-2 flex">
       <CopyActionButton textToCopy={label} />
       <FavouriteActionButton itemToFavourite={item} />
@@ -357,10 +360,11 @@ function Tree(
         <div className="group">
           <SidebarMenuButton className="flex gap-1 py-0 !pr-0 h-fit relative cursor-pointer"
           >
-            <CollapsibleTrigger asChild >
+            <CollapsibleTrigger className="cursor-pointer">
+
               {collapseState[index]
-                ? <ChevronDown className="transition-transform" />
-                : <ChevronRight className="transition-transform" />
+                ? <ChevronDown className="transition-transform w-4" />
+                : <ChevronRight className="transition-transform w-4" />
               }
 
 
