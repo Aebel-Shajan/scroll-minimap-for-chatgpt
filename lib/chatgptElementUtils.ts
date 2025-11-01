@@ -180,7 +180,6 @@ export function queryAllChatElements(): HTMLElement[] {
     '[data-testid^="conversation-turn-"]'
     //+ ', [data-message-author-role="user"]'
   )] as HTMLElement[];
-  console.log("chat elements: ", elements)
   return elements
 }
 
@@ -365,7 +364,6 @@ export function extractChatId(url: string) {
 export function getItemInfo(item: HTMLElementItem) {
   const element = item.element;
   if (element.matches('[data-testid^="conversation-turn-"]')) {
-    console.log(item.element)
     let label = item.element.textContent;
     const iconName = getChatAuthor(element);
     const splitText = label.split("said:");

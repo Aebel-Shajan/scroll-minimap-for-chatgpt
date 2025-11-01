@@ -42,7 +42,6 @@ export default function App() {
       return
     }
     const messageText = textArea.value
-    console.log(messageText)
     if (messageText?.length === 0) {
       toast.error(`Form should not be empty!`,)
       return;
