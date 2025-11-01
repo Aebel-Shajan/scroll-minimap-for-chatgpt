@@ -59,7 +59,7 @@ export function AppSidebar(
   const chatContainerHeight = useElementHeight(chatContainer)
   // console.log("reloaded")
   useEffect(() => {
-    setQueueRedraw(true)
+    // setQueueRedraw(true)
   }, [chatContainerHeight])
 
   if (!scrollContainer) {
@@ -104,7 +104,7 @@ export function AppSidebar(
 
 
       </SidebarHeader>
-      <div className="flex grow-2 w-70">
+      <div className="flex flex-1 overflow-auto w-70">
         {showMinimap &&
           <div className="bg-background h-full w-15 border-r-1">
             <div

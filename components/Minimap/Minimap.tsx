@@ -122,7 +122,11 @@ const Minimap = (
     if (isFullHtml) {
       setSliderHeight(mapScale * window.innerHeight)
     } else {
-      setSliderHeight(mapScale * elementToMap.offsetHeight)
+      const navbarHeight = 52
+      const bottomPromptHeight = 88
+      console.log("sliderHeight", mapScale * (elementToMap.offsetHeight - navbarHeight - bottomPromptHeight))
+      setSliderHeight(mapScale * (elementToMap.offsetHeight - navbarHeight - bottomPromptHeight))
+
     }
   }, [mapScale, elementToMap, isFullHtml])
 

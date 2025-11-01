@@ -67,18 +67,17 @@ const MinimapCanvas = (
       return
     }
     setCanvasLoading(true);
+
+    if (elementToMap.scrollHeight)
     
     // Async function which draws the canvas inside the container.
     (async () => {
       // console.log("drawing at", new Date())
+      if (container.firstChild) {
+        container.firstChild.remove(); // cleanup
+      }
       const canvas = await generateMinimapCanvas(
-        elementToMap,
-        {
-          ignoreElements(element: Element) {
-              return element.id == "minimap-component"
-          },
-          windowHeight: window.innerHeight,
-        },
+        elementToMap
       );
       container.innerHTML = ""
       container.appendChild(canvas)
@@ -91,7 +90,7 @@ const MinimapCanvas = (
     })();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [elementToMap, forceRedraw])
+  }, [forceRedraw])
 
 
 

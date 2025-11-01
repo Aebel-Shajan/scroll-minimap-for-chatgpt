@@ -1,6 +1,6 @@
 import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Check, Copy, Filter, LucideCopyMinus, LucideCopyPlus, StarIcon, ChevronRight, RefreshCcw, ChevronDown, LocateFixed, EyeOff, EyeIcon, Map } from "lucide-react";
+import { Check, Copy, Filter, LucideCopyMinus, LucideCopyPlus, StarIcon, ChevronRight, RefreshCcw, ChevronDown, LocateFixed, EyeOff, EyeIcon, Map, BugIcon } from "lucide-react";
 import { favouritedChat, HTMLElementItem } from "@/types";
 import { extractChatId, extractFilteredTreeBySelectors, getItemInfo, getScrollableParent } from "@/lib/chatgptElementUtils";
 import {
@@ -12,6 +12,7 @@ import { DropdownMenuContent, DropdownMenu, DropdownMenuTrigger, DropdownMenuChe
 import { FavouriteContext } from "./app-sidebar";
 import { MAX_Z_INDEX } from "@/lib/constants";
 import { MouseEventHandler } from "react";
+import { TooltipContent, TooltipTrigger, Tooltip } from "@radix-ui/react-tooltip";
 
 
 const SELECTOR_MAP: { [key: string]: string } = {
@@ -75,7 +76,18 @@ export function ChatOutlineHeader(
     >
 
       <div className="flex justify-between items-center h-[53px] w-full border-b-accent border-b-2 bg-secondary px-1">
+        <div className="flex items-center h-full gap-1 ">
+          
         <TogglePanelButton isOpen={isOpen} setIsOpen={setIsOpen} variant="outline" className="cursor-e-resize" />
+        <Button className="text-sm flex items-center " variant="outline"  asChild>
+        <a 
+        target="_blank"
+        href="https://docs.google.com/forms/d/e/1FAIpQLSd33FU9cCdtj019p3WSIXfoFm8uuMgY8qRDaAPYfNl-D4JKUg/viewform?usp=publish-editor">
+          <BugIcon />
+        </a>
+          
+        </Button>
+          </div>
         <Button className="text-sm flex items-center " variant="outline" asChild >
           <a href="https://aebel-shajan.github.io/chat-gps-landing" target="_blank">
             <LocateFixed className="object-contain" />
@@ -85,17 +97,42 @@ export function ChatOutlineHeader(
       </div>
 
       <div className="flex items-center justify-between h-6 w-full border-b-2">
-        <Button
-          variant={"ghost"}
-          className="cursor-pointer h-full"
-          onClick={() => setShowMinimap((prev: boolean) => !prev)}
-        >
-          {showMinimap ?
-            <EyeOff />
-            :
-            <Map />
-          }
-        </Button>
+        <div className="flex items-center gap-1 h-full">
+          <Tooltip>
+            <TooltipTrigger asChild >
+
+              <Button
+                variant={"ghost"}
+                className="cursor-pointer h-full"
+                onClick={() => setShowMinimap((prev: boolean) => !prev)}
+              >
+                {showMinimap ?
+                  <EyeOff />
+                  :
+                  <Map />
+                }
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="text-xs bg-foreground text-accent rounded-xl p-2 w-fit max-w-30 z-999" >
+               {showMinimap ?
+                  <>
+              Close minimap
+                  </>
+                  :
+           <>
+              Expiremental, you have to refresh it manually.
+                  </>
+                }
+            </TooltipContent>
+          </Tooltip>
+          <Button
+            variant="ghost"
+            className="cursor-pointer [&:active>svg]:rotate-360 transition-transform h-full"
+            onClick={handleRefresh}
+          >
+            <RefreshCcw className="size-3 transition-all duration-300" />
+          </Button>
+        </div>
         <div className="flex items-center gap-1 h-full">
           <Button
             variant="ghost"
@@ -112,13 +149,7 @@ export function ChatOutlineHeader(
               }
             </div>
           </Button>
-          <Button
-            variant="ghost"
-            className="cursor-pointer [&:active>svg]:rotate-360 transition-transform h-full"
-            onClick={handleRefresh}
-          >
-            <RefreshCcw className="size-3 transition-all duration-300" />
-          </Button>
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant={anyFilters ? "default" : "ghost"} size="sm" className="cursor-pointer h-full">
