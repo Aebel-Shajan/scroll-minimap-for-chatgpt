@@ -176,10 +176,11 @@ export function queryChatScrollContainer(): HTMLElement | null {
 }
 
 export function queryAllChatElements(): HTMLElement[] {
-  return [...document.querySelectorAll(
+  const elements = [...document.querySelectorAll(
     '[data-testid^="conversation-turn-"]'
     //+ ', [data-message-author-role="user"]'
   )] as HTMLElement[];
+  return elements
 }
 
 export function queryNavElement(): HTMLElement | null {
@@ -363,7 +364,7 @@ export function extractChatId(url: string) {
 export function getItemInfo(item: HTMLElementItem) {
   const element = item.element;
   if (element.matches('[data-testid^="conversation-turn-"]')) {
-    let label = item.element.innerText;
+    let label = item.element.textContent;
     const iconName = getChatAuthor(element);
     const splitText = label.split("said:");
     if (splitText.length > 1) {
@@ -377,7 +378,7 @@ export function getItemInfo(item: HTMLElementItem) {
     };
   }
   if (element.tagName === "PRE") {
-    let label = item.element.innerText;
+    let label = item.element.textContent;
     let language = "unknown";
     let iconName = "code";
     let splitText = label.split("\nCopy\nEdit");
@@ -409,14 +410,14 @@ export function getItemInfo(item: HTMLElementItem) {
   if (element.matches("h1, h2, h3")) {
     const iconName = "section";
     return {
-      "label": item.element.innerText,
+      "label": item.element.textContent,
       "icon": ICON_MAP[iconName],
       "iconName": iconName
     };
   }
 
   return {
-    "label": item.element.innerText,
+    "label": item.element.textContent,
     "icon": ICON_MAP["chat"],
     "iconName": "chat"
   };

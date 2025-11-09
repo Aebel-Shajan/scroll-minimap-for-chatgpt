@@ -1,6 +1,6 @@
 import { SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarMenuSub } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
-import { Check, Copy, Filter, LucideCopyMinus, LucideCopyPlus, StarIcon, ChevronRight, RefreshCcw } from "lucide-react";
+import { Check, Copy, Filter, LucideCopyMinus, LucideCopyPlus, StarIcon, ChevronRight, RefreshCcw, ChevronDown, LocateFixed, EyeOff, EyeIcon, Map, BugIcon } from "lucide-react";
 import { favouritedChat, HTMLElementItem } from "@/types";
 import { extractChatId, extractFilteredTreeBySelectors, getItemInfo, getScrollableParent } from "@/lib/chatgptElementUtils";
 import {
@@ -12,6 +12,7 @@ import { DropdownMenuContent, DropdownMenu, DropdownMenuTrigger, DropdownMenuChe
 import { FavouriteContext } from "./app-sidebar";
 import { MAX_Z_INDEX } from "@/lib/constants";
 import { MouseEventHandler } from "react";
+import { TooltipContent, TooltipTrigger, Tooltip } from "@radix-ui/react-tooltip";
 
 
 const SELECTOR_MAP: { [key: string]: string } = {
@@ -22,26 +23,175 @@ const SELECTOR_MAP: { [key: string]: string } = {
 };
 
 
+
+export function ChatOutlineHeader(
+  {
+    isOpen,
+    setIsOpen,
+    collapseState,
+    setCollapseState,
+    options,
+    setOptions,
+    handleRefresh,
+    showMinimap,
+    setShowMinimap,
+  }: {
+    isOpen: boolean,
+    setIsOpen: CallableFunction,
+    collapseState: Record<string, boolean>,
+    setCollapseState: CallableFunction,
+    options: Record<string, boolean>,
+    setOptions: CallableFunction,
+    handleRefresh: MouseEventHandler<HTMLButtonElement>,
+    showMinimap: boolean,
+    setShowMinimap: CallableFunction,
+  }
+) {
+
+  const anyOpen = Object.values(collapseState).some(Boolean)
+  const anyFilters = Object.values(options).some((value) => !value)
+
+
+  function toggleAll() {
+    setCollapseState((prev: Record<string, boolean>) => {
+      const newState: Record<string, boolean> = {}
+      Object.keys(prev).forEach(key => {
+        newState[key] = !anyOpen
+      })
+      return newState
+    })
+  }
+
+  const onToggleOption = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, key: string) => {
+    e.preventDefault()
+    setOptions((old: Record<string, boolean>) => {
+      return { ...old, [key]: !old[key] }
+    }
+    )
+  }
+
+  return (
+    <div
+      className="flex flex-col justify-between items-center h-fit p-0 w-full"
+    >
+
+      <div className="flex justify-between items-center h-[53px] w-full border-b-accent border-b-2 bg-secondary px-1">
+        <div className="flex items-center h-full gap-1 ">
+          
+        <TogglePanelButton isOpen={isOpen} setIsOpen={setIsOpen} variant="outline" className="cursor-e-resize" />
+        <Button className="text-sm flex items-center " variant="outline"  asChild>
+        <a 
+        target="_blank"
+        href="https://docs.google.com/forms/d/e/1FAIpQLSd33FU9cCdtj019p3WSIXfoFm8uuMgY8qRDaAPYfNl-D4JKUg/viewform?usp=publish-editor">
+          <BugIcon />
+        </a>
+          
+        </Button>
+          </div>
+        <Button className="text-sm flex items-center " variant="outline" asChild >
+          <a href="https://aebel-shajan.github.io/chat-gps-landing" target="_blank">
+            <LocateFixed className="object-contain" />
+            Chat GPS
+          </a>
+        </Button>
+      </div>
+
+      <div className="flex items-center justify-between h-6 w-full border-b-2">
+        <div className="flex items-center gap-1 h-full">
+          <Tooltip>
+            <TooltipTrigger asChild >
+
+              <Button
+                variant={"ghost"}
+                className="cursor-pointer h-full"
+                onClick={() => setShowMinimap((prev: boolean) => !prev)}
+              >
+                {showMinimap ?
+                  <EyeOff />
+                  :
+                  <Map />
+                }
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="text-xs bg-foreground text-accent rounded-xl p-2 w-fit max-w-30 z-999" >
+               {showMinimap ?
+                  <>
+              Close minimap
+                  </>
+                  :
+           <>
+              Expiremental, you have to refresh it manually.
+                  </>
+                }
+            </TooltipContent>
+          </Tooltip>
+          <Button
+            variant="ghost"
+            className="cursor-pointer [&:active>svg]:rotate-360 transition-transform h-full"
+            onClick={handleRefresh}
+          >
+            <RefreshCcw className="size-3 transition-all duration-300" />
+          </Button>
+        </div>
+        <div className="flex items-center gap-1 h-full">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="cursor-pointer h-full"
+            onClick={toggleAll}
+            asChild
+          >
+            <div>
+              {
+                anyOpen ?
+                  <LucideCopyMinus className="size-3" /> :
+                  <LucideCopyPlus className="size-3" />
+              }
+            </div>
+          </Button>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant={anyFilters ? "default" : "ghost"} size="sm" className="cursor-pointer h-full">
+                <Filter className="size-3" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              {Object.entries(options).map(([key, value]) => (
+                <DropdownMenuCheckboxItem
+                  key={key}
+                  checked={value}
+                  onClick={(e) => onToggleOption(e, key)}
+                >
+                  {key}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </div>
+    </div >
+  )
+}
+
 export default function ChatOutline(
   {
     scrollContainer,
     className,
     handleRefresh,
+    collapseState,
+    setCollapseState,
+    options,
   }: {
     scrollContainer: HTMLElement | null,
     className?: string
     handleRefresh: MouseEventHandler<HTMLButtonElement>
+    collapseState: Record<string, boolean>
+    setCollapseState: CallableFunction
+    options: Record<string, boolean>
   }
 ) {
-  const [collapseState, setCollapseState] = useState<Record<string, boolean>>({})
-  const [options, setOptions] = useSyncedStorage<Record<string, boolean>>("filterOptions", {
-    "user": true,
-    "assistant": true,
-    "code blocks": true,
-    "section headers": true,
-  })
-  const anyOpen = Object.values(collapseState).some(Boolean)
-  const anyFilters = Object.values(options).some((value) => !value)
+
 
   let elementTree: HTMLElementItem[] = []
   if (scrollContainer) {
@@ -54,77 +204,14 @@ export default function ChatOutline(
     elementTree = extractFilteredTreeBySelectors(scrollContainer, allowedSelectors)
   }
 
-  function toggleAll() {
-    setCollapseState(prev => {
-      const newState: Record<string, boolean> = {}
-      Object.keys(prev).forEach(key => {
-        newState[key] = !anyOpen
-      })
-      return newState
-    })
-  }
 
-  const onToggleOption = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, key: string) => {
-    e.preventDefault()
-    setOptions(old => {
-      return { ...old, [key]: !old[key] }
-    }
-    )
-  }
+
 
   return (
     <SidebarGroup className={className}>
-      <Button
-        variant="secondary"
-        size="sm"
-        className={`flex justify-between sticky top-0 z-[${MAX_Z_INDEX}] h-10`}
-        asChild
-      >
-        <div>
 
-          Chat outline
-          <div className="flex items-center h-full">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="cursor-pointer"
-              onClick={toggleAll}
-              asChild
-            >
-              <div>
-                {
-                  anyOpen ?
-                    <LucideCopyMinus className="size-3" /> :
-                    <LucideCopyPlus className="size-3" />
-                }
-              </div>
-            </Button>
-            <Button variant="ghost" className="cursor-pointer" onClick={handleRefresh}>
-              <RefreshCcw className="size-3" />
-            </Button>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant={anyFilters ? "default" : "ghost"} size="sm" className="cursor-pointer">
-                  <Filter className="size-3" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {Object.entries(options).map(([key, value]) => (
-                  <DropdownMenuCheckboxItem
-                    key={key}
-                    checked={value}
-                    onClick={(e) => onToggleOption(e, key)}
-                  >
-                    {key}
-                  </DropdownMenuCheckboxItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-      </Button >
       <SidebarGroupContent>
-        <SidebarMenu className="gap-0">
+        <SidebarMenu className="gap-[1px]">
           {elementTree.map((item, index) => (
             <Tree
               key={index}
@@ -143,7 +230,8 @@ export default function ChatOutline(
 function CopyActionButton({ textToCopy }: { textToCopy: string }) {
   const [copied, setCopied] = useState(false)
 
-  function handleCopy() {
+  function handleCopy(e: React.MouseEvent) {
+    e.stopPropagation()
     navigator.clipboard.writeText(textToCopy.trimStart()).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 1000)
@@ -206,7 +294,8 @@ function FavouriteActionButton({ itemToFavourite }: { itemToFavourite: HTMLEleme
   }
 
 
-  function handleFavourite() {
+  function handleFavourite(e: React.MouseEvent) {
+    e.stopPropagation()
     if (!scrollContainer || !chatId || scrollPos === -1) {
       alert(`error occured when trying to favourite chat. You have to be logged in to fav chats. `)
       return
@@ -235,7 +324,7 @@ function FavouriteActionButton({ itemToFavourite }: { itemToFavourite: HTMLEleme
       asChild
     >
       <div>
-        <StarIcon className="h-full" fill={isFavourited ? "black" : "transparent"} />
+        <StarIcon className="h-full" fill={isFavourited ? "cyan" : "transparent"} />
       </div>
     </Button>
   )
@@ -277,27 +366,26 @@ function Tree(
   }
 
   useEffect(() => {
-    handleCollapseChange(false)
+    handleCollapseChange(true)
   }, [])
 
 
-  const menuLabel = (<>
-    <ItemIcon
-      onClick={scrollElementIntoView}
-    />
-    <span className="h-full flex items-center grow min-w-0"
-      onClick={scrollElementIntoView}
-    >
-      <span className="text-xs truncate "
-      >
+  const menuLabel = (<div className="flex gap-1 h-fit items-center"
+    onClick={scrollElementIntoView}
+
+  >
+    <ItemIcon className="object-contain w-4" />
+    <div className="py-[3px] shrink-100">
+      <span className="text-xs line-clamp-2 wrap-anywhere">
         {label}
       </span>
-    </span>
+    </div>
+
     <div className="absolute top-0 h-full right-0 opacity-0 group-hover:opacity-100 transition-opacity duration-150 bg-accent gap-2 flex">
       <CopyActionButton textToCopy={label} />
       <FavouriteActionButton itemToFavourite={item} />
     </div>
-  </>
+  </div>
   )
 
 
@@ -308,7 +396,8 @@ function Tree(
 
         <SidebarMenuButton
           // isActive={name === "button.tsx"}
-          className="data-[active=true]:bg-transparent pl-7 flex gap-1 py-0 !pr-0 h-5.5 relative"
+          className="data-[active=true]:bg-transparent pl-7 py-0 !pr-0 h-fit relative cursor-pointer"
+          onClick={scrollElementIntoView}
         >
           {menuLabel}
         </SidebarMenuButton>
@@ -326,9 +415,16 @@ function Tree(
       // defaultOpen={name === "components" || name === "ui"}
       >
         <div className="group">
-          <SidebarMenuButton className="flex gap-1 py-0 !pr-0 h-5.5 relative">
-            <CollapsibleTrigger asChild >
-              <ChevronRight className="transition-transform" />
+          <SidebarMenuButton className="flex gap-1 py-0 !pr-0 h-fit relative cursor-pointer"
+          >
+            <CollapsibleTrigger className="cursor-pointer">
+
+              {collapseState[index]
+                ? <ChevronDown className="transition-transform w-4" />
+                : <ChevronRight className="transition-transform w-4" />
+              }
+
+
             </CollapsibleTrigger>
             {menuLabel}
           </SidebarMenuButton>

@@ -1,8 +1,8 @@
 {
   "name": "chat-gps",
-  "description": "Adds a minimap and chat ouline to chatgpt. Chrome extension for Chat GPT. Helps users navigate through long chats. ",
+  "description": "Adds a minimap and chat ouline to Chatgpt. Helps users navigate through long chats. Bookmark your favourite chats.",
   "private": true,
-  "version": "2.0.3",
+  "version": "2.1.0",
   "type": "module",
   "scripts": {
     "dev": "wxt",
@@ -25,7 +25,7 @@
     "@tailwindcss/vite": "^4.1.11",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "html2canvas-pro": "^1.5.11",
+    "html-to-image": "^1.11.13",
     "lucide-react": "^0.525.0",
     "next-themes": "^0.4.6",
     "react": "^19.1.0",
