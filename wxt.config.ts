@@ -8,6 +8,15 @@ export default defineConfig({
   manifest: {
     name: "Chat GPS: chat outline for navigating Chat GPT",
     permissions: ['storage'],
+    "commands": {
+      "toggle-ui": {
+        "suggested_key": {
+          "default": "Ctrl+Shift+K",
+          "mac": "Command+Shift+K"
+        },
+        "description": "Toggle UI state"
+      }
+    }
   },
   webExt: {
     startUrls: [

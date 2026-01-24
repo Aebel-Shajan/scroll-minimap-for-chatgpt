@@ -279,7 +279,8 @@ export function getChatAuthor(chatElement: HTMLElement): "user" | "assistant" {
 
 export function extractFilteredTreeBySelectors(
   node: HTMLElement,
-  allowedSelectors: string[]
+  allowedSelectors: string[],
+  textFilter: string
 ): HTMLElementItem[] {
   const result: HTMLElementItem[] = [];
 
@@ -287,9 +288,14 @@ export function extractFilteredTreeBySelectors(
     if (child.nodeType === Node.ELEMENT_NODE) {
       const el = child as HTMLElement;
 
-      const children = extractFilteredTreeBySelectors(el, allowedSelectors);
-      const isAllowed = allowedSelectors.some(selector => el.matches(selector));
+      const children = extractFilteredTreeBySelectors(el, allowedSelectors, textFilter);
 
+      const hasAllowedSelector = allowedSelectors.some(selector => el.matches(selector)) 
+      let hasAllowedText = true
+      if (el.innerText && textFilter !== "" ) {
+        hasAllowedText = el.innerText.toLowerCase().includes(textFilter)
+      }
+      const isAllowed = hasAllowedSelector && hasAllowedText
       if (isAllowed) {
         result.push({
           element: el,

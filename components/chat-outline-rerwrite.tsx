@@ -2,7 +2,6 @@ import { extractFilteredTreeBySelectors, getItemInfo, getScrollableParent } from
 import { HTMLElementItem } from "@/types"
 
 
-
 const SELECTOR_MAP: { [key: string]: string } = {
   "user": '[data-turn="user"]',
   "assistant": '[data-turn="assistant"]',
@@ -13,10 +12,12 @@ const SELECTOR_MAP: { [key: string]: string } = {
 export default function ChatOutlineRewrite(
   {
     scrollContainer,
-    options
+    options,
+    textFilter
   }: {
     scrollContainer: HTMLElement | null,
-    options: Record<string, boolean>
+    options: Record<string, boolean>,
+    textFilter: string
   }
 ) {
   let elementTree: HTMLElementItem[] = []
@@ -27,7 +28,7 @@ export default function ChatOutlineRewrite(
         allowedSelectors.push(SELECTOR_MAP[key])
       }
     })
-    elementTree = extractFilteredTreeBySelectors(scrollContainer, allowedSelectors)
+    elementTree = extractFilteredTreeBySelectors(scrollContainer, allowedSelectors, textFilter)
   }
 
   return (
@@ -67,7 +68,6 @@ function ElementDropDowns(
 }
 
 
-
 function TextPreview(
   {
     item
@@ -82,7 +82,7 @@ function TextPreview(
     <PreviewButton item={item} onClick={() => scrollElementIntoView(item.element)} />
     {item.children.length > 0 &&
       <div className="pl-10">
-        {item.children.map(child => <PreviewButton item={child} onClick={() => scrollElementIntoView(child.element)} padding={1} textSize="[1px]" />)}
+        {item.children.map(child => <PreviewButton item={child} onClick={() => scrollElementIntoView(child.element)} padding={1} />)}
       </div>
     }
   </div>
@@ -93,12 +93,11 @@ function PreviewButton(
   {
     item,
     onClick,
-    padding=3
+    padding = 3
   }: {
     item: HTMLElementItem,
-    OnClick: CallableFunction,
-    padding: number,
-    textSize: string
+    onClick: React.MouseEventHandler<HTMLDivElement>,
+    padding?: number,
   }
 ) {
   const children = item.children
@@ -107,9 +106,9 @@ function PreviewButton(
 
 
   return (
-    <div className={`shrink-100 cursor-pointer rounded-lg p-${padding} hover:text-muted-foreground flex gap-1`} onClick={() => onClick()}>
+    <div className={`shrink-100 cursor-pointer rounded-lg p-${padding} hover:text-muted-foreground flex gap-1`} onClick={onClick}>
       <div className="flex items-center justify-center relative w-fit h-full rounded-xs">
-      <ItemIcon size={15} />
+        <ItemIcon size={15} />
       </div>
       <span className={`text-xs line-clamp-2 wrap-anywhere select-none`}>
         {label}
