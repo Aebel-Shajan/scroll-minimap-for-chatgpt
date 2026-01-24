@@ -1,6 +1,7 @@
 import "@/assets/tailwind.css";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { TogglePanelButton } from "@/components/toggle-panel-button";
+import AppSidebarRewrite from "@/components/app-sidebar-rewrite";
 
 
 export default function App() {
@@ -23,18 +24,18 @@ export default function App() {
   }, [setTheme]);
 
 
-
+  const fixedPosClass = " fixed top-10 right-5"
 
   if (!isOpen) {
     document.body.style.width = "100vw"
     return (
 
-          <TogglePanelButton
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            variant={"outline"}
-            className="fixed top-60 right-5 z-100 cursor-pointer !p-1"
-          />
+      <TogglePanelButton
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        variant={"outline"}
+        className={"fixed top-60 right-5 z-100 cursor-pointer !p-1" + fixedPosClass}
+      />
 
 
     );
@@ -43,16 +44,12 @@ export default function App() {
 
   document.body.style.width = "calc(100vw - 280px)"
   return (
-    <div className="bg-sidebar-accent text-black w-[280px] h-dvh pt-0 border-l-2 border-accent flex fixed top-0 right-0">
-      <SidebarProvider >
-        <AppSidebar
-          collapsible="none"
-          className="w-full h-full"
-          isOpen={isOpen}
-          setIsOpen={setIsOpen}
-        />
-      </SidebarProvider>
-    </div>
+    <AppSidebarRewrite
+      isOpen={isOpen}
+      setIsOpen={setIsOpen}
+      className={fixedPosClass}
+    />
+
   )
 }
 
