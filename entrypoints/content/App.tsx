@@ -1,7 +1,7 @@
 import "@/assets/tailwind.css";
 import { cn } from "@/lib/utils";
 import icon from "@/assets/icon.png"
-import { queryChatContainer, queryChatScrollContainer } from "@/lib/chatgptElementUtils";
+import { queryChatScrollContainer } from "@/lib/chatgptElementUtils";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Filter, X } from "lucide-react";
@@ -10,20 +10,8 @@ import ChatOutlineRewrite from "@/components/chat-outline-rerwrite";
 
 export default function App() {
   const [isOpen, setIsOpen] = useSyncedStorage("sidebarOpen", false)
-  let scrollContainer = queryChatScrollContainer()
-  const chatContainer = queryChatContainer()
-  const chatContainerHeight = useElementHeight(chatContainer)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [, forceRefresh] = useReducer(x => x + 1, 0);
-
-  if (!scrollContainer) {
-    setTimeout(() => {
-      scrollContainer = queryChatScrollContainer()
-      forceRefresh()
-      // console.log("searched again!", scrollContainer)
-    }, 2000)
-  }
-
 
   const [textFilter, setTextFilter] = useState<string>("")
   const [options, setOptions] = useSyncedStorage<Record<string, boolean>>("filterOptions", {
@@ -33,8 +21,7 @@ export default function App() {
     "section headers": true,
   })
   const anyFilters = Object.values(options).some((value) => !value)
-
-
+  const fixedPosClass = "fixed top-15 right-5"
   const onToggleOption = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, key: string) => {
     e.preventDefault()
     setOptions((old: Record<string, boolean>) => {
@@ -42,6 +29,17 @@ export default function App() {
     }
     )
   }
+
+  let scrollContainer = queryChatScrollContainer()
+  if (!scrollContainer) {
+    setTimeout(() => {
+      scrollContainer = queryChatScrollContainer()
+      forceRefresh()
+      // console.log("searched again!", scrollContainer)
+    }, 2000)
+  }
+
+
 
 
   const { setTheme } = useTheme();
@@ -52,9 +50,7 @@ export default function App() {
       const isDarkMode = rootBackgroundColor !== "rgb(255, 255, 255)";
       setTheme(isDarkMode ? "dark" : "light");
     };
-
     checkAndSetTheme();
-
     const observer = new MutationObserver(checkAndSetTheme);
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ["style", "class"] });
     return () => observer.disconnect();
@@ -68,7 +64,6 @@ export default function App() {
         setIsOpen(prev => !prev);
       }
     }
-
     browser.runtime.onMessage.addListener(handler);
     return () => browser.runtime.onMessage.removeListener(handler);
   }, []);
@@ -92,7 +87,6 @@ export default function App() {
     return () => window.removeEventListener("keydown", handleEscapeKey);
   }, [setIsOpen]);
 
-  const fixedPosClass = "fixed top-15 right-5"
 
   if (!isOpen) {
     return (
