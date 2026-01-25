@@ -1,6 +1,7 @@
-import { extractFilteredTreeBySelectors, getItemInfo, getScrollableParent, queryChatContainer, queryChatScrollContainer } from "@/lib/chatgptElementUtils";
-import { CHAT_GPT_SELECTOR_MAP, CLAUDE_SELECTOR_MAP, GEMINI_SELECTOR_MAP, SELECTOR_MAP } from "@/lib/constants";
+import { extractFilteredTreeBySelectors, getItemInfo, getScrollableParent } from "@/lib/chatgptElementUtils";
+import { SELECTOR_MAP } from "@/lib/constants";
 import { ChatItem } from "@/types"
+import useHighlightedIndex from "@/hooks/use-highlighted-index"
 
 
 export default function ChatOutlineRewrite(
@@ -15,11 +16,9 @@ export default function ChatOutlineRewrite(
   }
 ) {
   const [elementTree, setElementTree] = useState<ChatItem[]>([])
-  const [highlightedIndex, setHighlightedIndex] = useState(0)
   const chatProvider = useChatProvider()
+  const highlightedIndex = useHighlightedIndex(scrollContainer, elementTree)
 
-
-  // Update elementTree when filters change
   useEffect(() => {
     if (scrollContainer) {
       const selectorMap = SELECTOR_MAP[chatProvider]
@@ -29,25 +28,6 @@ export default function ChatOutlineRewrite(
       setElementTree(extractFilteredTreeBySelectors(scrollContainer, allowedSelectors, textFilter, selectorMap))
     }
   }, [scrollContainer, options, textFilter, chatProvider])
-
-  // Handle scroll highlighting
-  useEffect(() => {
-    if (!scrollContainer || elementTree.length === 0) return
-    const handleScroll = () => {
-      const scrollPosElementMap = Object.fromEntries(
-        elementTree.map((item, index) => [item.element.offsetTop, index])
-      )
-      const nearestElement = findNearestMin(
-        scrollContainer.scrollTop + 60,
-        Object.keys(scrollPosElementMap).map(Number)
-      )
-      const indexToHighlight = scrollPosElementMap[nearestElement]
-      setHighlightedIndex(indexToHighlight ? indexToHighlight : 0)
-    }
-
-    scrollContainer.addEventListener("scroll", handleScroll)
-    return () => scrollContainer.removeEventListener("scroll", handleScroll)
-  }, [scrollContainer, elementTree])
 
 
   return (
@@ -153,19 +133,8 @@ function PreviewButton(
 
 
 function scrollElementIntoView(element: HTMLElement) {
-  // why not use chatElement.scrollIntoView()?
   const scrollContainer = getScrollableParent(element)
   if (scrollContainer) {
     scrollContainer.scrollTop = element.getBoundingClientRect().top + scrollContainer.scrollTop - 60
   }
-}
-
-function findNearestMin(num: number, arr: number[]) {
-  const sortedArr = arr.toSorted((a, b) => (b - a))
-  for (let i = 0; i < sortedArr.length; i++) {
-    if (sortedArr[i] < num) {
-      return sortedArr[i]
-    }
-  }
-  return 0
 }
