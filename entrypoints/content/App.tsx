@@ -94,7 +94,7 @@ export default function App() {
   }
 
   return (
-    <div className={"flex flex-col w-75 h-[calc(100vh-200px)] rounded-2xl border-accent border-2 overflow-hidden bg-background " + fixedPosClass} >
+    <div className={"flex flex-col w-75 h-[calc(100vh-200px)] rounded-2xl border-accent border-2 overflow-hidden bg-background " + fixedPosClass + " animate-in fade-in slide-in-from-right duration-200"} >
       <div className="w-full p-2 text-foreground border-b-accent border-b-2 flex justify-between items-center">
         <div className="font-extrabold">
           ChatGPS
