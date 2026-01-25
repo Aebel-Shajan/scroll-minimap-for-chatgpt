@@ -1,12 +1,12 @@
 import "@/assets/tailwind.css";
 import { cn } from "@/lib/utils";
 import icon from "@/assets/icon.png"
-import { getScrollableParent, queryChatContainer, queryChatScrollContainer } from "@/lib/chatgptElementUtils";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Filter, X } from "lucide-react";
 import ChatOutlineRewrite from "@/components/chat-outline-rerwrite";
 import useThemeDetection from "@/hooks/use-theme-detection";
+import useScrollContainer from "@/hooks/use-scroll-container";
 
 
 const DEFAULT_FILTERS = {
@@ -20,8 +20,8 @@ export default function App() {
   useThemeDetection()
   const [isOpen, setIsOpen] = useSyncedStorage("sidebarOpen", false)
   const inputRef = useRef<HTMLInputElement | null>(null)
-  const [, forceRefresh] = useReducer(x => x + 1, 0);
   const chatProvider = useChatProvider()
+  const scrollContainer = useScrollContainer(chatProvider)
   const [textFilter, setTextFilter] = useState<string>("")
   const [options, setOptions] = useSyncedStorage<Record<string, boolean>>("filterOptions", DEFAULT_FILTERS)
   const anyFilters = Object.values(options).some((value) => !value)
@@ -32,15 +32,6 @@ export default function App() {
       return { ...old, [key]: !old[key] }
     }
     )
-  }
-
-  let scrollContainer = queryChatScrollContainer(chatProvider)
-  if (!scrollContainer) {
-    setTimeout(() => {
-      scrollContainer = queryChatScrollContainer(chatProvider)
-      forceRefresh()
-      // console.log("searched again!", scrollContainer)
-    }, 2000)
   }
 
 
