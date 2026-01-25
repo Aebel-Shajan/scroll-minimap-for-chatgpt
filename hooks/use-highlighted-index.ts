@@ -10,8 +10,9 @@ export default function useHighlightedIndex(
     if (!scrollContainer || elementTree.length === 0) return
 
     const handleScroll = () => {
+      const containerRect = scrollContainer.getBoundingClientRect()
       const scrollPositions = elementTree.map((item, index) => ({
-        offset: item.element.offsetTop,
+        offset: item.element.getBoundingClientRect().top - containerRect.top + scrollContainer.scrollTop,
         index
       }))
 
