@@ -1,4 +1,5 @@
 export const MAX_Z_INDEX = 100;
+export const SCROLL_OFFSET = 120;
 export const CHAT_GPT_SELECTOR_MAP: { [key: string]: string; } = {
   "user": '[data-turn="user"]',
   "assistant": '[data-turn="assistant"]',

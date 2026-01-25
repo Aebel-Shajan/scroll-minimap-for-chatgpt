@@ -1,4 +1,5 @@
 import { ChatItem } from "@/types"
+import { SCROLL_OFFSET } from "@/lib/constants"
 
 export default function useHighlightedIndex(
   scrollContainer: HTMLElement | null,
@@ -16,7 +17,7 @@ export default function useHighlightedIndex(
         index
       }))
 
-      const currentScroll = scrollContainer.scrollTop + 60
+      const currentScroll = scrollContainer.scrollTop + SCROLL_OFFSET
       const nearest = scrollPositions
         .filter(pos => pos.offset < currentScroll)
         .sort((a, b) => b.offset - a.offset)[0]

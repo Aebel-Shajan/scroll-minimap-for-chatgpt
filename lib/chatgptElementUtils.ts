@@ -20,7 +20,7 @@ import {
   Section,
   User,
 } from "lucide-react"
-import { chatProviders, SELECTOR_MAP } from "./constants";
+import { chatProviders, SCROLL_OFFSET, SELECTOR_MAP } from "./constants";
 
 export function queryChatScrollContainer(chatProvider: chatProviders): HTMLElement | null {
   const firstChatMessage = document.querySelector<HTMLElement>(
@@ -93,6 +93,61 @@ const ICON_MAP: ReactComponentMap = {
   "section": Section,
   "chat": MessageSquare,
   ...LANGUAGE_MAP
+}
+
+export function queryAllUserChats(scrollContainer: HTMLElement, selectorMap: Record<string, string>): HTMLElement[] {
+  const userSelector = selectorMap["user"]
+  return [...scrollContainer.querySelectorAll<HTMLElement>(userSelector)]
+}
+
+function getElementScrollPosition(element: HTMLElement, scrollContainer: HTMLElement): number {
+  const containerRect = scrollContainer.getBoundingClientRect()
+  return element.getBoundingClientRect().top - containerRect.top + scrollContainer.scrollTop
+}
+
+function findCurrentChatIndex(chatElements: HTMLElement[]): number {
+  let closestIndex = 0
+  let closestDistance = Infinity
+
+  chatElements.forEach((el, index) => {
+    const distance = Math.abs(el.getBoundingClientRect().top - SCROLL_OFFSET)
+    if (distance < closestDistance) {
+      closestDistance = distance
+      closestIndex = index
+    }
+  })
+
+  return closestIndex
+}
+
+export function navigateToNextChat(scrollContainer: HTMLElement, selectorMap: Record<string, string>) {
+  const chatElements = queryAllUserChats(scrollContainer, selectorMap)
+  if (chatElements.length === 0) return
+
+  const currentIndex = findCurrentChatIndex(chatElements)
+  const nextIndex = currentIndex + 1
+
+  if (nextIndex < chatElements.length) {
+    const scrollPos = getElementScrollPosition(chatElements[nextIndex], scrollContainer)
+    scrollContainer.scrollTop = scrollPos - SCROLL_OFFSET
+  } else {
+    scrollContainer.scrollTop = scrollContainer.scrollHeight
+  }
+}
+
+export function navigateToPreviousChat(scrollContainer: HTMLElement, selectorMap: Record<string, string>) {
+  const chatElements = queryAllUserChats(scrollContainer, selectorMap)
+  if (chatElements.length === 0) return
+
+  const currentIndex = findCurrentChatIndex(chatElements)
+  const prevIndex = currentIndex - 1
+
+  if (prevIndex >= 0) {
+    const scrollPos = getElementScrollPosition(chatElements[prevIndex], scrollContainer)
+    scrollContainer.scrollTop = scrollPos - SCROLL_OFFSET
+  } else {
+    scrollContainer.scrollTop = 0
+  }
 }
 
 export function getItemInfo(item: ChatItem, selectorMap: Record<string, string>) {

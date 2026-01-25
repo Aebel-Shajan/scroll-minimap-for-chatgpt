@@ -1,7 +1,7 @@
 
 
 ## 2026-01-24
-* git: 
+* git: a68cbefe20d6ff2d6bf2bc7cd9025b8bde020ea4
 * start: 15:22
 * end: 20:07
 * what I want to do:
@@ -37,6 +37,7 @@
 
 
 ## 2026-01-25
+* git: 
 * start: 09:39
 * end: 
 * what I want to do:
@@ -44,6 +45,8 @@
     * add back in favourites
     * make it compatible with claude, gemini
 * what I did:
+    * Fixed the scroll highlighiting issue I had before. It was because I was not using states properly. (when var updates, component did not refresh)
 * what broke:
+    * The `extractFilteredTreeBySelectors` is a piece of shit function. it uses recursion and is hard to understand. (probably coded by ai)
 * what next:
 * links:

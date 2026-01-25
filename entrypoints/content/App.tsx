@@ -3,10 +3,12 @@ import { cn } from "@/lib/utils";
 import icon from "@/assets/icon.png"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Bug, Filter, X } from "lucide-react";
+import { Bug, ChevronDown, ChevronUp, Filter, X } from "lucide-react";
 import ChatOutline from "@/components/chat-outline";
 import useThemeDetection from "@/hooks/use-theme-detection";
 import useScrollContainer from "@/hooks/use-scroll-container";
+import { navigateToNextChat, navigateToPreviousChat } from "@/lib/chatgptElementUtils";
+import { SELECTOR_MAP } from "@/lib/constants";
 
 
 const DEFAULT_FILTERS = {
@@ -25,7 +27,16 @@ export default function App() {
   const [textFilter, setTextFilter] = useState<string>("")
   const [options, setOptions] = useSyncedStorage<Record<string, boolean>>("filterOptions", DEFAULT_FILTERS)
   const anyFilters = Object.values(options).some((value) => !value)
+  const selectorMap = SELECTOR_MAP[chatProvider]
   const fixedPosClass = "fixed top-15 right-5"
+
+  const goToNextChat = () => {
+    if (scrollContainer) navigateToNextChat(scrollContainer, selectorMap)
+  }
+
+  const goToPreviousChat = () => {
+    if (scrollContainer) navigateToPreviousChat(scrollContainer, selectorMap)
+  }
   const onToggleOption = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, key: string) => {
     e.preventDefault()
     setOptions((old: Record<string, boolean>) => {
@@ -40,10 +51,16 @@ export default function App() {
       if (msg.type === "TOGGLE_UI") {
         setIsOpen(prev => !prev);
       }
+      if (msg.type === "NEXT_CHAT") {
+        goToNextChat();
+      }
+      if (msg.type === "PREVIOUS_CHAT") {
+        goToPreviousChat();
+      }
     }
     browser.runtime.onMessage.addListener(handler);
     return () => browser.runtime.onMessage.removeListener(handler);
-  }, []);
+  }, [scrollContainer, selectorMap]);
 
   useEffect(() => {
     if (isOpen) {
@@ -82,7 +99,23 @@ export default function App() {
         <div className="font-extrabold">
           ChatGPS
         </div>
-        <div className="flex gap-1 jus">
+        <div className="flex gap-1">
+          <div className="flex flex-col gap-0.5">
+            <button
+              onClick={goToPreviousChat}
+              className="h-3.5 px-1 rounded bg-accent hover:bg-accent-foreground hover:text-accent cursor-pointer flex items-center justify-center"
+              title="Previous chat (Alt+Up)"
+            >
+              <ChevronUp className="size-3" />
+            </button>
+            <button
+              onClick={goToNextChat}
+              className="h-3.5 px-1 rounded bg-accent hover:bg-accent-foreground hover:text-accent cursor-pointer flex items-center justify-center"
+              title="Next chat (Alt+Down)"
+            >
+              <ChevronDown className="size-3" />
+            </button>
+          </div>
           <a
             href="https://docs.google.com/forms/d/e/1FAIpQLSd33FU9cCdtj019p3WSIXfoFm8uuMgY8qRDaAPYfNl-D4JKUg/viewform"
             target="_blank"
