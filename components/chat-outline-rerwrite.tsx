@@ -1,5 +1,5 @@
 import { extractFilteredTreeBySelectors, getItemInfo, getScrollableParent, queryChatContainer, queryChatScrollContainer } from "@/lib/chatgptElementUtils";
-import { HTMLElementItem } from "@/types"
+import { ChatItem } from "@/types"
 
 
 const SELECTOR_MAP: { [key: string]: string } = {
@@ -20,7 +20,7 @@ export default function ChatOutlineRewrite(
     textFilter: string
   }
 ) {
-  const [elementTree, setElementTree] = useState<HTMLElementItem[]>([])
+  const [elementTree, setElementTree] = useState<ChatItem[]>([])
   const [highlightedIndex, setHighlightedIndex] = useState(0)
 
   // Update elementTree when filters change
@@ -66,7 +66,7 @@ function ElementDropDowns(
     elementTree,
     highlightedIndex
   }: {
-    elementTree: HTMLElementItem[],
+    elementTree: ChatItem[],
     highlightedIndex: number
   }
 ) {
@@ -95,7 +95,7 @@ function TextPreview(
     item,
     highlighted = false
   }: {
-    item: HTMLElementItem
+    item: ChatItem
     highlighted: boolean
   }
 ) {
@@ -132,7 +132,7 @@ function PreviewButton(
     padding = 3,
     ref
   }: {
-    item: HTMLElementItem,
+    item: ChatItem,
     onClick: React.MouseEventHandler<HTMLDivElement>,
     padding?: number,
     ref?: React.Ref<HTMLDivElement>

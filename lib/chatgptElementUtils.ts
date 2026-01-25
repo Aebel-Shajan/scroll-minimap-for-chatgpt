@@ -1,4 +1,4 @@
-import { HTMLElementItem, ReactComponentMap } from "@/types";
+import { ChatItem, ReactComponentMap } from "@/types";
 import {
   BiLogoCPlusPlus,
   BiLogoCss3,
@@ -170,7 +170,7 @@ export function queryChatScrollContainer(): HTMLElement | null {
   let chatScrollContainer: HTMLElement | null = null;
   chatMessageContainer = queryChatContainer();
   if (chatMessageContainer) {
-    chatScrollContainer = getScrollableParent(chatMessageContainer) as HTMLElement |null
+    chatScrollContainer = getScrollableParent(chatMessageContainer) as HTMLElement | null
   }
   return chatScrollContainer;
 }
@@ -278,34 +278,34 @@ export function getChatAuthor(chatElement: HTMLElement): "user" | "assistant" {
 
 
 export function extractFilteredTreeBySelectors(
-  node: HTMLElement,
+  chatContainer: HTMLElement,
   allowedSelectors: string[],
   textFilter: string
-): HTMLElementItem[] {
-  const result: HTMLElementItem[] = [];
-
-  node.childNodes.forEach(child => {
-    if (child.nodeType === Node.ELEMENT_NODE) {
-      const el = child as HTMLElement;
-
-      const children = extractFilteredTreeBySelectors(el, allowedSelectors, textFilter);
-
-      const hasAllowedSelector = allowedSelectors.some(selector => el.matches(selector)) 
-      let hasAllowedText = true
-      if (el.innerText && textFilter !== "" ) {
-        hasAllowedText = el.innerText.toLowerCase().includes(textFilter)
-      }
-      const isAllowed = hasAllowedSelector && hasAllowedText
-      if (isAllowed) {
-        result.push({
-          element: el,
-          children,
-        });
-      } else if (children.length > 0) {
-        result.push(...children); // promote valid descendants
-      }
+): ChatItem[] {
+  const selectorString = allowedSelectors.join(", ")
+  if (selectorString === "") return []
+  const allElements = [...chatContainer.querySelectorAll(selectorString)].filter(el => {
+    if (el instanceof HTMLElement) {
+      return el.innerText.includes(textFilter)
     }
-  });
+    return true
+  })
+
+  const parentElements = allElements.filter(el => el.matches('[data-turn="user"]') || el.matches('[data-turn="assistant"]'))
+
+  const result: ChatItem[] = parentElements.map(el => {
+    const children = allElements.filter(child => el.contains(child) && el !== child)
+    const output: ChatItem = {
+      element: el as HTMLElement,
+      children: children.map(child => {
+        return {
+          element: child as HTMLElement,
+          children: []
+        }
+      })
+    }
+    return output
+  })
 
   return result;
 }
@@ -367,7 +367,7 @@ export function extractChatId(url: string) {
   return match ? match[1] : null;
 }
 
-export function getItemInfo(item: HTMLElementItem) {
+export function getItemInfo(item: ChatItem) {
   const element = item.element;
   if (element.matches('[data-testid^="conversation-turn-"]')) {
     let label = item.element.textContent;
