@@ -170,7 +170,7 @@ export function queryChatScrollContainer(): HTMLElement | null {
   let chatScrollContainer: HTMLElement | null = null;
   chatMessageContainer = queryChatContainer();
   if (chatMessageContainer) {
-    chatScrollContainer = chatMessageContainer.parentElement;
+    chatScrollContainer = getScrollableParent(chatMessageContainer) as HTMLElement |null
   }
   return chatScrollContainer;
 }
