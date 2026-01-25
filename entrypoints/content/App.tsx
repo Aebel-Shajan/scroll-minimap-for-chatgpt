@@ -1,25 +1,29 @@
 import "@/assets/tailwind.css";
 import { cn } from "@/lib/utils";
 import icon from "@/assets/icon.png"
-import { queryChatScrollContainer } from "@/lib/chatgptElementUtils";
+import { getScrollableParent, queryChatContainer, queryChatScrollContainer } from "@/lib/chatgptElementUtils";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Filter, X } from "lucide-react";
 import ChatOutlineRewrite from "@/components/chat-outline-rerwrite";
+import useThemeDetection from "@/hooks/use-theme-detection";
 
+
+const DEFAULT_FILTERS = {
+    "user": true,
+    "assistant": true,
+    "code blocks": false,
+    "section headers": true,
+  }
 
 export default function App() {
+  useThemeDetection()
   const [isOpen, setIsOpen] = useSyncedStorage("sidebarOpen", false)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [, forceRefresh] = useReducer(x => x + 1, 0);
 
   const [textFilter, setTextFilter] = useState<string>("")
-  const [options, setOptions] = useSyncedStorage<Record<string, boolean>>("filterOptions", {
-    "user": true,
-    "assistant": true,
-    "code blocks": false,
-    "section headers": true,
-  })
+  const [options, setOptions] = useSyncedStorage<Record<string, boolean>>("filterOptions", DEFAULT_FILTERS)
   const anyFilters = Object.values(options).some((value) => !value)
   const fixedPosClass = "fixed top-15 right-5"
   const onToggleOption = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, key: string) => {
@@ -42,7 +46,6 @@ export default function App() {
 
   useEffect(() => {
     function handler(msg: any) {
-      console.log(msg)
       if (msg.type === "TOGGLE_UI") {
         setIsOpen(prev => !prev);
       }
@@ -61,7 +64,6 @@ export default function App() {
   useEffect(() => {
     const handleEscapeKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
-        console.log(e)
         setIsOpen(false);
       }
     };
