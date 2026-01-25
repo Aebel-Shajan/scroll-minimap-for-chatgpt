@@ -11,4 +11,15 @@ export const GEMINI_SELECTOR_MAP: Record<string, string> = {
   "code blocks": 'pre',
   "section headers": 'h1, h2, h3'
 };
-export type chatProviders = "chatgpt" | "gemini"
+export const CLAUDE_SELECTOR_MAP: Record<string, string> = {
+  "user": '[data-testid="user-message"]',
+  "assistant": '[data-is-streaming]',
+  "code blocks": '[data-is-streaming] pre',
+  "section headers": 'h1, h2, h3'
+}
+export const SELECTOR_MAP: Record<chatProviders, Record<string, string>> = {
+  "chatgpt": CHAT_GPT_SELECTOR_MAP,
+  "gemini": GEMINI_SELECTOR_MAP,
+  "claude": CLAUDE_SELECTOR_MAP
+}
+export type chatProviders = "chatgpt" | "gemini" | "claude"

@@ -1,16 +1,22 @@
+import { chatProviders } from "@/lib/constants"
 
 
 export default function useChatProvider() {
-  const [chatProvider, setChatProvider] = useState("chatgpt")
+  const [chatProvider, setChatProvider] = useState<chatProviders>("chatgpt")
 
   useEffect(() => {
     const url = window.location.hostname
-    if (url.includes('gemini.google.com')) {
-      setChatProvider("gemini")
+    const urlMap: Record<string, chatProviders> = {
+      "gemini.google.com": "gemini",
+      "chatgpt.com": "chatgpt",
+      "claude.ai": "claude"
     }
-    if (url.includes('chatgpt.com')) {
-      setChatProvider("chatgpt")
-    }
+    Object.keys(urlMap).forEach(key => {
+      if (url.includes(key)) {
+        setChatProvider(urlMap[key])
+        console.log(urlMap[key])
+      }
+    })
   }, [])
 
   return chatProvider

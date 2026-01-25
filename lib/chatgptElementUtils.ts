@@ -20,7 +20,7 @@ import {
   Section,
   User,
 } from "lucide-react"
-import { CHAT_GPT_SELECTOR_MAP, GEMINI_SELECTOR_MAP } from "./constants";
+import { CHAT_GPT_SELECTOR_MAP, chatProviders, GEMINI_SELECTOR_MAP, SELECTOR_MAP } from "./constants";
 
 
 /**
@@ -154,19 +154,14 @@ function checkIgnoreMutation(mutation: MutationRecord): boolean {
  * Queries the chat container element in the DOM.
  * @returns The chat container element if found, otherwise null.
  */
-export function queryChatContainer(chatProvider: string = "chatgpt"): HTMLElement | null {
+export function queryChatContainer(chatProvider: chatProviders = "chatgpt"): HTMLElement | null {
   let firstChatMessage: HTMLElement | null = null;
   let chatMessageContainer: HTMLElement | null = null;
-  if (chatProvider === "chatgpt") {
-    firstChatMessage = document.querySelector(
-      CHAT_GPT_SELECTOR_MAP["user"]
-    );
-  }
-  if (chatProvider === "gemini") {
-    firstChatMessage = document.querySelector(
-      GEMINI_SELECTOR_MAP["user"]
-    )
-  }
+  firstChatMessage = document.querySelector(
+    SELECTOR_MAP[chatProvider]["user"]
+  );
+
+
 
 
   if (firstChatMessage) {
@@ -175,7 +170,7 @@ export function queryChatContainer(chatProvider: string = "chatgpt"): HTMLElemen
   return chatMessageContainer;
 }
 
-export function queryChatScrollContainer(chatProvider: string = "chatgpt"): HTMLElement | null {
+export function queryChatScrollContainer(chatProvider: chatProviders = "chatgpt"): HTMLElement | null {
   let chatMessageContainer: HTMLElement | null = null;
   let chatScrollContainer: HTMLElement | null = null;
   chatMessageContainer = queryChatContainer(chatProvider);

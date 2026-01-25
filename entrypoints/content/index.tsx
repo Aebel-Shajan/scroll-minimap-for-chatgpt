@@ -7,7 +7,8 @@ import { MAX_Z_INDEX } from "@/lib/constants.ts";
 export default defineContentScript({
   matches: [
     "https://chatgpt.com/*",
-    "https://gemini.google.com/app/*"
+    "https://gemini.google.com/*",
+    "https://claude.ai/*"
   ],
   excludeMatches: ["https://chatgpt.com/codex/*"],
   cssInjectionMode: "ui",
