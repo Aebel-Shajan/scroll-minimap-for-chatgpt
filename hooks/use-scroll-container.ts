@@ -11,11 +11,15 @@ export default function useScrollContainer(chatProvider: chatProviders) {
       return
     }
 
-    const timeout = setTimeout(() => {
-      setScrollContainer(queryChatScrollContainer(chatProvider))
+    const interval = setInterval(() => {
+      const container = queryChatScrollContainer(chatProvider)
+      if (container) {
+        setScrollContainer(container)
+        clearInterval(interval)
+      }
     }, 2000)
 
-    return () => clearTimeout(timeout)
+    return () => clearInterval(interval)
   }, [chatProvider])
 
   return scrollContainer
