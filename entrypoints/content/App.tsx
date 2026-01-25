@@ -21,7 +21,7 @@ export default function App() {
   const [isOpen, setIsOpen] = useSyncedStorage("sidebarOpen", false)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [, forceRefresh] = useReducer(x => x + 1, 0);
-
+  const chatProvider = useChatProvider()
   const [textFilter, setTextFilter] = useState<string>("")
   const [options, setOptions] = useSyncedStorage<Record<string, boolean>>("filterOptions", DEFAULT_FILTERS)
   const anyFilters = Object.values(options).some((value) => !value)
@@ -34,10 +34,10 @@ export default function App() {
     )
   }
 
-  let scrollContainer = queryChatScrollContainer()
+  let scrollContainer = queryChatScrollContainer(chatProvider)
   if (!scrollContainer) {
     setTimeout(() => {
-      scrollContainer = queryChatScrollContainer()
+      scrollContainer = queryChatScrollContainer(chatProvider)
       forceRefresh()
       // console.log("searched again!", scrollContainer)
     }, 2000)

@@ -1,13 +1,7 @@
 import { extractFilteredTreeBySelectors, getItemInfo, getScrollableParent, queryChatContainer, queryChatScrollContainer } from "@/lib/chatgptElementUtils";
+import { CHAT_GPT_SELECTOR_MAP, GEMINI_SELECTOR_MAP } from "@/lib/constants";
 import { ChatItem } from "@/types"
 
-
-const SELECTOR_MAP: { [key: string]: string } = {
-  "user": '[data-turn="user"]',
-  "assistant": '[data-turn="assistant"]',
-  "code blocks": 'pre',
-  "section headers": 'h1, h2, h3'
-};
 
 export default function ChatOutlineRewrite(
   {
@@ -22,17 +16,29 @@ export default function ChatOutlineRewrite(
 ) {
   const [elementTree, setElementTree] = useState<ChatItem[]>([])
   const [highlightedIndex, setHighlightedIndex] = useState(0)
+  const chatProvider = useChatProvider()
+  const [selectorMap, setSelectorMap] = useState(CHAT_GPT_SELECTOR_MAP)
+
+  useEffect(() => {
+    if (chatProvider === 'gemini') {
+      setSelectorMap(GEMINI_SELECTOR_MAP)
+    }
+    if (chatProvider === 'chatgpt') {
+      setSelectorMap(CHAT_GPT_SELECTOR_MAP)
+    }
+  }, [chatProvider])
+
+
 
   // Update elementTree when filters change
   useEffect(() => {
     if (scrollContainer) {
-      const allowedSelectors = Object.keys(SELECTOR_MAP)
+      const allowedSelectors = Object.keys(selectorMap)
         .filter(key => options[key])
-        .map(key => SELECTOR_MAP[key])
-
-      setElementTree(extractFilteredTreeBySelectors(scrollContainer, allowedSelectors, textFilter))
+        .map(key => selectorMap[key])
+      setElementTree(extractFilteredTreeBySelectors(scrollContainer, allowedSelectors, textFilter, selectorMap))
     }
-  }, [scrollContainer, options, textFilter])
+  }, [scrollContainer, options, textFilter, selectorMap])
 
   // Handle scroll highlighting
   useEffect(() => {

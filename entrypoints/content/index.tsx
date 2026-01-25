@@ -5,7 +5,10 @@ import App from "./App.tsx";
 import { MAX_Z_INDEX } from "@/lib/constants.ts";
 
 export default defineContentScript({
-  matches: ["https://chatgpt.com/*"],
+  matches: [
+    "https://chatgpt.com/*",
+    "https://gemini.google.com/app/*"
+  ],
   excludeMatches: ["https://chatgpt.com/codex/*"],
   cssInjectionMode: "ui",
 

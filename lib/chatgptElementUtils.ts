@@ -20,6 +20,7 @@ import {
   Section,
   User,
 } from "lucide-react"
+import { CHAT_GPT_SELECTOR_MAP, GEMINI_SELECTOR_MAP } from "./constants";
 
 
 /**
@@ -153,22 +154,31 @@ function checkIgnoreMutation(mutation: MutationRecord): boolean {
  * Queries the chat container element in the DOM.
  * @returns The chat container element if found, otherwise null.
  */
-export function queryChatContainer(): HTMLElement | null {
+export function queryChatContainer(chatProvider: string = "chatgpt"): HTMLElement | null {
   let firstChatMessage: HTMLElement | null = null;
   let chatMessageContainer: HTMLElement | null = null;
-  firstChatMessage = document.querySelector(
-    '[data-testid^="conversation-turn-"]'
-  );
+  if (chatProvider === "chatgpt") {
+    firstChatMessage = document.querySelector(
+      CHAT_GPT_SELECTOR_MAP["user"]
+    );
+  }
+  if (chatProvider === "gemini") {
+    firstChatMessage = document.querySelector(
+      GEMINI_SELECTOR_MAP["user"]
+    )
+  }
+
+
   if (firstChatMessage) {
     chatMessageContainer = firstChatMessage.parentElement;
   }
   return chatMessageContainer;
 }
 
-export function queryChatScrollContainer(): HTMLElement | null {
+export function queryChatScrollContainer(chatProvider: string = "chatgpt"): HTMLElement | null {
   let chatMessageContainer: HTMLElement | null = null;
   let chatScrollContainer: HTMLElement | null = null;
-  chatMessageContainer = queryChatContainer();
+  chatMessageContainer = queryChatContainer(chatProvider);
   if (chatMessageContainer) {
     chatScrollContainer = getScrollableParent(chatMessageContainer) as HTMLElement | null
   }
@@ -280,7 +290,8 @@ export function getChatAuthor(chatElement: HTMLElement): "user" | "assistant" {
 export function extractFilteredTreeBySelectors(
   chatContainer: HTMLElement,
   allowedSelectors: string[],
-  textFilter: string
+  textFilter: string,
+  selectorMap: Record<string, string>
 ): ChatItem[] {
   const selectorString = allowedSelectors.join(", ")
   if (selectorString === "") return []
@@ -291,7 +302,7 @@ export function extractFilteredTreeBySelectors(
     return true
   })
 
-  const parentElements = allElements.filter(el => el.matches('[data-turn="user"]') || el.matches('[data-turn="assistant"]'))
+  const parentElements = allElements.filter(el => el.matches(selectorMap["user"]) || el.matches(selectorMap["assistant"]))
 
   const result: ChatItem[] = parentElements.map(el => {
     const children = allElements.filter(child => el.contains(child) && el !== child)
