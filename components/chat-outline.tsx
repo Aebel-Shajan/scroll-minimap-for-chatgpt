@@ -1,5 +1,5 @@
 import { extractFilteredTreeBySelectors, getItemInfo, getScrollableParent } from "@/lib/chatgptElementUtils";
-import { SELECTOR_MAP } from "@/lib/constants";
+import { SCROLL_OFFSET, SELECTOR_MAP } from "@/lib/constants";
 import { ChatItem } from "@/types"
 import useHighlightedIndex from "@/hooks/use-highlighted-index"
 
@@ -136,6 +136,6 @@ function PreviewButton(
 function scrollElementIntoView(element: HTMLElement) {
   const scrollContainer = getScrollableParent(element)
   if (scrollContainer) {
-    scrollContainer.scrollTop = element.getBoundingClientRect().top + scrollContainer.scrollTop - 60
+    scrollContainer.scrollTop = element.getBoundingClientRect().top + scrollContainer.scrollTop - SCROLL_OFFSET
   }
 }
