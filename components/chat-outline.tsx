@@ -20,14 +20,28 @@ export default function ChatOutline(
   const highlightedIndex = useHighlightedIndex(scrollContainer, elementTree)
 
   const selectorMap = SELECTOR_MAP[chatProvider]
-
   useEffect(() => {
+    if (!scrollContainer) return
     if (scrollContainer) {
       const allowedSelectors = Object.keys(selectorMap)
         .filter(key => options[key])
         .map(key => selectorMap[key])
       setElementTree(extractFilteredTreeBySelectors(scrollContainer, allowedSelectors, textFilter, selectorMap))
     }
+    let previousHeight = scrollContainer.scrollHeight
+    const observer = new MutationObserver(() => {
+      const currentHeight = scrollContainer.scrollHeight
+      if (Math.abs(currentHeight - previousHeight) > 30) {
+        previousHeight = currentHeight
+        const allowedSelectors = Object.keys(selectorMap)
+          .filter(key => options[key])
+          .map(key => selectorMap[key])
+        setElementTree(extractFilteredTreeBySelectors(scrollContainer, allowedSelectors, textFilter, selectorMap))
+      }
+    })
+
+    observer.observe(scrollContainer, { childList: true, subtree: true })
+    return () => observer.disconnect()
   }, [scrollContainer, options, textFilter, selectorMap])
 
 
@@ -138,4 +152,4 @@ function scrollElementIntoView(element: HTMLElement) {
   if (scrollContainer) {
     scrollContainer.scrollTop = element.getBoundingClientRect().top + scrollContainer.scrollTop - SCROLL_OFFSET
   }
-}
+} 
