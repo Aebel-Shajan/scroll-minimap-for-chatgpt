@@ -4,7 +4,7 @@ import { ChatItem } from "@/types"
 import useHighlightedIndex from "@/hooks/use-highlighted-index"
 
 
-export default function ChatOutlineRewrite(
+export default function ChatOutline(
   {
     scrollContainer,
     options,
@@ -19,20 +19,21 @@ export default function ChatOutlineRewrite(
   const chatProvider = useChatProvider()
   const highlightedIndex = useHighlightedIndex(scrollContainer, elementTree)
 
+  const selectorMap = SELECTOR_MAP[chatProvider]
+
   useEffect(() => {
     if (scrollContainer) {
-      const selectorMap = SELECTOR_MAP[chatProvider]
       const allowedSelectors = Object.keys(selectorMap)
         .filter(key => options[key])
         .map(key => selectorMap[key])
       setElementTree(extractFilteredTreeBySelectors(scrollContainer, allowedSelectors, textFilter, selectorMap))
     }
-  }, [scrollContainer, options, textFilter, chatProvider])
+  }, [scrollContainer, options, textFilter, selectorMap])
 
 
   return (
     <div className="w-full flex-1 text-foreground overflow-y-scroll">
-      <ElementDropDowns elementTree={elementTree} highlightedIndex={highlightedIndex} />
+      <ElementDropDowns elementTree={elementTree} highlightedIndex={highlightedIndex} selectorMap={selectorMap} />
     </div>
   )
 }
@@ -40,14 +41,14 @@ export default function ChatOutlineRewrite(
 function ElementDropDowns(
   {
     elementTree,
-    highlightedIndex
+    highlightedIndex,
+    selectorMap
   }: {
     elementTree: ChatItem[],
-    highlightedIndex: number
+    highlightedIndex: number,
+    selectorMap: Record<string, string>
   }
 ) {
-
-
   if (elementTree.length === 0) {
     return <div className="p-3 w-full h-full">
       <div className="w-full h-full rounded-xl border-2 border-dashed bg-accent text-muted-foreground font-semibold flex items-center justify-center">
@@ -59,7 +60,7 @@ function ElementDropDowns(
   return (
     <div className="w-full h-fit">
       {elementTree.map((node, index) => {
-        return <TextPreview item={node} highlighted={index == highlightedIndex} key={"text-preview" + index} />
+        return <TextPreview item={node} highlighted={index == highlightedIndex} selectorMap={selectorMap} key={"text-preview" + index} />
       })}
     </div>
   )
@@ -69,10 +70,12 @@ function ElementDropDowns(
 function TextPreview(
   {
     item,
-    highlighted = false
+    highlighted = false,
+    selectorMap
   }: {
     item: ChatItem
     highlighted: boolean
+    selectorMap: Record<string, string>
   }
 ) {
   const ref = useRef<HTMLDivElement>(null);
@@ -81,9 +84,7 @@ function TextPreview(
     if (highlighted && ref.current) {
       ref.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
-  }, [highlighted]); // runs whenever `active` changes
-
-
+  }, [highlighted]);
 
   return (
     <div className={"group w-full h-fit flex flex-col hover:bg-muted relative " + (highlighted && " bg-muted")} ref={ref}>
@@ -91,10 +92,10 @@ function TextPreview(
       {highlighted &&
         <div className="w-1 h-full absolute top-0 right-0 bg-[#04A179] z-0"></div>
       }
-      <PreviewButton item={item} onClick={() => scrollElementIntoView(item.element)} />
+      <PreviewButton item={item} onClick={() => scrollElementIntoView(item.element)} selectorMap={selectorMap} />
       {item.children.length > 0 &&
         <div className="pl-10">
-          {item.children.map((child, index) => <PreviewButton item={child} onClick={() => scrollElementIntoView(child.element)} padding={1} key={"preview-button" + index} />)}
+          {item.children.map((child, index) => <PreviewButton item={child} onClick={() => scrollElementIntoView(child.element)} selectorMap={selectorMap} padding={1} key={"preview-button" + index} />)}
         </div>
       }
     </div>
@@ -105,19 +106,19 @@ function PreviewButton(
   {
     item,
     onClick,
+    selectorMap,
     padding = 3,
     ref
   }: {
     item: ChatItem,
     onClick: React.MouseEventHandler<HTMLDivElement>,
+    selectorMap: Record<string, string>,
     padding?: number,
     ref?: React.Ref<HTMLDivElement>
   }
 ) {
-  const children = item.children
-  const { label, icon } = getItemInfo(item)
+  const { label, icon } = getItemInfo(item, selectorMap)
   const ItemIcon = icon
-
 
   return (
     <div className={`shrink-100 cursor-pointer rounded-lg p-${padding} hover:text-muted-foreground flex gap-1`} onClick={onClick} ref={ref}>

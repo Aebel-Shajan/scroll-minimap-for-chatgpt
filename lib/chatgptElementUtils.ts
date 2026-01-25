@@ -95,23 +95,29 @@ const ICON_MAP: ReactComponentMap = {
   ...LANGUAGE_MAP
 }
 
-function getChatAuthor(element: HTMLElement): "user" | "assistant" {
-  const author = element.getAttribute("data-turn")
-  return author === "assistant" ? "assistant" : "user"
-}
-
-export function getItemInfo(item: ChatItem) {
+export function getItemInfo(item: ChatItem, selectorMap: Record<string, string>) {
   const element = item.element
   let label = element.textContent ?? ""
   let iconName = "chat"
 
-  if (element.matches('[data-testid^="conversation-turn-"]')) {
-    iconName = getChatAuthor(element)
+  const userSelector = selectorMap["user"]
+  const assistantSelector = selectorMap["assistant"]
+  const codeSelector = selectorMap["code blocks"]
+  const sectionSelector = selectorMap["section headers"]
+
+  if (element.matches(userSelector)) {
+    iconName = "user"
     const splitText = label.split("said:")
     if (splitText.length > 1) {
       label = splitText.slice(1).join("said:")
     }
-  } else if (element.tagName === "PRE") {
+  } else if (element.matches(assistantSelector)) {
+    iconName = "assistant"
+    const splitText = label.split("said:")
+    if (splitText.length > 1) {
+      label = splitText.slice(1).join("said:")
+    }
+  } else if (element.matches(codeSelector)) {
     iconName = "code"
     let language = "unknown"
 
@@ -127,7 +133,7 @@ export function getItemInfo(item: ChatItem) {
     if (language in LANGUAGE_MAP) {
       iconName = language
     }
-  } else if (element.matches("h1, h2, h3")) {
+  } else if (element.matches(sectionSelector)) {
     iconName = "section"
   }
 

@@ -4,7 +4,7 @@ import icon from "@/assets/icon.png"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Filter, X } from "lucide-react";
-import ChatOutlineRewrite from "@/components/chat-outline-rerwrite";
+import ChatOutline from "@/components/chat-outline";
 import useThemeDetection from "@/hooks/use-theme-detection";
 import useScrollContainer from "@/hooks/use-scroll-container";
 
@@ -114,7 +114,7 @@ export default function App() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <ChatOutlineRewrite
+      <ChatOutline
         scrollContainer={scrollContainer}
         options={options}
         textFilter={textFilter}
