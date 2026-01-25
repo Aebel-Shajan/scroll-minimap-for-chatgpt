@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import icon from "@/assets/icon.png"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Filter, X } from "lucide-react";
+import { Bug, Filter, X } from "lucide-react";
 import ChatOutline from "@/components/chat-outline";
 import useThemeDetection from "@/hooks/use-theme-detection";
 import useScrollContainer from "@/hooks/use-scroll-container";
@@ -79,12 +79,23 @@ export default function App() {
   return (
     <div className={"flex flex-col w-75 h-[calc(100vh-200px)] rounded-2xl border-accent border-2 overflow-hidden bg-background " + fixedPosClass} >
       <div className="w-full p-2 text-foreground border-b-accent border-b-2 flex justify-between items-center">
-        <div className="font-extrabold hover:">
+        <div className="font-extrabold">
           ChatGPS
         </div>
-        <button className="rounded-md border-2 bg-accent hover:bg-accent-foreground hover:text-accent cursor-pointer" onClick={() => setIsOpen(false)}>
-          <X />
-        </button>
+        <div className="flex gap-1 jus">
+          <a
+            href="https://docs.google.com/forms/d/e/1FAIpQLSd33FU9cCdtj019p3WSIXfoFm8uuMgY8qRDaAPYfNl-D4JKUg/viewform"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="size-7 rounded-md border-2 bg-accent hover:bg-accent-foreground hover:text-accent cursor-pointer flex items-center justify-center"
+            title="Report a bug"
+          >
+            <Bug className="size-4" />
+          </a>
+          <button className="size-7 rounded-md border-2 bg-accent hover:bg-accent-foreground hover:text-accent cursor-pointer" onClick={() => setIsOpen(false)}>
+            <X />
+          </button>
+        </div>
       </div>
       <div className="w-full h-15 border-b-2 border-accent flex justify-center items-center p-2 gap-2">
         <input
