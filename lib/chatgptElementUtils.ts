@@ -86,13 +86,23 @@ const LANGUAGE_MAP: ReactComponentMap = {
   "bash": BiTerminal,
 }
 
-const ICON_MAP: ReactComponentMap = {
+export const ICON_MAP: ReactComponentMap = {
   "user": User,
   "assistant": BotMessageSquare,
   "code": Code,
   "section": Section,
   "chat": MessageSquare,
   ...LANGUAGE_MAP
+}
+
+export function extractChatId(url: string): string {
+  // Simple implementation: use the path as ID (ignoring query params/hash for uniqueness of the chat resource)
+  try {
+    const urlObj = new URL(url);
+    return urlObj.pathname;
+  } catch (e) {
+    return url;
+  }
 }
 
 export function queryAllUserChats(scrollContainer: HTMLElement, selectorMap: Record<string, string>): HTMLElement[] {

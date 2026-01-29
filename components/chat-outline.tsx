@@ -1,18 +1,25 @@
-import { extractFilteredTreeBySelectors, getItemInfo, getScrollableParent } from "@/lib/chatgptElementUtils";
+import { extractFilteredTreeBySelectors, getItemInfo, getScrollableParent, extractChatId } from "@/lib/chatgptElementUtils";
 import { SCROLL_OFFSET, SELECTOR_MAP } from "@/lib/constants";
-import { ChatItem } from "@/types"
+import { ChatItem, favouritedChat } from "@/types"
 import useHighlightedIndex from "@/hooks/use-highlighted-index"
+import { StarIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import useChatProvider from "@/hooks/use-chat-provider";
 
 
 export default function ChatOutline(
   {
     scrollContainer,
     options,
-    textFilter
+    textFilter,
+    favourites,
+    setFavourites
   }: {
     scrollContainer: HTMLElement | null,
     options: Record<string, boolean>,
-    textFilter: string
+    textFilter: string,
+    favourites: Record<string, favouritedChat>,
+    setFavourites: CallableFunction
   }
 ) {
   const [elementTree, setElementTree] = useState<ChatItem[]>([])
@@ -47,7 +54,13 @@ export default function ChatOutline(
 
   return (
     <div className="w-full flex-1 text-foreground overflow-y-scroll">
-      <ElementDropDowns elementTree={elementTree} highlightedIndex={highlightedIndex} selectorMap={selectorMap} />
+      <ElementDropDowns
+        elementTree={elementTree}
+        highlightedIndex={highlightedIndex}
+        selectorMap={selectorMap}
+        favourites={favourites}
+        setFavourites={setFavourites}
+      />
     </div>
   )
 }
@@ -56,11 +69,15 @@ function ElementDropDowns(
   {
     elementTree,
     highlightedIndex,
-    selectorMap
+    selectorMap,
+    favourites,
+    setFavourites
   }: {
     elementTree: ChatItem[],
     highlightedIndex: number,
-    selectorMap: Record<string, string>
+    selectorMap: Record<string, string>,
+    favourites: Record<string, favouritedChat>,
+    setFavourites: CallableFunction
   }
 ) {
   if (elementTree.length === 0) {
@@ -74,7 +91,14 @@ function ElementDropDowns(
   return (
     <div className="w-full h-fit">
       {elementTree.map((node, index) => {
-        return <TextPreview item={node} highlighted={index == highlightedIndex} selectorMap={selectorMap} key={"text-preview" + index} />
+        return <TextPreview
+            item={node}
+            highlighted={index == highlightedIndex}
+            selectorMap={selectorMap}
+            favourites={favourites}
+            setFavourites={setFavourites}
+            key={"text-preview" + index}
+        />
       })}
     </div>
   )
@@ -85,11 +109,15 @@ function TextPreview(
   {
     item,
     highlighted = false,
-    selectorMap
+    selectorMap,
+    favourites,
+    setFavourites
   }: {
     item: ChatItem
     highlighted: boolean
-    selectorMap: Record<string, string>
+    selectorMap: Record<string, string>,
+    favourites: Record<string, favouritedChat>,
+    setFavourites: CallableFunction
   }
 ) {
   const ref = useRef<HTMLDivElement>(null);
@@ -106,10 +134,24 @@ function TextPreview(
       {highlighted &&
         <div className="w-1 h-full absolute top-0 right-0 bg-[#04A179] z-0"></div>
       }
-      <PreviewButton item={item} onClick={() => scrollElementIntoView(item.element)} selectorMap={selectorMap} />
+      <PreviewButton
+        item={item}
+        onClick={() => scrollElementIntoView(item.element)}
+        selectorMap={selectorMap}
+        favourites={favourites}
+        setFavourites={setFavourites}
+        />
       {item.children.length > 0 &&
         <div className="pl-10">
-          {item.children.map((child, index) => <PreviewButton item={child} onClick={() => scrollElementIntoView(child.element)} selectorMap={selectorMap} padding={1} key={"preview-button" + index} />)}
+          {item.children.map((child, index) => <PreviewButton
+            item={child}
+            onClick={() => scrollElementIntoView(child.element)}
+            selectorMap={selectorMap}
+            padding={1}
+            favourites={favourites}
+            setFavourites={setFavourites}
+            key={"preview-button" + index}
+          />)}
         </div>
       }
     </div>
@@ -122,26 +164,88 @@ function PreviewButton(
     onClick,
     selectorMap,
     padding = 3,
-    ref
+    ref,
+    favourites,
+    setFavourites
   }: {
     item: ChatItem,
     onClick: React.MouseEventHandler<HTMLDivElement>,
     selectorMap: Record<string, string>,
     padding?: number,
-    ref?: React.Ref<HTMLDivElement>
+    ref?: React.Ref<HTMLDivElement>,
+    favourites: Record<string, favouritedChat>,
+    setFavourites: CallableFunction
   }
 ) {
-  const { label, icon } = getItemInfo(item, selectorMap)
+  const { label, icon, iconName } = getItemInfo(item, selectorMap)
   const ItemIcon = icon
 
+  // Favourite Logic
+  const chatId = extractChatId(window.location.href)
+  let isFavourited = false
+  let scrollPos = -1
+  const scrollContainer = getScrollableParent(item.element)
+
+  if (scrollContainer) {
+     // Matches the ID generation logic from fix-stuff/components/chat-outline.tsx
+    scrollPos = item.element.getBoundingClientRect().top + scrollContainer.scrollTop - SCROLL_OFFSET
+    const uniqueId = chatId + "-scroll-" + scrollPos
+    isFavourited = Object.keys(favourites).includes(uniqueId)
+  }
+
+  function toggleFavourite(e: React.MouseEvent) {
+    e.stopPropagation()
+
+    if (!scrollContainer || !chatId || scrollPos === -1) {
+       // Should we alert? Maybe just return.
+       // fix-stuff alerted: alert(`error occured when trying to favourite chat. You have to be logged in to fav chats. `)
+       return
+    }
+     const uniqueId = chatId + "-scroll-" + scrollPos
+
+     if (isFavourited) {
+        setFavourites((old: Record<string, favouritedChat>) => {
+            const newFavs = { ...old }
+            delete newFavs[uniqueId]
+            return newFavs
+        })
+     } else {
+         const newFavourite = {
+            chatId: chatId,
+            scrollTop: scrollPos,
+            preview: label,
+            iconName: iconName,
+            url: window.location.href
+         }
+         setFavourites((old: Record<string, favouritedChat>) => {
+            return {
+                ...old,
+                [uniqueId]: newFavourite
+            }
+         })
+     }
+  }
+
   return (
-    <div className={`shrink-100 cursor-pointer rounded-lg p-${padding} hover:text-muted-foreground flex gap-1`} onClick={onClick} ref={ref}>
+    <div className={`shrink-100 cursor-pointer rounded-lg p-${padding} hover:text-muted-foreground flex gap-1 items-center`} onClick={onClick} ref={ref}>
       <div className="flex items-center justify-center relative w-fit h-full rounded-xs">
         <ItemIcon size={15} />
       </div>
-      <span className={`text-xs line-clamp-2 wrap-anywhere select-none`}>
+      <span className={`text-xs line-clamp-2 wrap-anywhere select-none flex-1`}>
         {label}
       </span>
+      <Button
+          variant="ghost"
+          size="sm"
+          className="h-4 w-4 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+          onClick={toggleFavourite}
+      >
+          <StarIcon
+            className="h-3 w-3"
+            fill={isFavourited ? "cyan" : "transparent"}
+            stroke={isFavourited ? "cyan" : "currentColor"}
+           />
+      </Button>
     </div>
   )
 }
@@ -152,4 +256,4 @@ function scrollElementIntoView(element: HTMLElement) {
   if (scrollContainer) {
     scrollContainer.scrollTop = element.getBoundingClientRect().top + scrollContainer.scrollTop - SCROLL_OFFSET
   }
-} 
+}
