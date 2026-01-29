@@ -11,7 +11,7 @@
     * remove a tonne of code
     * add export chat button?
 * what I did:
-    * find out what others were doing.
+    * find out what others were doing. 
     * removed fav section for now
     * added search to filter
     * made it an overlay, deleted old components.
@@ -37,9 +37,9 @@
 
 
 ## 2026-01-25
-* git:
+* git: 
 * start: 09:39
-* end:
+* end: 
 * what I want to do:
     * simplifiy logic in `App.tsx`
     * add back in favourites
