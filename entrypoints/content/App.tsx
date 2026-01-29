@@ -3,13 +3,17 @@ import { cn } from "@/lib/utils";
 import icon from "@/assets/icon.png"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Bug, ChevronDown, ChevronUp, Filter, X } from "lucide-react";
+import { Bug, ChevronDown, ChevronUp, Filter, X, ExternalLink, StarIcon, List } from "lucide-react";
 import ChatOutline from "@/components/chat-outline";
 import useThemeDetection from "@/hooks/use-theme-detection";
 import useScrollContainer from "@/hooks/use-scroll-container";
-import { navigateToNextChat, navigateToPreviousChat } from "@/lib/chatgptElementUtils";
+import { navigateToNextChat, navigateToPreviousChat, extractChatId, queryChatScrollContainer, ICON_MAP } from "@/lib/chatgptElementUtils";
 import { SELECTOR_MAP } from "@/lib/constants";
-
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { favouritedChat } from "@/types";
+import useChatProvider from "@/hooks/use-chat-provider";
+import { useSyncedStorage } from "@/hooks/use-synced-storage";
+import AllFavouritesList from "@/components/all-favourites-list";
 
 const DEFAULT_FILTERS = {
     "user": true,
@@ -26,6 +30,9 @@ export default function App() {
   const scrollContainer = useScrollContainer(chatProvider)
   const [textFilter, setTextFilter] = useState<string>("")
   const [options, setOptions] = useSyncedStorage<Record<string, boolean>>("filterOptions", DEFAULT_FILTERS)
+  const [favourites, setFavourites] = useSyncedStorage<Record<string, favouritedChat>>("favouritedChats", {})
+  const [showAllFavourites, setShowAllFavourites] = useState(false)
+
   const anyFilters = Object.values(options).some((value) => !value)
   const selectorMap = SELECTOR_MAP[chatProvider]
   const fixedPosClass = "fixed top-15 right-5"
@@ -43,6 +50,14 @@ export default function App() {
       return { ...old, [key]: !old[key] }
     }
     )
+  }
+
+  function removeFavourite(uniqueId: string) {
+    setFavourites((old: Record<string, favouritedChat>) => {
+      const newFavs = { ...old }
+      delete newFavs[uniqueId]
+      return newFavs
+    })
   }
 
 
@@ -93,6 +108,18 @@ export default function App() {
     );
   }
 
+  if (showAllFavourites) {
+      return (
+        <div className={"flex flex-col w-75 h-[calc(100vh-200px)] rounded-2xl border-accent border-2 overflow-hidden bg-background " + fixedPosClass + " animate-in fade-in slide-in-from-right duration-200"}>
+            <AllFavouritesList
+                favourites={favourites}
+                setFavourites={setFavourites}
+                onClose={() => setShowAllFavourites(false)}
+            />
+        </div>
+      )
+  }
+
   return (
     <div className={"flex flex-col w-75 h-[calc(100vh-200px)] rounded-2xl border-accent border-2 overflow-hidden bg-background " + fixedPosClass + " animate-in fade-in slide-in-from-right duration-200"} >
       <div className="w-full p-2 text-foreground border-b-accent border-b-2 flex justify-between items-center">
@@ -116,6 +143,15 @@ export default function App() {
               <ChevronDown className="size-3" />
             </button>
           </div>
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-7 w-7 p-0"
+            onClick={() => setShowAllFavourites(true)}
+            title="View all favourites"
+          >
+            <List size={14} />
+          </Button>
           <a
             href="https://docs.google.com/forms/d/e/1FAIpQLSd33FU9cCdtj019p3WSIXfoFm8uuMgY8qRDaAPYfNl-D4JKUg/viewform"
             target="_blank"
@@ -158,11 +194,87 @@ export default function App() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <ChatOutline
-        scrollContainer={scrollContainer}
-        options={options}
-        textFilter={textFilter}
-      />
+      <ResizablePanelGroup direction="vertical">
+        <ResizablePanel minSize={20} defaultSize={Object.keys(favourites).length > 0 ? 70 : 100}>
+          <ChatOutline
+            scrollContainer={scrollContainer}
+            options={options}
+            textFilter={textFilter}
+            favourites={favourites}
+            setFavourites={setFavourites}
+          />
+        </ResizablePanel>
+        {Object.keys(favourites).length > 0 && (
+          <>
+            <ResizableHandle withHandle className="cursor-ns-resize" />
+            <ResizablePanel minSize={5} defaultSize={30}>
+               <div className="w-full h-full flex flex-col overflow-y-auto">
+                 <div className="p-2 font-semibold text-xs text-muted-foreground">Favourites</div>
+                 <div className="flex flex-col">
+                  {Object.keys(favourites).map((key) => (
+                    <FavItem
+                        uniqueKey={key}
+                        favChat={favourites[key]}
+                        removeFav={removeFavourite}
+                        key={key}
+                        chatProvider={chatProvider}
+                    />
+                  ))}
+                 </div>
+               </div>
+            </ResizablePanel>
+          </>
+        )}
+      </ResizablePanelGroup>
     </div>
+  )
+}
+
+function FavItem({ favChat, removeFav, uniqueKey, chatProvider }: { favChat: favouritedChat, removeFav: CallableFunction, uniqueKey: string, chatProvider: any }) {
+  const isOnPage = extractChatId(window.location.href) == favChat.chatId
+
+  function goToFav() {
+    if (!isOnPage) {
+       // Use stored URL if available, otherwise fallback
+       if (favChat.url) {
+           window.open(favChat.url, "_self")
+       } else {
+           window.open(`https://chat.com/c/${favChat.chatId}`, "_self")
+       }
+      return
+    }
+    const scrollContainer = queryChatScrollContainer(chatProvider)
+    if (scrollContainer) {
+      scrollContainer.scrollTo(0, favChat.scrollTop)
+    }
+  }
+
+  const FavChatIcon = ICON_MAP[favChat.iconName] || Bug // Fallback icon
+
+  return (
+      <div
+        className={cn("group flex items-center gap-1 p-2 hover:bg-muted relative cursor-pointer", isOnPage && "pl-4 border-l-2 border-primary")}
+        onClick={goToFav}
+      >
+        {!isOnPage && <ExternalLink size={12} />}
+        <FavChatIcon size={12} />
+        <span className="text-xs truncate select-none flex-1">
+          {favChat.preview}
+        </span>
+        <Button
+            variant="ghost"
+            size="sm"
+            className="h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={(e) => {
+                e.stopPropagation();
+                removeFav(uniqueKey);
+            }}
+          >
+            <StarIcon
+                className="h-3 w-3"
+                fill="#01FFA7"
+            />
+        </Button>
+      </div>
   )
 }
