@@ -1,6 +1,6 @@
-export interface HTMLElementItem {
+export interface ChatItem {
   element: HTMLElement,
-  children: HTMLElementItem[]
+  children: ChatItem[]
 }
 
 export interface favouritedChat {
