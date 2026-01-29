@@ -1,6 +1,6 @@
-export interface HTMLElementItem {
+export interface ChatItem {
   element: HTMLElement,
-  children: HTMLElementItem[]
+  children: ChatItem[]
 }
 
 export interface favouritedChat {
@@ -8,6 +8,7 @@ export interface favouritedChat {
   chatId: string,
   scrollTop: number,
   preview: string,
+  url: string,
 }
 
 
