@@ -10,6 +10,7 @@ import useScrollContainer from "@/hooks/use-scroll-container";
 import { navigateToNextChat, navigateToPreviousChat } from "@/lib/chatgptElementUtils";
 import { SELECTOR_MAP } from "@/lib/constants";
 
+const SIDEBAR_WIDTH = 300; // px
 
 const DEFAULT_FILTERS = {
   "user": true,
@@ -36,6 +37,25 @@ export default function App() {
   const [options, setOptions] = useSyncedStorage<Record<string, boolean>>("filterOptions", DEFAULT_FILTERS)
   const anyFilters = Object.values(options).some((value) => !value)
   const selectorMap = SELECTOR_MAP[chatProvider]
+
+  useEffect(() => {
+    const host =
+      window.document.querySelector<HTMLElement>("main") ||
+      window.document.querySelector<HTMLElement>("#__next") ||
+      window.document.body
+
+    if (!host) return
+
+    if (isOpen) {
+      host.style.transition = "margin-right 0.2s ease"
+      host.style.marginRight = `${SIDEBAR_WIDTH}px`
+    } else {
+      host.style.marginRight = ""
+    }
+    return () => {
+      host.style.marginRight = ""
+    }
+  }, [isOpen])
 
   const goToNextChat = () => {
     if (scrollContainer) navigateToNextChat(scrollContainer, selectorMap)
@@ -139,91 +159,103 @@ export default function App() {
     return () => window.removeEventListener("keydown", handleEscapeKey);
   }, [setIsOpen]);
 
-
-  if (!isOpen) {
-    return (
+  return (
+    <>
+      {/* Floating toggle button (hidden when sidebar is open) */}
       <div
         ref={btnElRef}
         onPointerDown={onBtnPointerDown}
         style={{ top: `${btnPos.top}px`, right: `${btnPos.right}px` }}
-        className={cn("w-fit cursor-pointer p-2 border-accent border-2 rounded-xl fixed select-none")}
-        title="Toggle chatgps"
+        className={cn(
+          "w-fit cursor-pointer p-2 border-accent border-2 rounded-xl fixed select-none",
+          isOpen && "opacity-0 pointer-events-none"
+        )}
+        title="Toggle ChatGPS"
       >
         <img src={icon} width={32} draggable={false} onDragStart={e => e.preventDefault()} />
       </div>
-    );
-  }
 
-  return (
-    <div className={"flex flex-col w-75 h-[calc(100vh-200px)] rounded-2xl border-accent border-2 overflow-hidden bg-background fixed top-15 right-5 animate-in fade-in slide-in-from-right duration-200"} >
-      <div className="w-full p-2 text-foreground border-b-accent border-b-2 flex justify-between items-center">
-        <div className="font-extrabold">
-          ChatGPS
-        </div>
-        <div className="flex gap-1">
-          <div className="flex flex-col gap-0.5">
-            <button
-              onClick={goToPreviousChat}
-              className="h-3.5 px-1 rounded bg-accent hover:bg-accent-foreground hover:text-accent cursor-pointer flex items-center justify-center"
-              title="Previous chat (Alt+Up)"
-            >
-              <ChevronUp className="size-3" />
-            </button>
-            <button
-              onClick={goToNextChat}
-              className="h-3.5 px-1 rounded bg-accent hover:bg-accent-foreground hover:text-accent cursor-pointer flex items-center justify-center"
-              title="Next chat (Alt+Down)"
-            >
-              <ChevronDown className="size-3" />
-            </button>
-          </div>
-          <a
-            href="https://docs.google.com/forms/d/e/1FAIpQLSd33FU9cCdtj019p3WSIXfoFm8uuMgY8qRDaAPYfNl-D4JKUg/viewform"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="size-7 rounded-md border-2 bg-accent hover:bg-accent-foreground hover:text-accent cursor-pointer flex items-center justify-center"
-            title="Report a bug"
-          >
-            <Bug className="size-4" />
-          </a>
-          <button className="size-7 rounded-md border-2 bg-accent hover:bg-accent-foreground hover:text-accent cursor-pointer" onClick={() => setIsOpen(false)}>
-            <X />
-          </button>
-        </div>
-      </div>
-      <div className="w-full h-15 border-b-2 border-accent flex justify-center items-center p-2 gap-2">
-        <input
-          ref={inputRef}
-          type="text"
-          className="w-full flex-1 rounded-md bg-accent outline-none text-accent-foreground p-2 pl-3"
-          placeholder="🔎 search chat"
-          value={textFilter}
-          onChange={(event) => setTextFilter(event.target.value)}
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button size="sm" className={"cursor-pointer h-full " + (anyFilters ? "" : "bg-accent")}>
-              <Filter className={"size-4 " + (anyFilters ? "text-accent" : "text-foreground")} />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            {Object.entries(options).map(([key, value]) => (
-              <DropdownMenuCheckboxItem
-                key={key}
-                checked={value}
-                onClick={(e) => onToggleOption(e, key)}
+      {/* Sidebar panel */}
+      {isOpen && (
+        <div
+          style={{ width: `${SIDEBAR_WIDTH}px` }}
+          className="flex flex-col h-screen rounded-l-2xl border-accent border-l-2 border-y-2 overflow-hidden bg-background fixed top-0 right-0 animate-in slide-in-from-right duration-200"
+        >
+          {/* Header */}
+          <div className="w-full p-2 text-foreground border-b-accent border-b-2 flex justify-between items-center flex-shrink-0">
+            <div className="font-extrabold">ChatGPS</div>
+            <div className="flex gap-1">
+              <div className="flex flex-col gap-0.5">
+                <button
+                  onClick={goToPreviousChat}
+                  className="h-3.5 px-1 rounded bg-accent hover:bg-accent-foreground hover:text-accent cursor-pointer flex items-center justify-center"
+                  title="Previous chat (Alt+Up)"
+                >
+                  <ChevronUp className="size-3" />
+                </button>
+                <button
+                  onClick={goToNextChat}
+                  className="h-3.5 px-1 rounded bg-accent hover:bg-accent-foreground hover:text-accent cursor-pointer flex items-center justify-center"
+                  title="Next chat (Alt+Down)"
+                >
+                  <ChevronDown className="size-3" />
+                </button>
+              </div>
+              <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSd33FU9cCdtj019p3WSIXfoFm8uuMgY8qRDaAPYfNl-D4JKUg/viewform"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="size-7 rounded-md border-2 bg-accent hover:bg-accent-foreground hover:text-accent cursor-pointer flex items-center justify-center"
+                title="Report a bug"
               >
-                {key}
-              </DropdownMenuCheckboxItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-      <ChatOutline
-        scrollContainer={scrollContainer}
-        options={options}
-        textFilter={textFilter}
-      />
-    </div>
+                <Bug className="size-4" />
+              </a>
+              <button
+                className="size-7 rounded-md border-2 bg-accent hover:bg-accent-foreground hover:text-accent cursor-pointer flex items-center justify-center"
+                onClick={() => setIsOpen(false)}
+              >
+                <X />
+              </button>
+            </div>
+          </div>
+
+          {/* Search + Filter */}
+          <div className="w-full border-b-2 border-accent flex justify-center items-center p-2 gap-2 flex-shrink-0">
+            <input
+              ref={inputRef}
+              type="text"
+              className="w-full flex-1 rounded-md bg-accent outline-none text-accent-foreground p-2 pl-3"
+              placeholder="🔎 search chat"
+              value={textFilter}
+              onChange={(event) => setTextFilter(event.target.value)}
+            />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button size="sm" className={"cursor-pointer h-full " + (anyFilters ? "" : "bg-accent")}>
+                  <Filter className={"size-4 " + (anyFilters ? "text-accent" : "text-foreground")} />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {Object.entries(options).map(([key, value]) => (
+                  <DropdownMenuCheckboxItem
+                    key={key}
+                    checked={value}
+                    onClick={(e) => onToggleOption(e, key)}
+                  >
+                    {key}
+                  </DropdownMenuCheckboxItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          <ChatOutline
+            scrollContainer={scrollContainer}
+            options={options}
+            textFilter={textFilter}
+          />
+        </div>
+      )}
+    </>
   )
 }
