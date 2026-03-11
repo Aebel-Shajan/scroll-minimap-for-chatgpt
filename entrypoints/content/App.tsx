@@ -12,15 +12,23 @@ import { SELECTOR_MAP } from "@/lib/constants";
 
 
 const DEFAULT_FILTERS = {
-    "user": true,
-    "assistant": true,
-    "code blocks": false,
-    "section headers": true,
-  }
+  "user": true,
+  "assistant": true,
+  "code blocks": false,
+  "section headers": true,
+}
 
 export default function App() {
   useThemeDetection()
   const [isOpen, setIsOpen] = useSyncedStorage("sidebarOpen", false)
+  const [btnPos, setBtnPos] = useSyncedStorage("toggleBtnPos", { top: 60, right: 20 })
+  const btnPosRef = useRef(btnPos)
+  const btnElRef = useRef<HTMLDivElement | null>(null)
+  const isDraggingBtn = useRef(false)
+  const dragStart = useRef({ x: 0, y: 0 })
+  const hasMoved = useRef(false)
+  const btnHalfSize = useRef({ w: 24, h: 24 })
+
   const inputRef = useRef<HTMLInputElement | null>(null)
   const chatProvider = useChatProvider()
   const scrollContainer = useScrollContainer(chatProvider)
@@ -28,7 +36,6 @@ export default function App() {
   const [options, setOptions] = useSyncedStorage<Record<string, boolean>>("filterOptions", DEFAULT_FILTERS)
   const anyFilters = Object.values(options).some((value) => !value)
   const selectorMap = SELECTOR_MAP[chatProvider]
-  const fixedPosClass = "fixed top-15 right-5"
 
   const goToNextChat = () => {
     if (scrollContainer) navigateToNextChat(scrollContainer, selectorMap)
@@ -45,6 +52,58 @@ export default function App() {
     )
   }
 
+  const onBtnPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    isDraggingBtn.current = false
+    hasMoved.current = false
+    dragStart.current = { x: e.clientX, y: e.clientY }
+    if (btnElRef.current) {
+      const rect = btnElRef.current.getBoundingClientRect()
+      btnHalfSize.current = { w: rect.width / 2, h: rect.height / 2 }
+    }
+    window.addEventListener("pointermove", onWindowPointerMove)
+    window.addEventListener("pointerup", onWindowPointerUp)
+  }
+
+  const onWindowPointerMove = (e: PointerEvent) => {
+    const dx = e.clientX - dragStart.current.x
+    const dy = e.clientY - dragStart.current.y
+
+    if (!hasMoved.current && Math.sqrt(dx * dx + dy * dy) < 5) return
+    hasMoved.current = true
+    isDraggingBtn.current = true
+
+    if (btnElRef.current) {
+      let newTop = e.clientY - btnHalfSize.current.h
+      let newRight = window.innerWidth - e.clientX - btnHalfSize.current.w
+
+      newTop = Math.max(0, Math.min(newTop, window.innerHeight - btnHalfSize.current.h * 2))
+      newRight = Math.max(0, Math.min(newRight, window.innerWidth - btnHalfSize.current.w * 2))
+
+      btnElRef.current.style.top = `${newTop}px`
+      btnElRef.current.style.right = `${newRight}px`
+      btnPosRef.current = { top: newTop, right: newRight }
+    }
+  }
+
+  const onWindowPointerUp = () => {
+    window.removeEventListener("pointermove", onWindowPointerMove)
+    window.removeEventListener("pointerup", onWindowPointerUp)
+    isDraggingBtn.current = false
+
+    if (hasMoved.current) {
+      setBtnPos({ ...btnPosRef.current })
+    } else {
+      setIsOpen(prev => !prev)
+    }
+  }
+
+  useEffect(() => {
+    return () => {
+      window.removeEventListener("pointermove", onWindowPointerMove)
+      window.removeEventListener("pointerup", onWindowPointerUp)
+    }
+  }, [])
 
   useEffect(() => {
     function handler(msg: any) {
@@ -84,17 +143,19 @@ export default function App() {
   if (!isOpen) {
     return (
       <div
-        onClick={() => setIsOpen(prev => !prev)}
-        className={cn("w-fit cursor-pointer p-2 border-accent border-2 rounded-xl ", fixedPosClass)}
+        ref={btnElRef}
+        onPointerDown={onBtnPointerDown}
+        style={{ top: `${btnPos.top}px`, right: `${btnPos.right}px` }}
+        className={cn("w-fit cursor-pointer p-2 border-accent border-2 rounded-xl fixed select-none")}
         title="Toggle chatgps"
       >
-        <img src={icon} width={32} />
+        <img src={icon} width={32} draggable={false} onDragStart={e => e.preventDefault()} />
       </div>
     );
   }
 
   return (
-    <div className={"flex flex-col w-75 h-[calc(100vh-200px)] rounded-2xl border-accent border-2 overflow-hidden bg-background " + fixedPosClass + " animate-in fade-in slide-in-from-right duration-200"} >
+    <div className={"flex flex-col w-75 h-[calc(100vh-200px)] rounded-2xl border-accent border-2 overflow-hidden bg-background fixed top-15 right-5 animate-in fade-in slide-in-from-right duration-200"} >
       <div className="w-full p-2 text-foreground border-b-accent border-b-2 flex justify-between items-center">
         <div className="font-extrabold">
           ChatGPS
